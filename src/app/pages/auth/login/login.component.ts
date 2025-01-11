@@ -6,6 +6,7 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
 import { Router, RouterLink } from '@angular/router'
 import { LoginService } from './login.service'
 import { LoginRequest } from './types/login.type'
+import { TokenService } from '../../../shared/services/token.service'
 
 @Component({
 	selector: 'app-login',
@@ -22,6 +23,7 @@ export class LoginComponent {
 	constructor(
 		private readonly loginService: LoginService,
 		private readonly router: Router,
+		private readonly tokenService: TokenService,
 	) {}
 
 	get formControls() {
@@ -34,8 +36,10 @@ export class LoginComponent {
 				email: this.loginFormGroup.value.email!,
 				password: this.loginFormGroup.value.password!,
 			}
+
 			this.loginService.login(loginRequest).subscribe({
-				next: async () => {
+				next: async (loginResponse) => {
+					this.tokenService.storeTokens(loginResponse)
 					await this.router.navigateByUrl('home')
 				},
 			})
