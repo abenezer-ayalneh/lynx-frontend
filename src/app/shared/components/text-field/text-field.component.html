@@ -1,5 +1,6 @@
 <input
 	class="w-full h-full bg-gray-100 backdrop-blur-md py-2 px-3 md:py-3 md:px-4 rounded-[6px] md:rounded-lg font-normal text-black text-sm md:text-[16px] placeholder:text-font-secondary placeholder:font-light outline-none disabled:text-black"
+	[formControl]="control()"
 	[type]="type()"
 	[placeholder]="placeholder()" />
 
@@ -9,7 +10,9 @@
 	}
 
 	@if (control().errors?.['minlength']) {
-		<p class="text-red-400">The value you input is {{ control().errors?.['minlength']['actualLength'] }} characters long. It should be at least {{ control().errors?.['minlength']['requiredLength'] }} characters long.</p>
+		<p class="text-red-400">
+			The value you input is {{ control().errors?.['minlength']['actualLength'] }} characters long. It should be at least {{ control().errors?.['minlength']['requiredLength'] }} characters long.
+		</p>
 	}
 
 	@if (control().errors?.['email']) {

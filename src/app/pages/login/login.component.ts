@@ -1,13 +1,15 @@
 import { Component } from '@angular/core'
 import { TextFieldComponent } from '../../shared/components/text-field/text-field.component'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { NgOptimizedImage } from '@angular/common'
 import { ButtonComponent } from '../../shared/components/button/button.component'
 import { RouterLink } from '@angular/router'
+import { LoginService } from './login.service'
+import { LoginRequest } from './types/login.type'
 
 @Component({
 	selector: 'app-login',
-	imports: [TextFieldComponent, NgOptimizedImage, ButtonComponent, RouterLink],
+	imports: [TextFieldComponent, NgOptimizedImage, ButtonComponent, RouterLink, FormsModule, ReactiveFormsModule],
 	templateUrl: './login.component.html',
 	styleUrl: './login.component.scss',
 })
@@ -17,7 +19,19 @@ export class LoginComponent {
 		password: new FormControl('', [Validators.required]),
 	})
 
+	constructor(private readonly loginService: LoginService) {}
+
 	get formControls() {
 		return this.loginFormGroup.controls
+	}
+
+	loginFormSubmit() {
+		if (this.loginFormGroup.valid) {
+			const loginRequest: LoginRequest = {
+				email: this.formControls.email.value!,
+				password: this.formControls.password.value!,
+			}
+			this.loginService.login(loginRequest).subscribe()
+		}
 	}
 }
