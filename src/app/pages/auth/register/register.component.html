@@ -1,0 +1,18 @@
+<form class="w-full h-full flex justify-center items-center" [formGroup]="registerFormGroup" (ngSubmit)="registerFormSubmit()">
+	<div class="w-full h-full flex justify-center items-center">
+		<div class="w-[460px] px-6 py-10 md:px-12 md:py-20 bg-my-glass backdrop-blur-md rounded-[32px] flex flex-col justify-center items-center gap-8">
+			<img [ngSrc]="'images/auth-image.png'" alt="auth" width="200" height="200" />
+			<span class="w-full flex flex-col gap-4">
+				<app-text-field placeholder="Name" type="text" [control]="formControls.name" />
+				<app-text-field placeholder="Email" type="email" autoComplete="new-email" [control]="formControls.email" />
+				<app-text-field placeholder="Password" type="password" autoComplete="new-password" [control]="formControls.password" />
+				<app-text-field placeholder="Confirm Password" type="password" autoComplete="new-password" [control]="formControls.confirmPassword" />
+			</span>
+			<app-button text="Register" buttonType="button" type="submit" />
+			<span class="w-full flex justify-center items-center">
+				<p class="text-font-primary text-[12px] md:text-sm font-light leading-none">Already have an account?&nbsp;</p>
+				<a routerLink="/auth/login" class="text-font-authSubtitle text-[12px] md:text-sm font-light leading-none">Login here</a>
+			</span>
+		</div>
+	</div>
+</form>

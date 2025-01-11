@@ -1,9 +1,9 @@
 import { Component } from '@angular/core'
-import { TextFieldComponent } from '../../shared/components/text-field/text-field.component'
+import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { NgOptimizedImage } from '@angular/common'
-import { ButtonComponent } from '../../shared/components/button/button.component'
-import { RouterLink } from '@angular/router'
+import { ButtonComponent } from '../../../shared/components/button/button.component'
+import { Router, RouterLink } from '@angular/router'
 import { LoginService } from './login.service'
 import { LoginRequest } from './types/login.type'
 
@@ -19,7 +19,10 @@ export class LoginComponent {
 		password: new FormControl('', [Validators.required]),
 	})
 
-	constructor(private readonly loginService: LoginService) {}
+	constructor(
+		private readonly loginService: LoginService,
+		private readonly router: Router,
+	) {}
 
 	get formControls() {
 		return this.loginFormGroup.controls
@@ -28,10 +31,14 @@ export class LoginComponent {
 	loginFormSubmit() {
 		if (this.loginFormGroup.valid) {
 			const loginRequest: LoginRequest = {
-				email: this.formControls.email.value!,
-				password: this.formControls.password.value!,
+				email: this.loginFormGroup.value.email!,
+				password: this.loginFormGroup.value.password!,
 			}
-			this.loginService.login(loginRequest).subscribe()
+			this.loginService.login(loginRequest).subscribe({
+				next: async () => {
+					await this.router.navigateByUrl('home')
+				},
+			})
 		}
 	}
 }

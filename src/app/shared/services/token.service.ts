@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { LoginResponse } from '../../pages/login/types/login.type'
+import { LoginResponse } from '../../pages/auth/login/types/login.type'
 
 @Injectable({
 	providedIn: 'root',

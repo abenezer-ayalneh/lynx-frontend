@@ -10,5 +10,6 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms'
 export class TextFieldComponent {
 	control = input.required<FormControl>()
 	type = input<string>('text')
+	autoComplete = input<string>('')
 	placeholder = input<string>('')
 }
