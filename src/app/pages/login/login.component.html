@@ -1,0 +1,14 @@
+<form class="w-full h-full flex justify-center items-center">
+	<div class="w-[460px] px-6 py-10 md:px-12 md:py-20 bg-my-glass backdrop-blur-md rounded-[32px] flex flex-col justify-center items-center gap-8">
+		<img ngSrc="images/auth-image.png" alt="auth" height="200" width="200" />
+		<span class="w-full flex flex-col gap-4">
+			<app-text-field [control]="formControls.email" placeholder="Email" type="email" />
+			<app-text-field [control]="formControls.password" placeholder="Password" type="password" />
+		</span>
+		<app-button text="Login" buttonType="button" type="submit" />
+		<span class="w-full flex justify-center items-center">
+			<p class="text-font-primary text-[12px] md:text-sm font-light leading-none">Don&apos;t have an account?&nbsp;</p>
+			<a routerLink="/auth/register" class="text-font-authSubtitle text-[12px] md:text-sm font-light leading-none"> Register here </a>
+		</span>
+	</div>
+</form>
