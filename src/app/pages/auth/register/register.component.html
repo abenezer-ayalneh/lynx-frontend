@@ -8,7 +8,7 @@
 				<app-text-field placeholder="Password" type="password" autoComplete="new-password" [control]="formControls.password" />
 				<app-text-field placeholder="Confirm Password" type="password" autoComplete="new-password" [control]="formControls.confirmPassword" />
 			</span>
-			<app-button text="Register" buttonType="button" type="submit" />
+			<app-button text="Register" buttonType="button" type="submit" [disabled]="registerFormGroup.invalid" />
 			<span class="w-full flex justify-center items-center">
 				<p class="text-font-primary text-[12px] md:text-sm font-light leading-none">Already have an account?&nbsp;</p>
 				<a routerLink="/auth/login" class="text-font-authSubtitle text-[12px] md:text-sm font-light leading-none">Login here</a>
