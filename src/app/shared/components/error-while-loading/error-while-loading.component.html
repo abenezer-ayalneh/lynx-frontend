@@ -1,0 +1,12 @@
+<div class="flex justify-center items-center relative">
+	<div class="h-[24vh] w-[24vh] lg:h-[300px] lg:w-[300px] flex justify-center items-center bg-my-glass backdrop-blur-md rounded-3xl"></div>
+	<span class="absolute flex flex-col justify-center items-center gap-y-4">
+		<p class="font-medium text-font-primary text-[20px] lg:text-[28px]">Error!</p>
+		<p class="font-light text-font-primary text-[12px] lg:text-[16px] w-[65%] text-center">
+			{{ subTitle() }}
+		</p>
+		@if (retryFn()) {
+			<app-button text="Retry" buttonType="button" (buttonClicked)="retryFn()" />
+		}
+	</span>
+</div>
