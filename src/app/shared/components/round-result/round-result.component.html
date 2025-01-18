@@ -1,0 +1,17 @@
+<div class="bg-my-glass backdrop-blur-md rounded-2xl w-full h-full flex flex-col justify-start items-center pt-12">
+	<p class="font-semibold text-font-primary text-4xl md:text-7xl uppercase">
+		{{ winner() ? 'You Won' : 'You Lost' }}
+	</p>
+	<div class="flex flex-col justify-center items-center gap-4 md:gap-8">
+		@for (cue of word()?.cues; track cue.id) {
+			<p class="font-regular text-font-primary text-xl md:text-3xl text-center" [innerHTML]="cue.word | highlightKey: word()!.key"></p>
+		}
+		<p class="font-semibold text-font-primary text-3xl md:text-5xl text-center">
+			Round Score:&nbsp;<span class="text-my-orange">{{ score() }}</span>
+		</p>
+	</div>
+	<p class="absolute bottom-0 right-0 pr-10 py-6 text-font-primary text-2xl">
+		Next round starts in&nbsp;
+		<span class="text-my-orange">{{ waitingCountdownTime() }}...</span>
+	</p>
+</div>

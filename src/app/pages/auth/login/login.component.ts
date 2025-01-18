@@ -4,9 +4,9 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { NgOptimizedImage } from '@angular/common'
 import { ButtonComponent } from '../../../shared/components/button/button.component'
 import { Router, RouterLink } from '@angular/router'
-import { LoginService } from './login.service'
 import { LoginRequest } from './types/login.type'
 import { TokenService } from '../../../shared/services/token.service'
+import { AuthService } from '../auth.service'
 
 @Component({
 	selector: 'app-login',
@@ -21,7 +21,7 @@ export class LoginComponent {
 	})
 
 	constructor(
-		private readonly loginService: LoginService,
+		private readonly authService: AuthService,
 		private readonly router: Router,
 		private readonly tokenService: TokenService,
 	) {}
@@ -37,7 +37,7 @@ export class LoginComponent {
 				password: this.loginFormGroup.value.password!,
 			}
 
-			this.loginService.login(loginRequest).subscribe({
+			this.authService.login(loginRequest).subscribe({
 				next: async (loginResponse) => {
 					this.tokenService.storeTokens(loginResponse)
 					await this.router.navigateByUrl('home')

@@ -2,7 +2,6 @@
 	<button
 		[type]="type()"
 		[disabled]="disabled() || loading()"
-		(click)="handleClick($event)"
 		class="text-[#FFFFFF] text-sm md:text-[16px] font-normal flex justify-center items-center bg-my-orange py-2 px-8 rounded-lg hover:enabled:scale-[0.99] transition-all ease-in-out duration-500 disabled:transition-none disabled:opacity-60 disabled:bg-gray-400 backdrop-blur-md cursor-pointer disabled:cursor-not-allowed {{
 			class()
 		}}">

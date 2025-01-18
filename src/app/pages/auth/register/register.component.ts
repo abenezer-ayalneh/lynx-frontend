@@ -5,8 +5,8 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ButtonComponent } from '../../../shared/components/button/button.component'
 import { Router, RouterLink } from '@angular/router'
 import { MatchValidator } from '../../../shared/validators/match-validator'
-import { RegisterService } from './register.service'
 import { RegisterRequest } from './types/register.type'
+import { AuthService } from '../auth.service'
 
 @Component({
 	selector: 'app-register',
@@ -26,7 +26,7 @@ export class RegisterComponent {
 	)
 
 	constructor(
-		private readonly registerService: RegisterService,
+		private readonly authService: AuthService,
 		private readonly router: Router,
 	) {}
 
@@ -43,7 +43,7 @@ export class RegisterComponent {
 				confirmPassword: this.registerFormGroup.value.confirmPassword!,
 			}
 
-			this.registerService.register(registerRequest).subscribe({
+			this.authService.register(registerRequest).subscribe({
 				next: async () => {
 					await this.router.navigateByUrl('auth/login')
 				},

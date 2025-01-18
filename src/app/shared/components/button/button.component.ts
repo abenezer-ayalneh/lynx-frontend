@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core'
+import { Component, input } from '@angular/core'
 import { RouterLink } from '@angular/router'
 
 @Component({
@@ -15,12 +15,4 @@ export class ButtonComponent {
 	disabled = input<boolean>(false)
 	class = input<string>('')
 	type = input<'button' | 'submit'>('button')
-
-	buttonClicked = output<MouseEvent>()
-
-	handleClick(event: MouseEvent): void {
-		if (!this.disabled && !this.loading) {
-			this.buttonClicked.emit(event)
-		}
-	}
 }

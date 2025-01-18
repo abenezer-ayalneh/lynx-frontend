@@ -5,6 +5,7 @@ import { RegisterComponent } from './pages/auth/register/register.component'
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component'
 import { HomeComponent } from './pages/home/home.component'
 import { authGuard } from './shared/guards/auth.guard'
+import { SoloPlayComponent } from './pages/game/solo-play/solo-play.component'
 
 export const routes: Routes = [
 	{
@@ -15,6 +16,10 @@ export const routes: Routes = [
 			{
 				path: 'home',
 				component: HomeComponent,
+			},
+			{
+				path: 'solo',
+				component: SoloPlayComponent,
 			},
 			{
 				path: '',
