@@ -6,8 +6,7 @@
 	<div class="dropdown dropdown-end">
 		<div tabIndex="0" role="button" class="flex justify-end items-center gap-2 pl-2 cursor-pointer">
 			<p class="font-normal text-sm lg:text-lg text-font-primary">
-				<!--            {player?.name}  TODO show player's name here-->
-				Player Name
+				{{ player()?.name }}
 			</p>
 			<img [ngSrc]="'images/logos/profile-image-sample.svg'" alt="logo" width="56" height="56" priority />
 		</div>
@@ -15,8 +14,7 @@
 			<p class="font-semibold text-sm lg:text-lg text-font-primary p-2">
 				Score:
 				<span class="text-green-500">
-					0
-					<!--            {player?.score ?? 0} TODO show the player's score here-->
+					{{ player()?.score ?? 0 }}
 				</span>
 			</p>
 			<p class="font-semibold text-sm lg:text-lg text-font-primary p-2 cursor-pointer hover:bg-my-glass hover:rounded-sm" (click)="logout()">Logout</p>

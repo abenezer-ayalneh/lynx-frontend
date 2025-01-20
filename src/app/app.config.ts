@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core'
+import { ApplicationConfig, provideAppInitializer, provideZoneChangeDetection } from '@angular/core'
 import { provideRouter } from '@angular/router'
 
 import { routes } from './app.routes'
@@ -7,6 +7,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { baseUrlInterceptor } from './shared/interceptors/base-url.interceptor'
 import { accessTokenInterceptor } from './shared/interceptors/access-token.interceptor'
 import { httpErrorsInterceptor } from './shared/interceptors/http-errors.interceptor'
+import { playerProvider } from './shared/providers/player.provider'
 
 export const appConfig: ApplicationConfig = {
 	providers: [
@@ -14,5 +15,6 @@ export const appConfig: ApplicationConfig = {
 		provideRouter(routes),
 		provideHttpClient(withInterceptors([baseUrlInterceptor, accessTokenInterceptor, httpErrorsInterceptor])),
 		provideAnimationsAsync(),
+		provideAppInitializer(playerProvider),
 	],
 }

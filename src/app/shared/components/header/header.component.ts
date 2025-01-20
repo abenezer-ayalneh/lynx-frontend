@@ -1,7 +1,9 @@
-import { Component } from '@angular/core'
+import { Component, signal } from '@angular/core'
 import { RouterLink } from '@angular/router'
 import { NgOptimizedImage } from '@angular/common'
 import { AuthService } from '../../../pages/auth/auth.service'
+import { Player } from '../../models/player.model'
+import { PlayerService } from '../../services/player.service'
 
 @Component({
 	selector: 'app-header',
@@ -10,7 +12,14 @@ import { AuthService } from '../../../pages/auth/auth.service'
 	styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-	constructor(private readonly authService: AuthService) {}
+	player = signal<Player | null>(null)
+
+	constructor(
+		private readonly authService: AuthService,
+		private readonly playerService: PlayerService,
+	) {
+		this.playerService.getPlayer.subscribe((player) => this.player.set(player))
+	}
 
 	async logout() {
 		await this.authService.logOut()
