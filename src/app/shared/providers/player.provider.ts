@@ -1,15 +1,20 @@
 import { inject } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
-import { Player } from '../models/player.model'
 import { PlayerService } from '../services/player.service'
-import { filter, tap } from 'rxjs'
+import { environment } from '../../../environments/environment'
+import { TokenService } from '../services/token.service'
+import { Player } from '../models/player.model'
 
-export const playerProvider = () => {
-	const httpClient = inject(HttpClient)
+const API_URL = environment.apiUrl
+
+export const playerProvider = async () => {
 	const playerService = inject(PlayerService)
+	const tokenService = inject(TokenService)
 
-	return httpClient.get<Player>('authentication/check-token').pipe(
-		filter(Boolean),
-		tap((player) => (playerService.setPlayer = player)),
-	)
+	const accessToken = tokenService.getAccessToken()
+	const response = await fetch(`${API_URL}/authentication/check-token`, { headers: { Authorization: `Bearer ${accessToken}` } })
+	if (response.ok) {
+		playerService.setPlayer = (await response.json()) as Player
+	} else {
+		tokenService.clearTokens()
+	}
 }

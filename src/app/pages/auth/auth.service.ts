@@ -4,6 +4,7 @@ import { RegisterRequest } from './register/types/register.type'
 import { LoginRequest, LoginResponse } from './login/types/login.type'
 import { TokenService } from '../../shared/services/token.service'
 import { Router } from '@angular/router'
+import { Player } from '../../shared/models/player.model'
 
 @Injectable({
 	providedIn: 'root',
@@ -26,5 +27,9 @@ export class AuthService {
 	async logOut() {
 		this.tokenService.clearTokens()
 		await this.router.navigateByUrl('auth/login')
+	}
+
+	checkToken() {
+		return this.httpClient.get<Player>('authentication/check-token')
 	}
 }

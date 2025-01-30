@@ -7,7 +7,8 @@ import { Router, RouterLink } from '@angular/router'
 import { LoginRequest } from './types/login.type'
 import { TokenService } from '../../../shared/services/token.service'
 import { AuthService } from '../auth.service'
-import { finalize } from 'rxjs'
+import { finalize, switchMap, tap } from 'rxjs'
+import { PlayerService } from '../../../shared/services/player.service'
 
 @Component({
 	selector: 'app-login',
@@ -27,6 +28,7 @@ export class LoginComponent {
 		private readonly authService: AuthService,
 		private readonly router: Router,
 		private readonly tokenService: TokenService,
+		private readonly playerService: PlayerService,
 	) {}
 
 	get formControls() {
@@ -43,10 +45,14 @@ export class LoginComponent {
 
 			this.authService
 				.login(loginRequest)
-				.pipe(finalize(() => this.loggingIn.set(false)))
+				.pipe(
+					finalize(() => this.loggingIn.set(false)),
+					tap((loginResponse) => this.tokenService.storeTokens(loginResponse)),
+					switchMap(() => this.authService.checkToken()),
+				)
 				.subscribe({
-					next: async (loginResponse) => {
-						this.tokenService.storeTokens(loginResponse)
+					next: async (player) => {
+						this.playerService.setPlayer = player
 						await this.router.navigateByUrl('home')
 					},
 				})

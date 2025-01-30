@@ -1,0 +1,62 @@
+<form class="w-full h-full py-6 md:py-8 md:px-12" [formGroup]="createMultiplayerGameFormGroup" (ngSubmit)="createMultiplayerGameFormSubmit()">
+	<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-6">
+		<div class="w-full flex justify-between items-center">
+			<p class="text-font-primary text-lg md:text-2xl font-normal">Create Game Room</p>
+			<fa-icon
+				[icon]="icons.faTimesCircle"
+				class="text-my-glass text-2xl md:w-10 md:h-10 hover:text-my-burgundy cursor-pointer flex justify-center items-center"
+				matTooltip="Leave game"
+				(click)="exit()" />
+		</div>
+		<div class="w-full flex gap-4 md:py-4">
+			<div class="w-full flex flex-col justify-start gap-2 md:gap-4">
+				<p class="text-font-primary text-lg font-light">Room Name</p>
+				<app-text-field placeholder="Game Room Name" type="text" [control]="formControls.name" />
+				<p class="text-font-primary text-lg font-light">Emails to Invite</p>
+				@for (emailControl of emailsFormArray.controls; track emailControl; let index = $index) {
+					<span class="w-full flex gap-3">
+						<app-text-field type="email" autoComplete="new-email" placeholder="Email" [control]="emailControl" class="w-full" />
+						@if (index > 0) {
+							<fa-icon
+								[icon]="icons.faTimesCircle"
+								class="text-my-glass text-2xl md:w-10 md:h-10 hover:text-my-burgundy cursor-pointer flex justify-center items-center"
+								matTooltip="Remove email"
+								(click)="removeEmailField(index)" />
+						}
+					</span>
+				}
+				<app-button text="Add" (click)="addNewEmailField()" [disabled]="emailsFormArray.controls.length >= MAXIMUM_NUMBER_OF_INVITE_EMAILS" />
+			</div>
+			<div class="flex flex-col gap-2 w-full md:flex-grow h-full">
+				<p class="text-font-primary text-lg font-light">Email Content</p>
+				<span class="w-full flex flex-col gap-3">
+					<textarea
+						class="w-full bg-gray-100 backdrop-blur-md rounded-lg py-2 px-4 text-black placeholder:text-font-secondary"
+						placeholder="Enter the content of the invitation email to be sent"
+						inputMode="text"
+						formControlName="invitationText"
+						rows="5"></textarea>
+					@if (formControls.invitationText.errors?.['required']) {
+						<p class="text-red-700 normal-case first-letter:uppercase font-light text-xs md:text-sm">Field is required.</p>
+					}
+				</span>
+
+				<p class="text-font-primary text-lg font-light">Game Date & Time</p>
+				<div class="flex justify-start items-center gap-2 md:gap:4">
+					<input
+						type="datetime-local"
+						formControlName="gameDateAndTime"
+						class="bg-gray-100 backdrop-blur-md py-2 px-3 md:py-3 md:px-4 rounded-[6px] md:rounded-lg font-normal text-black text-sm md:text-[16px] placeholder:text-font-secondary placeholder:font-light outline-none disabled:text-black" />
+					<select
+						class="w-full bg-gray-100 backdrop-blur-md py-2 px-3 md:py-3 md:px-4 rounded-[6px] md:rounded-lg font-normal text-black text-sm md:text-[16px] placeholder:text-font-secondary placeholder:font-light outline-none disabled:text-black"
+						formControlName="timezone">
+						@for (timezone of timezoneMap | keyvalue; track timezone.key) {
+							<option [value]="timezone.key">{{ timezone.value.name }}: {{ timezone.value.offset }}</option>
+						}
+					</select>
+				</div>
+				<app-button text="Create Room" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="submit" [loading]="isCreatingGame()" />
+			</div>
+		</div>
+	</div>
+</form>

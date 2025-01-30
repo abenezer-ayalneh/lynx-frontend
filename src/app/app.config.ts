@@ -13,8 +13,8 @@ export const appConfig: ApplicationConfig = {
 	providers: [
 		provideZoneChangeDetection({ eventCoalescing: true }),
 		provideRouter(routes),
+		provideAppInitializer(playerProvider),
 		provideHttpClient(withInterceptors([baseUrlInterceptor, accessTokenInterceptor, httpErrorsInterceptor])),
 		provideAnimationsAsync(),
-		provideAppInitializer(playerProvider),
 	],
 }

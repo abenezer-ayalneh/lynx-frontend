@@ -17,7 +17,9 @@
 					{{ player()?.score ?? 0 }}
 				</span>
 			</p>
-			<p class="font-semibold text-sm lg:text-lg text-font-primary p-2 cursor-pointer hover:bg-my-glass hover:rounded-sm" (click)="logout()">Logout</p>
+			<p class="font-semibold text-sm lg:text-lg text-font-primary p-2 cursor-pointer hover:bg-my-glass hover:rounded-sm" (click)="logout()" (keyup)="logout()" role="button" tabindex="0">
+				Logout
+			</p>
 		</span>
 	</div>
 </div>

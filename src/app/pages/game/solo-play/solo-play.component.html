@@ -32,7 +32,11 @@
 									<app-text-field [control]="soloPlayFormGroup.controls.guess" placeholder="Type your guess here..." />
 								</span>
 								<fa-icon [icon]="icons.faPaperPlane" class="text-my-orange cursor-pointer text-xl" (click)="submitGuess()" />
-								<fa-icon [icon]="icons.faTimesCircle" class="text-red-700 cursor-pointer absolute right-0 text-xl" matTooltip="Leave game" (click)="exitSoloPlay()" />
+								<fa-icon
+									[icon]="icons.faTimesCircle"
+									class="text-my-glass text-2xl md:w-10 md:h-10 hover:text-my-burgundy cursor-pointer flex justify-center items-center"
+									matTooltip="Leave game"
+									(click)="exitSoloPlay()" />
 							</div>
 						</div>
 					}
@@ -40,7 +44,7 @@
 			}
 		</div>
 	} @else {
-		<div class="h-screen w-full flex justify-center items-center relative">
+		<div class="h-full w-full flex justify-center items-center relative">
 			<app-loading />
 		</div>
 	}

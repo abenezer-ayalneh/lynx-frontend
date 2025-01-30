@@ -12,25 +12,31 @@ export const httpErrorsInterceptor: HttpInterceptorFn = (req, next) => {
 	const router = inject(Router)
 
 	return next(req).pipe(
-		catchError((err: HttpErrorResponse) => {
-			const backendError = err.error as FilterResponseInterface
+		catchError((caughtError) => {
+			if (caughtError instanceof HttpErrorResponse) {
+				if (caughtError.error instanceof ProgressEvent && caughtError.error.type === 'error') {
+					snackbarService.showSnackbar('Error: Check your connection!')
+				} else if (caughtError.status === 401 && router.routerState.snapshot.url !== '/login') {
+					tokenService.clearTokens()
+					if (router.routerState.snapshot.url !== '/auth/login') {
+						window.location.assign('/auth/login')
+					}
+				} else {
+					const backendError = caughtError.error as FilterResponseInterface
 
-			if (typeof backendError.data === 'object' && typeof (backendError.data as Record<string, string>)['message'] === 'string') {
-				snackbarService.showSnackbar((backendError.data as Record<string, string>)['message'])
-			} else if (backendError.error) {
-				snackbarService.showSnackbar(backendError.error)
+					if (typeof backendError.data === 'object' && typeof (backendError.data as Record<string, string>)['message'] === 'string') {
+						snackbarService.showSnackbar((backendError.data as Record<string, string>)['message'])
+					} else if (backendError.error) {
+						snackbarService.showSnackbar(backendError.error)
+					} else {
+						snackbarService.showSnackbar('Unexpected error occurred. Please try again.')
+					}
+				}
 			} else {
 				snackbarService.showSnackbar('Unexpected error occurred. Please try again.')
 			}
 
-			if (err.status === 401) {
-				tokenService.clearTokens()
-				if (router.routerState.snapshot.url !== '/auth/login') {
-					window.location.assign('/authentication/sign-in')
-				}
-			}
-
-			return throwError(() => new Error(err.message))
+			return throwError(() => new Error(caughtError.message))
 		}),
 	)
 }

@@ -1,10 +1,11 @@
 import { Component, input } from '@angular/core'
 import { HighlightKeyPipe } from '../../highlight-key.pipe'
 import { Word } from '../../types/word.type'
+import { NgClass } from '@angular/common'
 
 @Component({
 	selector: 'app-round-result',
-	imports: [HighlightKeyPipe],
+	imports: [HighlightKeyPipe, NgClass],
 	templateUrl: './round-result.component.html',
 	styleUrl: './round-result.component.scss',
 })

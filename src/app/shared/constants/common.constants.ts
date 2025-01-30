@@ -1,0 +1,1 @@
+export const MAXIMUM_NUMBER_OF_INVITE_EMAILS = 8
