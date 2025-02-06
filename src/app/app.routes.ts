@@ -9,6 +9,7 @@ import { SoloPlayComponent } from './pages/game/solo-play/solo-play.component'
 import { MultiplayerComponent } from './pages/game/multiplayer/multiplayer.component'
 import { CreateMultiplayerGameComponent } from './pages/game/multiplayer/components/create-multiplayer-game/create-multiplayer-game.component'
 import { RsvpComponent } from './pages/rsvp/rsvp.component'
+import { LobbyComponent } from './pages/lobby/lobby.component'
 
 export const routes: Routes = [
 	{
@@ -32,6 +33,16 @@ export const routes: Routes = [
 			{
 				path: '',
 				component: RsvpComponent,
+			},
+		],
+	},
+	{
+		path: 'lobby',
+		component: AuthLayoutComponent,
+		children: [
+			{
+				path: '',
+				component: LobbyComponent,
 			},
 		],
 	},

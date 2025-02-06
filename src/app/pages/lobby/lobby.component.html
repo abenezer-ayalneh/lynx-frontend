@@ -1,0 +1,63 @@
+@if (loaded()) {
+	@if (error) {
+		<div class="h-full w-full">
+			<div class="w-full h-full py-6 md:py-8 md:px-12">
+				<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-2 md:gap-6">
+					<div class="w-full h-full flex flex-col justify-start items-start gap-4 py-4 overflow-y-scroll">
+						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">Error!</p>
+						<p class="w-full text-font-primary text-sm md:text-lg font-light">{{ error }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	} @else {
+		<div class="h-full w-full">
+			<div class="w-full h-full py-6 md:py-8 md:px-12">
+				<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-2 md:gap-6">
+					<div class="w-full h-full flex flex-col justify-center items-start gap-4 py-4 overflow-y-scroll">
+						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">Lynx</p>
+						<p class="w-full text-font-primary text-sm md:text-lg font-light text-center">Are you ready?!</p>
+
+						@if (countdownEnded()) {
+							<p class="w-full text-font-primary text-xl text-center md:text-2xl animate-bounce">Waiting for the game owner to start the game</p>
+						} @else {
+							<p class="w-full text-font-primary text-lg text-center md:text-2xl">The game will start in:</p>
+							<div class="w-full flex justify-center items-center">
+								<div class="grid auto-cols-max grid-flow-col gap-5 text-center text-font-primary">
+									<div class="flex flex-col">
+										<span class="countdown font-mono text-5xl">
+											<span [style]="{ '--value': days() }"></span>
+										</span>
+										Days
+									</div>
+									<div class="flex flex-col">
+										<span class="countdown font-mono text-5xl">
+											<span [style]="{ '--value': hours() }"></span>
+										</span>
+										Hours
+									</div>
+									<div class="flex flex-col">
+										<span class="countdown font-mono text-5xl">
+											<span [style]="{ '--value': minutes() }"></span>
+										</span>
+										Min
+									</div>
+									<div class="flex flex-col">
+										<span class="countdown font-mono text-5xl">
+											<span [style]="{ '--value': seconds() }"></span>
+										</span>
+										Seconds
+									</div>
+								</div>
+							</div>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+} @else {
+	<div class="h-full w-full flex justify-center items-center relative">
+		<app-loading />
+	</div>
+}
