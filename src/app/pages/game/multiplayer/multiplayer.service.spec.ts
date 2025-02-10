@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing'
 
-import { SocketIoService } from './socket-io.service'
+import { MultiplayerService } from './multiplayer.service'
 
-describe('SocketIoService', () => {
-	let service: SocketIoService
+describe('MultiplayerService', () => {
+	let service: MultiplayerService
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({})
-		service = TestBed.inject(SocketIoService)
+		service = TestBed.inject(MultiplayerService)
 	})
 
 	it('should be created', () => {

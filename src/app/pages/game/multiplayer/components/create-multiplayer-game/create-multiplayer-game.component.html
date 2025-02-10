@@ -4,14 +4,14 @@
 			<p class="text-font-primary text-lg md:text-2xl font-normal">Create Game Room</p>
 			<fa-icon
 				[icon]="icons.faTimesCircle"
-				class="text-my-glass text-2xl md:w-10 md:h-10 hover:text-my-burgundy cursor-pointer flex justify-center items-center"
+				class="text-my-glass text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center"
 				matTooltip="Leave game"
 				(click)="exit()" />
 		</div>
 		<div class="w-full flex gap-4 md:py-4">
 			<div class="w-full flex flex-col justify-start gap-2 md:gap-4">
-				<p class="text-font-primary text-lg font-light">Room Name</p>
-				<app-text-field placeholder="Game Room Name" type="text" [control]="formControls.name" />
+				<!--				<p class="text-font-primary text-lg font-light">Room Name</p>-->
+				<!--				<app-text-field placeholder="Game Room Name" type="text" [control]="formControls.name" />-->
 				<p class="text-font-primary text-lg font-light">Emails to Invite</p>
 				@for (emailControl of emailsFormArray.controls; track emailControl; let index = $index) {
 					<span class="w-full flex gap-3">
@@ -19,7 +19,7 @@
 						@if (index > 0) {
 							<fa-icon
 								[icon]="icons.faTimesCircle"
-								class="text-my-glass text-2xl md:w-10 md:h-10 hover:text-my-burgundy cursor-pointer flex justify-center items-center"
+								class="text-my-glass text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center"
 								matTooltip="Remove email"
 								(click)="removeEmailField(index)" />
 						}
@@ -41,7 +41,12 @@
 					}
 				</span>
 
-				<p class="text-font-primary text-lg font-light">Game Date & Time</p>
+				<p class="text-font-primary text-lg font-light">
+					Game Date & Time&nbsp;
+					@if (localDateAndTime()) {
+						(Local Time: {{ localDateAndTime() }})
+					}
+				</p>
 				<div class="flex justify-start items-center gap-2 md:gap:4">
 					<input
 						type="datetime-local"
@@ -50,13 +55,27 @@
 					<select
 						class="w-full bg-gray-100 backdrop-blur-md py-2 px-3 md:py-3 md:px-4 rounded-[6px] md:rounded-lg font-normal text-black text-sm md:text-[16px] placeholder:text-font-secondary placeholder:font-light outline-none disabled:text-black"
 						formControlName="timezone">
+						<option value="" hidden>Select Timezone</option>
 						@for (timezone of timezoneMap | keyvalue; track timezone.key) {
 							<option [value]="timezone.key">{{ timezone.value.name }}: {{ timezone.value.offset }}</option>
 						}
 					</select>
 				</div>
-				<app-button text="Create Room" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="submit" [loading]="isCreatingGame()" />
+
+				<app-button text="Create Room" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="submit" [disabled]="createMultiplayerGameFormGroup.invalid" [loading]="isCreatingGame()" />
 			</div>
 		</div>
 	</div>
 </form>
+
+<dialog #gameCreatedModal class="modal">
+	<div class="modal-box bg-[#0C740A50] backdrop-blur-md text-font-primary">
+		<h3 class="font-bold text-lg">Success</h3>
+		<p class="py-4">Game creation was a success. You will receive an email shortly.</p>
+		<div class="modal-action">
+			<form method="dialog">
+				<button class="btn" type="button" (click)="exit()">Close</button>
+			</form>
+		</div>
+	</div>
+</dialog>
