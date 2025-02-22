@@ -15,6 +15,8 @@ import { MatDialog } from '@angular/material/dialog'
 export class GameEndComponent {
 	totalScore = input.required<number>()
 
+	shouldShowRestartGameButton = input<boolean>(true)
+
 	playNewGameClicked = output()
 
 	icons = { faTimesCircle }

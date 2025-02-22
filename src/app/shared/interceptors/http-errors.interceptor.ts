@@ -16,7 +16,7 @@ export const httpErrorsInterceptor: HttpInterceptorFn = (req, next) => {
 			if (caughtError instanceof HttpErrorResponse) {
 				if (caughtError.error instanceof ProgressEvent && caughtError.error.type === 'error') {
 					snackbarService.showSnackbar('Error: Check your connection!')
-				} else if (caughtError.status === 401 && router.routerState.snapshot.url !== '/login') {
+				} else if (caughtError.status === 401) {
 					tokenService.clearTokens()
 					if (router.routerState.snapshot.url !== '/auth/login') {
 						window.location.assign('/auth/login')

@@ -17,9 +17,17 @@
 					<div class="w-full h-full flex flex-col justify-center items-start gap-4 py-4 overflow-y-scroll">
 						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">Lynx</p>
 						<p class="w-full text-font-primary text-sm md:text-lg font-light text-center">Are you ready?!</p>
+						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">Players in the Lobby</p>
+						@for (name of playerNames(); track name) {
+							<p class="w-full text-font-primary text-sm md:text-lg font-light text-center">{{ name }}</p>
+						}
 
 						@if (countdownEnded()) {
-							<p class="w-full text-font-primary text-xl text-center md:text-2xl animate-bounce">Waiting for the game owner to start the game</p>
+							@if (this.isGameOwner) {
+								<app-button text="Start Game" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="button" (click)="startGame()" />
+							} @else {
+								<p class="w-full text-font-primary text-xl text-center md:text-2xl animate-bounce">Waiting for the game owner to start the game</p>
+							}
 						} @else {
 							<p class="w-full text-font-primary text-lg text-center md:text-2xl">The game will start in:</p>
 							<div class="w-full flex justify-center items-center">
@@ -61,3 +69,14 @@
 		<app-loading />
 	</div>
 }
+
+<dialog #usernameModal class="modal">
+	<form class="modal-box bg-my-glass backdrop-blur-md text-font-primary" method="dialog" [formGroup]="usernameFormGroup" (ngSubmit)="setUsernameInformation()">
+		<h3 class="font-bold text-lg">Guest Mode</h3>
+		<p class="py-4">Please put your username to be used in the game:</p>
+		<app-text-field [control]="usernameFormGroup.controls.username" placeholder="Type your guess here..." />
+		<div class="modal-action">
+			<button class="btn" type="submit">Ok</button>
+		</div>
+	</form>
+</dialog>

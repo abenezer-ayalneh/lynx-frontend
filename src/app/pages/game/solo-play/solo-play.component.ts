@@ -86,7 +86,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 		)
 
 		this.subscriptions.add(
-			this.colyseusService.soloRoomState.pipe(filter((state) => state?.gameState === 'GAME_STARTED')).subscribe({
+			this.colyseusService.soloRoomState$.pipe(filter((state) => state?.gameState === 'GAME_STARTED')).subscribe({
 				next: () => {
 					this.focusOnGuessInput()
 				},
@@ -104,8 +104,8 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 				gameType: game.type,
 			})
 			.then((soloPlayRoomStateRoom: Room<SoloPlayRoomState>) => {
-				this.colyseusService.setRoom(soloPlayRoomStateRoom)
-				soloPlayRoomStateRoom.onStateChange((state) => this.colyseusService.soloRoomState.next(state))
+				this.colyseusService.setRoom = soloPlayRoomStateRoom
+				soloPlayRoomStateRoom.onStateChange((state) => this.colyseusService.soloRoomState$.next(state))
 				this.loaded.set(true)
 			})
 			.catch(() => this.hasError.set(true))

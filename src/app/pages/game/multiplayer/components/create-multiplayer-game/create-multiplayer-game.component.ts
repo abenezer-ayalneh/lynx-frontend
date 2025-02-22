@@ -6,7 +6,7 @@ import { Router } from '@angular/router'
 import { TextFieldComponent } from '../../../../../shared/components/text-field/text-field.component'
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { ButtonComponent } from '../../../../../shared/components/button/button.component'
-import { format } from 'date-fns'
+import { addMinutes, format } from 'date-fns'
 import { MAXIMUM_NUMBER_OF_INVITE_EMAILS } from '../../../../../shared/constants/common.constants'
 import { KeyValuePipe } from '@angular/common'
 import { TIMEZONES } from '../../../../../shared/constants/timezones.constants'
@@ -23,13 +23,15 @@ import { TZDateMini } from '@date-fns/tz'
 export class CreateMultiplayerGameComponent implements OnInit {
 	createMultiplayerGameFormGroup = new FormGroup({
 		// name: new FormControl<string>('', { validators: [Validators.required] }),
-		emails: new FormArray([new FormControl<string>('')], { validators: [Validators.required, Validators.email] }),
+		emails: new FormArray([new FormControl<string>('abene42@gmail.com')], { validators: [Validators.required, Validators.email] }),
 		invitationText: new FormControl(
 			"Hey everyone, feeling the itch to play some Lynx together?! I'm inviting you to this game room to play. Anyone up for some laughs (and maybe some friendly competition)?  Let me know if you're in!",
 			{ validators: [Validators.required] },
 		),
-		gameDateAndTime: new FormControl<string>('', { validators: [Validators.required] }),
-		timezone: new FormControl<string>('', { validators: [Validators.required] }),
+		// TODO remove the default value
+		gameDateAndTime: new FormControl<string>(format(addMinutes(new Date(), 1), "yyyy-MM-dd'T'HH:mm"), { validators: [Validators.required] }),
+		// TODO remove the default value
+		timezone: new FormControl<string>('Africa/Addis_Ababa', { validators: [Validators.required] }),
 	})
 
 	timezoneMap = TIMEZONES
@@ -37,6 +39,8 @@ export class CreateMultiplayerGameComponent implements OnInit {
 	isCreatingGame = signal<boolean>(false)
 
 	localDateAndTime = signal<string | null>(null)
+
+	invitationLink = signal<string>('#')
 
 	icons = { faTimesCircle }
 
@@ -70,7 +74,7 @@ export class CreateMultiplayerGameComponent implements OnInit {
 	}
 
 	async exit() {
-		await this.router.navigateByUrl('/')
+		await this.router.navigateByUrl('home')
 	}
 
 	createMultiplayerGameFormSubmit() {
@@ -85,8 +89,11 @@ export class CreateMultiplayerGameComponent implements OnInit {
 				})
 				.pipe(finalize(() => this.isCreatingGame.set(false)))
 				.subscribe({
+					next: (response) => {
+						this.invitationLink.set(response.link)
+					},
 					complete: () => {
-						this.gameCreatedModal.nativeElement.showModal()
+						// this.gameCreatedModal.nativeElement.showModal()
 					},
 				})
 		}

@@ -19,6 +19,6 @@ export class CloseGameDialogComponent {
 
 	async closeGame() {
 		this.colyseusService.leaveRoom()
-		await this.router.navigateByUrl('/')
+		await this.router.navigateByUrl('home')
 	}
 }

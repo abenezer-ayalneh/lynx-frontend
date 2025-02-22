@@ -3,6 +3,7 @@ import { Client, Room } from 'colyseus.js'
 import { environment } from '../../../environments/environment'
 import { BehaviorSubject } from 'rxjs'
 import { SoloPlayRoomState } from '../../pages/game/solo-play/types/solo-room-state.type'
+import { MultiplayerRoomState } from '../types/multiplayer-room-state.type'
 
 const COLYSEUS_URL = environment.colyseusUrl
 
@@ -10,11 +11,13 @@ const COLYSEUS_URL = environment.colyseusUrl
 	providedIn: 'root',
 })
 export class ColyseusService {
-	soloRoomState = new BehaviorSubject<SoloPlayRoomState | null>(null)
+	soloRoomState$ = new BehaviorSubject<SoloPlayRoomState | null>(null)
+
+	multiPlayerRoomState$ = new BehaviorSubject<MultiplayerRoomState | null>(null)
 
 	private readonly client: Client
 
-	room: Room | null = null
+	private room: Room | null = null
 
 	constructor() {
 		this.client = new Client(COLYSEUS_URL)
@@ -28,7 +31,7 @@ export class ColyseusService {
 		return this.room
 	}
 
-	setRoom(room: Room | null) {
+	set setRoom(room: Room | null) {
 		this.room = room
 	}
 

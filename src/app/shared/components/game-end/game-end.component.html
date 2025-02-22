@@ -11,8 +11,10 @@
 			<span class="text-my-orange">{{ totalScore() }}</span>
 		</p>
 	</div>
-	<div class="flex flex-col justify-center items-center gap-4 md:gap-8">
-		<p class="font-normal text-font-primary text-xl md:text-3xl text-center">Want to play again?</p>
-		<app-button text="Play New Game" type="button" buttonType="button" (click)="playNewGame()" />
-	</div>
+	@if (shouldShowRestartGameButton()) {
+		<div class="flex flex-col justify-center items-center gap-4 md:gap-8">
+			<p class="font-normal text-font-primary text-xl md:text-3xl text-center">Want to play again?</p>
+			<app-button text="Play New Game" type="button" buttonType="button" (click)="playNewGame()" />
+		</div>
+	}
 </div>

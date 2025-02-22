@@ -3,6 +3,7 @@ import { Word } from './word.type'
 
 export interface MultiplayerRoomState {
 	players: Player[]
+	gameId: number
 	minPlayersSatisfied: boolean
 	guessing: boolean
 	round: number
