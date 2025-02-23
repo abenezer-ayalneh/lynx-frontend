@@ -63,9 +63,6 @@
 				</div>
 
 				<app-button text="Create Room" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="submit" [disabled]="createMultiplayerGameFormGroup.invalid" [loading]="isCreatingGame()" />
-				<a [href]="invitationLink()" target="_blank" class="text-lg font-light mt-4">
-					{{ invitationLink() }}
-				</a>
 			</div>
 		</div>
 	</div>
