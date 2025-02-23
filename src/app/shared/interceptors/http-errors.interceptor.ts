@@ -18,6 +18,7 @@ export const httpErrorsInterceptor: HttpInterceptorFn = (req, next) => {
 					snackbarService.showSnackbar('Error: Check your connection!')
 				} else if (caughtError.status === 401) {
 					tokenService.clearTokens()
+					if (caughtError.error.data.message) snackbarService.showSnackbar(caughtError.error.data.message)
 					if (router.routerState.snapshot.url !== '/auth/login') {
 						window.location.assign('/auth/login')
 					}
