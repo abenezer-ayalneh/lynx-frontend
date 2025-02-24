@@ -23,7 +23,7 @@
 						}
 
 						@if (countdownEnded()) {
-							@if (this.isGameOwner) {
+							@if (this.isGameOwner()) {
 								<app-button text="Start Game" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="button" (click)="startGame()" />
 							} @else {
 								<p class="w-full text-font-primary text-xl text-center md:text-2xl animate-bounce">Waiting for the game owner to start the game</p>

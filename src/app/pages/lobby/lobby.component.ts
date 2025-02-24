@@ -46,7 +46,7 @@ export class LobbyComponent implements AfterViewInit {
 
 	error: string | null = null
 
-	isGameOwner = false
+	isGameOwner = signal<boolean>(false)
 
 	@ViewChild('usernameModal') usernameModal!: ElementRef
 
@@ -106,7 +106,7 @@ export class LobbyComponent implements AfterViewInit {
 					this.room = room
 					room.onStateChange.once((lobbyState) => {
 						this.playerNames.set([...lobbyState.playerNames.values()])
-						this.isGameOwner = lobbyState.ownerId === this.playerService.getPlayer.getValue()?.id
+						this.isGameOwner.set(lobbyState.ownerId === this.playerService.getPlayer.getValue()?.id)
 						startCountdown(new Date(lobbyState.startTime)).subscribe({
 							next: ({ days, hours, minutes, seconds }) => {
 								this.days.set(days)
