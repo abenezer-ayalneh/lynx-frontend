@@ -2,11 +2,7 @@
 	<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-6">
 		<div class="w-full flex justify-between items-center">
 			<p class="text-font-primary text-lg md:text-2xl font-normal">Create Game Room</p>
-			<fa-icon
-				[icon]="icons.faTimesCircle"
-				class="text-my-glass text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center"
-				matTooltip="Leave game"
-				(click)="exit()" />
+			<fa-icon [icon]="icons.faTimesCircle" class="text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center" matTooltip="Leave game" (click)="exit()" />
 		</div>
 		<div class="w-full flex gap-4 md:py-4">
 			<div class="w-full flex flex-col justify-start gap-2 md:gap-4">
@@ -19,7 +15,7 @@
 						@if (index > 0) {
 							<fa-icon
 								[icon]="icons.faTimesCircle"
-								class="text-my-glass text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center"
+								class="text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center"
 								matTooltip="Remove email"
 								(click)="removeEmailField(index)" />
 						}
