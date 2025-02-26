@@ -23,10 +23,9 @@ import { MultiplayerService } from '../../multiplayer.service'
 export class CreateMultiplayerGameComponent implements OnInit {
 	createMultiplayerGameFormGroup = new FormGroup({
 		emails: new FormArray([new FormControl<string>('', { validators: [Validators.required, Validators.email] })]),
-		invitationText: new FormControl(
-			"Hey everyone, feeling the itch to play some Lynx together?! I'm inviting you to this game room to play. Anyone up for some laughs (and maybe some friendly competition)?  Let me know if you're in!",
-			{ validators: [Validators.required] },
-		),
+		invitationText: new FormControl("Hey everyone, feeling the itch to play some Lynx together?! I'm inviting you to this game room to play. Let me know if you're in!", {
+			validators: [Validators.required],
+		}),
 		gameDateAndTime: new FormControl<string>('', { validators: [Validators.required] }),
 		timezone: new FormControl<string>('', { validators: [Validators.required] }),
 	})
