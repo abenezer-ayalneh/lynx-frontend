@@ -1,15 +1,14 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, signal } from '@angular/core'
+import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
 import { LoadingComponent } from '../../../shared/components/loading/loading.component'
 import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
 import { SoloPlayService } from './solo-play.service'
 import { GameType } from '../../../shared/types/game.type'
-import { filter, Subscription } from 'rxjs'
+import { Subscription } from 'rxjs'
 import { TokenService } from '../../../shared/services/token.service'
 import { ColyseusService } from '../../../shared/services/colyseus.service'
 import { SoloPlayRoomState } from './types/solo-room-state.type'
 import { Game } from '../../../shared/models/game.model'
 import { Room } from 'colyseus.js'
-import { AsyncPipe } from '@angular/common'
 import { GameStartComponent } from '../../../shared/components/game-start/game-start.component'
 import { RoundResultComponent } from '../../../shared/components/round-result/round-result.component'
 import { GameEndComponent } from '../../../shared/components/game-end/game-end.component'
@@ -30,7 +29,6 @@ import { CloseGameDialogComponent } from '../../../shared/components/close-game-
 	imports: [
 		LoadingComponent,
 		ErrorWhileLoadingComponent,
-		AsyncPipe,
 		GameStartComponent,
 		RoundResultComponent,
 		GameEndComponent,
@@ -44,12 +42,16 @@ import { CloseGameDialogComponent } from '../../../shared/components/close-game-
 	templateUrl: './solo-play.component.html',
 	styleUrl: './solo-play.component.scss',
 })
-export class SoloPlayComponent implements OnInit, OnDestroy {
+export class SoloPlayComponent implements OnInit, OnDestroy, AfterViewInit {
 	subscriptions = new Subscription()
+
+	state = signal<SoloPlayRoomState | null>(null)
 
 	loaded = signal<boolean>(false)
 
 	hasError = signal<boolean>(false)
+
+	guessField = viewChild(TextFieldComponent)
 
 	soloPlayFormGroup = new FormGroup({
 		guess: new FormControl(''),
@@ -58,7 +60,6 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 	icons = { faPaperPlane, faTimesCircle }
 
 	constructor(
-		private readonly element: ElementRef<HTMLInputElement>,
 		private readonly soloPlayService: SoloPlayService,
 		private readonly tokenService: TokenService,
 		private readonly matDialog: MatDialog,
@@ -67,10 +68,28 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.initSoloPlay()
+		this.focusOnGuessInput()
+	}
+
+	ngAfterViewInit() {
+		// Set the initial focus
+		this.focusOnGuessInput()
 	}
 
 	ngOnDestroy() {
 		this.subscriptions.unsubscribe()
+	}
+
+	@HostListener('window:keydown.enter', ['$event'])
+	submitGuess() {
+		const guess = this.soloPlayFormGroup.value.guess
+
+		if (guess) {
+			this.colyseusService.sendMessage<{ guess: string }>('guess', { guess })
+		}
+
+		this.soloPlayFormGroup.controls.guess.reset()
+		this.focusOnGuessInput()
 	}
 
 	initSoloPlay() {
@@ -81,14 +100,6 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 				},
 				error: () => {
 					this.hasError.set(true)
-				},
-			}),
-		)
-
-		this.subscriptions.add(
-			this.colyseusService.soloRoomState$.pipe(filter((state) => state?.gameState === 'GAME_STARTED')).subscribe({
-				next: () => {
-					this.focusOnGuessInput()
 				},
 			}),
 		)
@@ -105,7 +116,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 			})
 			.then((soloPlayRoomStateRoom: Room<SoloPlayRoomState>) => {
 				this.colyseusService.setRoom = soloPlayRoomStateRoom
-				soloPlayRoomStateRoom.onStateChange((state) => this.colyseusService.soloRoomState$.next(state))
+				soloPlayRoomStateRoom.onStateChange((state) => this.state.set(state))
 				this.loaded.set(true)
 			})
 			.catch(() => this.hasError.set(true))
@@ -123,23 +134,11 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 		return []
 	}
 
-	@HostListener('window:keydown.enter', ['$event'])
-	submitGuess() {
-		const guess = this.soloPlayFormGroup.value.guess
-
-		if (guess) {
-			this.colyseusService.sendMessage<{ guess: string }>('guess', { guess })
-		}
-
-		this.soloPlayFormGroup.controls.guess.reset()
-		this.focusOnGuessInput()
-	}
-
 	/**
 	 * Give the input field( the guess field) focus
 	 */
 	focusOnGuessInput() {
-		this.element.nativeElement.querySelector('input')?.focus()
+		this.guessField()?.focus()
 	}
 
 	/**

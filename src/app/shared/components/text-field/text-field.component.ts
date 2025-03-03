@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core'
+import { Component, ElementRef, input } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 
 @Component({
@@ -9,7 +9,16 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms'
 })
 export class TextFieldComponent {
 	control = input.required<FormControl>()
+
 	type = input<string>('text')
+
 	autoComplete = input<string>('')
+
 	placeholder = input<string>('')
+
+	constructor(private readonly element: ElementRef) {}
+
+	focus() {
+		this.element.nativeElement.focus()
+	}
 }

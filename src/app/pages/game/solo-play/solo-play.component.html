@@ -3,7 +3,7 @@
 } @else {
 	@if (loaded()) {
 		<div class="h-full w-full">
-			@if (colyseusService.soloRoomState$ | async; as state) {
+			@if (state(); as state) {
 				@switch (state.gameState) {
 					@case ('START_COUNTDOWN') {
 						<app-game-start [waitingCountdownTime]="state.waitingCountdownTime" />

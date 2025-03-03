@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core'
 import { Client, Room } from 'colyseus.js'
 import { environment } from '../../../environments/environment'
 import { BehaviorSubject } from 'rxjs'
-import { SoloPlayRoomState } from '../../pages/game/solo-play/types/solo-room-state.type'
 import { MultiplayerRoomState } from '../types/multiplayer-room-state.type'
 
 const COLYSEUS_URL = environment.colyseusUrl
@@ -11,8 +10,6 @@ const COLYSEUS_URL = environment.colyseusUrl
 	providedIn: 'root',
 })
 export class ColyseusService {
-	soloRoomState$ = new BehaviorSubject<SoloPlayRoomState | null>(null)
-
 	multiPlayerRoomState$ = new BehaviorSubject<MultiplayerRoomState | null>(null)
 
 	private readonly client: Client
