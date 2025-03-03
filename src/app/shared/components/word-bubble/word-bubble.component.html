@@ -1,6 +1,4 @@
-<span class="flex justify-center items-center h-[100px] w-[100px] md:h-[200px] md:w-[200px] lg:h-[250px] lg:w-[250px]">
-	<img [ngSrc]="'images/cue-word-balloon.svg'" alt="cue word floating balloon" width="300" height="300" priority />
-	<p class="absolute text-font-primary font-medium text-sm md:text-3xl lg:text-4xl text-center">
-		{{ word() }}
-	</p>
-</span>
+<div class="flex justify-center items-center w-fit h-fit relative text-wrap break-words overflow-hidden">
+	<img [src]="'images/cue-word-balloon.svg'" alt="cue word floating balloon" class="md:h-60 xl:h-72" />
+	<p class="absolute text-font-primary font-medium text-sm md:text-3xl xl:text-4xl text-center">{{ word() }}</p>
+</div>

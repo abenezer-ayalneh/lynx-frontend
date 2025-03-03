@@ -3,7 +3,8 @@
 	[autocomplete]="autoComplete()"
 	[formControl]="control()"
 	[type]="type()"
-	[placeholder]="placeholder()" />
+	[placeholder]="placeholder()"
+	[autofocus]="autoFocus" />
 
 @if (control().dirty && control().touched) {
 	@if (control().errors?.['required']) {

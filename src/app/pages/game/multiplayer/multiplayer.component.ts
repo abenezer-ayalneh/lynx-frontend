@@ -6,7 +6,7 @@ import { PlayerService } from '../../../shared/services/player.service'
 import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
 import { GameStartComponent } from '../../../shared/components/game-start/game-start.component'
 import { RoundResultComponent } from '../../../shared/components/round-result/round-result.component'
-import { AsyncPipe } from '@angular/common'
+import { AsyncPipe, NgClass } from '@angular/common'
 import { GameEndComponent } from '../../../shared/components/game-end/game-end.component'
 import { RoundComponent } from '../../../shared/components/round/round.component'
 import { CountdownComponent } from '../../../shared/components/countdown/countdown.component'
@@ -36,6 +36,7 @@ import { Word } from '../../../shared/types/word.type'
 		FaIconComponent,
 		MatTooltip,
 		LoadingComponent,
+		NgClass,
 	],
 	templateUrl: './multiplayer.component.html',
 	styleUrl: './multiplayer.component.scss',

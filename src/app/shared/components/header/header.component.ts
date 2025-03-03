@@ -1,13 +1,12 @@
 import { Component, signal } from '@angular/core'
 import { RouterLink } from '@angular/router'
-import { NgOptimizedImage } from '@angular/common'
 import { AuthService } from '../../../pages/auth/auth.service'
 import { Player } from '../../models/player.model'
 import { PlayerService } from '../../services/player.service'
 
 @Component({
 	selector: 'app-header',
-	imports: [RouterLink, NgOptimizedImage],
+	imports: [RouterLink],
 	templateUrl: './header.component.html',
 	styleUrl: './header.component.scss',
 })

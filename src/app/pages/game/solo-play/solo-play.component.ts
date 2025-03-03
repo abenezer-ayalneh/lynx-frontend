@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
+import { Component, effect, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
 import { LoadingComponent } from '../../../shared/components/loading/loading.component'
 import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
 import { SoloPlayService } from './solo-play.service'
@@ -23,6 +23,8 @@ import { faPaperPlane, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { MatTooltip } from '@angular/material/tooltip'
 import { MatDialog } from '@angular/material/dialog'
 import { CloseGameDialogComponent } from '../../../shared/components/close-game-dialog/close-game-dialog.component'
+import { NgClass } from '@angular/common'
+import { PageState } from '../../../shared/types/page-state.type'
 
 @Component({
 	selector: 'app-solo-play',
@@ -38,18 +40,17 @@ import { CloseGameDialogComponent } from '../../../shared/components/close-game-
 		TextFieldComponent,
 		FaIconComponent,
 		MatTooltip,
+		NgClass,
 	],
 	templateUrl: './solo-play.component.html',
 	styleUrl: './solo-play.component.scss',
 })
-export class SoloPlayComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SoloPlayComponent implements OnInit, OnDestroy {
 	subscriptions = new Subscription()
 
-	state = signal<SoloPlayRoomState | null>(null)
+	roomState = signal<SoloPlayRoomState | null>(null)
 
-	loaded = signal<boolean>(false)
-
-	hasError = signal<boolean>(false)
+	pageState = signal<PageState>(PageState.LOADED)
 
 	guessField = viewChild(TextFieldComponent)
 
@@ -59,20 +60,23 @@ export class SoloPlayComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	icons = { faPaperPlane, faTimesCircle }
 
+	protected readonly PageState = PageState
+
 	constructor(
 		private readonly soloPlayService: SoloPlayService,
 		private readonly tokenService: TokenService,
 		private readonly matDialog: MatDialog,
 		protected readonly colyseusService: ColyseusService,
-	) {}
+	) {
+		effect(() => {
+			if (this.roomState()?.gameState) {
+				this.focusOnGuessInput()
+			}
+		})
+	}
 
 	ngOnInit() {
 		this.initSoloPlay()
-		this.focusOnGuessInput()
-	}
-
-	ngAfterViewInit() {
-		// Set the initial focus
 		this.focusOnGuessInput()
 	}
 
@@ -98,9 +102,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy, AfterViewInit {
 				next: (game) => {
 					this.createColyseusGame(game)
 				},
-				error: () => {
-					this.hasError.set(true)
-				},
+				error: () => this.pageState.set(PageState.ERROR),
 			}),
 		)
 	}
@@ -116,10 +118,10 @@ export class SoloPlayComponent implements OnInit, OnDestroy, AfterViewInit {
 			})
 			.then((soloPlayRoomStateRoom: Room<SoloPlayRoomState>) => {
 				this.colyseusService.setRoom = soloPlayRoomStateRoom
-				soloPlayRoomStateRoom.onStateChange((state) => this.state.set(state))
-				this.loaded.set(true)
+				soloPlayRoomStateRoom.onStateChange((state) => this.roomState.set(state))
+				this.pageState.set(PageState.LOADED)
 			})
-			.catch(() => this.hasError.set(true))
+			.catch(() => this.pageState.set(PageState.ERROR))
 	}
 
 	/**

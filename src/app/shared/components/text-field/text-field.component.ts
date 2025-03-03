@@ -16,6 +16,8 @@ export class TextFieldComponent {
 
 	placeholder = input<string>('')
 
+	autoFocus = input<boolean>(false)
+
 	constructor(private readonly element: ElementRef) {}
 
 	focus() {
