@@ -12,10 +12,11 @@ import { TokenService } from '../../shared/services/token.service'
 import { AuthService } from '../auth/auth.service'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { TextFieldComponent } from '../../shared/components/text-field/text-field.component'
+import { ErrorWhileLoadingComponent } from '../../shared/components/error-while-loading/error-while-loading.component'
 
 @Component({
 	selector: 'app-lobby',
-	imports: [LoadingComponent, ButtonComponent, ReactiveFormsModule, TextFieldComponent],
+	imports: [LoadingComponent, ButtonComponent, ReactiveFormsModule, TextFieldComponent, ErrorWhileLoadingComponent],
 	templateUrl: './lobby.component.html',
 	styleUrl: './lobby.component.scss',
 })

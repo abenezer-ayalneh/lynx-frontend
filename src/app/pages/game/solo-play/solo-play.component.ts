@@ -25,6 +25,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { CloseGameDialogComponent } from '../../../shared/components/close-game-dialog/close-game-dialog.component'
 import { NgClass } from '@angular/common'
 import { PageState } from '../../../shared/types/page-state.type'
+import { GUESS, WRONG_GUESS } from '../../../shared/constants/colyseus-message.constant'
 
 @Component({
 	selector: 'app-solo-play',
@@ -71,13 +72,13 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 		effect(() => {
 			if (this.roomState()?.gameState) {
 				this.focusOnGuessInput()
+				this.inputFieldCleanStart()
 			}
 		})
 	}
 
 	ngOnInit() {
 		this.initSoloPlay()
-		this.focusOnGuessInput()
 	}
 
 	ngOnDestroy() {
@@ -89,11 +90,9 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 		const guess = this.soloPlayFormGroup.value.guess
 
 		if (guess) {
-			this.colyseusService.sendMessage<{ guess: string }>('guess', { guess })
+			this.soloPlayFormGroup.controls.guess.disable()
+			this.colyseusService.sendMessage<{ guess: string }>(GUESS, { guess })
 		}
-
-		this.soloPlayFormGroup.controls.guess.reset()
-		this.focusOnGuessInput()
 	}
 
 	initSoloPlay() {
@@ -118,6 +117,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 			})
 			.then((soloPlayRoomStateRoom: Room<SoloPlayRoomState>) => {
 				this.colyseusService.setRoom = soloPlayRoomStateRoom
+				this.subscribeToColyseusMessages(soloPlayRoomStateRoom)
 				soloPlayRoomStateRoom.onStateChange((state) => this.roomState.set(state))
 				this.pageState.set(PageState.LOADED)
 			})
@@ -143,12 +143,25 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 		this.guessField()?.focus()
 	}
 
+	inputFieldCleanStart() {
+		this.soloPlayFormGroup.controls.guess.enable()
+		this.soloPlayFormGroup.controls.guess.reset()
+		this.focusOnGuessInput()
+	}
+
 	/**
 	 * Exit the currently being played solo game
 	 */
 	exitSoloPlay() {
 		this.matDialog.open(CloseGameDialogComponent, {
 			width: '250px',
+		})
+	}
+
+	private subscribeToColyseusMessages(room: Room<SoloPlayRoomState>) {
+		room.onMessage(WRONG_GUESS, () => {
+			this.guessField()?.shake()
+			this.inputFieldCleanStart()
 		})
 	}
 }

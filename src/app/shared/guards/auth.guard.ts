@@ -14,7 +14,12 @@ export const authGuard: CanActivateFn = async () => {
 	const accessToken = tokenService.getAccessToken()
 	if (accessToken) {
 		if (!playerService.getPlayer.getValue()) {
-			playerService.setPlayer = await lastValueFrom(authService.checkToken())
+			try {
+				playerService.setPlayer = await lastValueFrom(authService.checkToken())
+			} catch (e) {
+				console.error(e)
+				return new RedirectCommand(router.parseUrl('/auth/login'), { skipLocationChange: true })
+			}
 		}
 
 		return true

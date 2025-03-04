@@ -1,64 +1,77 @@
 @if (loaded()) {
 	@if (error) {
-		<div class="h-full w-full">
-			<div class="w-full h-full py-6 md:py-8 md:px-12">
-				<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-2 md:gap-6">
-					<div class="w-full h-full flex flex-col justify-start items-start gap-4 py-4 overflow-y-scroll">
-						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">Error!</p>
-						<p class="w-full text-font-primary text-sm md:text-lg font-light">{{ error }}</p>
-					</div>
-				</div>
-			</div>
+		<div class="w-full h-full place-content-center">
+			<app-error-while-loading [subTitle]="error" />
 		</div>
 	} @else {
-		<div class="h-full w-full">
-			<div class="w-full h-full py-6 md:py-8 md:px-12">
-				<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-2 md:gap-6">
-					<div class="w-full h-full flex flex-col justify-center items-start gap-4 py-4 overflow-y-scroll">
-						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">Lynx</p>
-						<p class="w-full text-font-primary text-sm md:text-lg font-light text-center">Are you ready?!</p>
-						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">Players in the Lobby</p>
-						@for (name of playerNames(); track name) {
-							<p class="w-full text-font-primary text-sm md:text-lg font-light text-center">{{ name }}</p>
-						}
-
-						@if (countdownEnded()) {
-							@if (this.isGameOwner()) {
-								<app-button text="Start Game" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="button" (click)="startGame()" />
-							} @else {
-								<p class="w-full text-font-primary text-xl text-center md:text-2xl animate-bounce">Waiting for the game owner to start the game</p>
-							}
+		<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-2 md:gap-6">
+			<p class="w-full h-1/6 text-font-primary text-2xl md:text-4xl lg:text-6xl font-bold text-center">Lobby</p>
+			<div class="flex flex-col items-center md:flex-row gap-8 h-5/6 w-full">
+				<div class="w-full md:w-1/2 h-full place-content-start">
+					@if (countdownEnded()) {
+						@if (this.isGameOwner()) {
+							<app-button text="Start Game" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="button" (click)="startGame()" />
 						} @else {
-							<p class="w-full text-font-primary text-lg text-center md:text-2xl">The game will start in:</p>
-							<div class="w-full flex justify-center items-center">
-								<div class="grid auto-cols-max grid-flow-col gap-5 text-center text-font-primary">
-									<div class="flex flex-col">
-										<span class="countdown font-mono text-5xl">
-											<span [style]="{ '--value': days() }"></span>
-										</span>
-										Days
-									</div>
-									<div class="flex flex-col">
-										<span class="countdown font-mono text-5xl">
-											<span [style]="{ '--value': hours() }"></span>
-										</span>
-										Hours
-									</div>
-									<div class="flex flex-col">
-										<span class="countdown font-mono text-5xl">
-											<span [style]="{ '--value': minutes() }"></span>
-										</span>
-										Min
-									</div>
-									<div class="flex flex-col">
-										<span class="countdown font-mono text-5xl">
-											<span [style]="{ '--value': seconds() }"></span>
-										</span>
-										Seconds
-									</div>
+							<p class="w-full text-font-primary text-xl text-center md:text-2xl animate-bounce">Waiting for the game owner to start the game</p>
+						}
+					} @else {
+						<p class="w-full text-font-primary text-lg text-center md:text-2xl">Game start in:</p>
+						<div class="w-full flex justify-center items-center">
+							<div class="grid auto-cols-max grid-flow-col gap-5 text-center text-font-primary">
+								<div class="flex flex-col">
+									<span class="countdown font-mono text-5xl">
+										<span [style]="{ '--value': days() }"></span>
+									</span>
+									Days
+								</div>
+								<div class="flex flex-col">
+									<span class="countdown font-mono text-5xl">
+										<span [style]="{ '--value': hours() }"></span>
+									</span>
+									Hours
+								</div>
+								<div class="flex flex-col">
+									<span class="countdown font-mono text-5xl">
+										<span [style]="{ '--value': minutes() }"></span>
+									</span>
+									Min
+								</div>
+								<div class="flex flex-col">
+									<span class="countdown font-mono text-5xl">
+										<span [style]="{ '--value': seconds() }"></span>
+									</span>
+									Seconds
 								</div>
 							</div>
-						}
+						</div>
+					}
+
+					<p class="w-full text-font-primary mt-12 mb-4 text-lg md:text-3xl font-normal text-center">Players in the Lobby</p>
+					@for (name of playerNames(); track name; let index = $index) {
+						<p class="w-full text-my-orange py-2 text-sm md:text-2xl font-medium text-center">{{ index + 1 }}. {{ name }}</p>
+					}
+				</div>
+
+				<div class="w-full md:w-1/2 h-full place-content-start overflow-y-scroll">
+					<div class="w-full h-full flex flex-col justify-start items-start gap-4 py-4 overflow-y-scroll">
+						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">Lynx Game Rules</p>
+						<p class="w-full text-font-primary text-sm md:text-lg font-light">
+							Lorem ipsum dolor sit amet consectetur. In malesuada vivamus mattis consequat. Tortor sagittis pharetra hac enim cursus faucibus. In a convallis viverra sem eu est massa.
+							Pharetra id molestie feugiat donec in sapien imperdiet venenatis malesuada. Diam sit eget at orci tincidunt leo laoreet aenean. Quam quis sed facilisis eros nisi euismod
+							mattis est. Est nisl diam morbi adipiscing ut auctor consequat. Sit integer sed magna justo lacus posuere rhoncus.
+							<br />
+							Fringilla sit ultrices habitasse luctus amet nunc dignissim. Faucibus auctor fringilla id ut justo laoreet tortor sed lorem. Aliquam etiam ipsum elementum a et natoque
+							pellentesque aenean varius. Aliquam dolor egestas viverra lacus vivamus placerat non malesuada. Duis urna suspendisse sit arcu enim nunc molestie velit. Morbi erat amet
+							faucibus volutpat vulputate feugiat ultrices in. Erat tristique risus neque ut quis magna morbi. <br />
+							Quis blandit lectus fermentum potenti. Adipiscing diam pellentesque turpis proin egestas sapien gravida mauris. Habitant ipsum mi eget gravida elit scelerisque malesuada
+							morbi. Ipsum turpis venenatis turpis eu cursus iaculis fringilla sed. Consequat quisque iaculis aliquam scelerisque at vestibulum. Ut amet tincidunt proin urna etiam.
+							Rhoncus etiam faucibus ultrices diam habitant eleifend. <br />
+							Vel egestas nullam venenatis mollis viverra ut eget maecenas. Ut urna sed eu sit quis ipsum ultrices praesent sed. Aliquam eget accumsan potenti massa faucibus ultricies
+							eleifend etiam. Eu id dignissim sed pharetra morbi cursus. Est ultrices maecenas eget mi nunc sit commodo et. Volutpat interdum quam nisl volutpat aliquam dapibus ut
+							malesuada. Eu pellentesque diam laoreet faucibus integer ultricies vel ipsum dignissim. Morbi vestibulum sem semper et. Consequat posuere posuere egestas vestibulum
+							faucibus nec nisi eget. Dolor habitasse massa pharetra in. Auctor ipsum sed aliquam eget lacus. Libero volutpat urna adipiscing euismod quam. Quam rhoncus lobortis ornare
+							imperdiet urna diam. Lacus posuere venenatis vel tortor.
+						</p>
 					</div>
 				</div>
 			</div>

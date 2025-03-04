@@ -6,10 +6,11 @@ import { finalize, Subscription } from 'rxjs'
 import { LoadingComponent } from '../../shared/components/loading/loading.component'
 import { ScheduledGame } from '../../shared/types/scheduled-game.type'
 import { startCountdown } from '../../shared/utils/timer.util'
+import { ErrorWhileLoadingComponent } from '../../shared/components/error-while-loading/error-while-loading.component'
 
 @Component({
 	selector: 'app-rsvp',
-	imports: [LoadingComponent],
+	imports: [LoadingComponent, ErrorWhileLoadingComponent],
 	templateUrl: './rsvp.component.html',
 	styleUrl: './rsvp.component.scss',
 })

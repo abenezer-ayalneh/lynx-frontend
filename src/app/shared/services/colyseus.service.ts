@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Client, Room } from 'colyseus.js'
 import { environment } from '../../../environments/environment'
-import { BehaviorSubject } from 'rxjs'
-import { MultiplayerRoomState } from '../types/multiplayer-room-state.type'
 
 const COLYSEUS_URL = environment.colyseusUrl
 
@@ -10,26 +8,24 @@ const COLYSEUS_URL = environment.colyseusUrl
 	providedIn: 'root',
 })
 export class ColyseusService {
-	multiPlayerRoomState$ = new BehaviorSubject<MultiplayerRoomState | null>(null)
+	#client: Client
 
-	private readonly client: Client
-
-	private room: Room | null = null
+	#room: Room | null = null
 
 	constructor() {
-		this.client = new Client(COLYSEUS_URL)
+		this.#client = new Client(COLYSEUS_URL)
 	}
 
 	get getClient() {
-		return this.client
+		return this.#client
 	}
 
-	get getRoom() {
-		return this.room
+	get room() {
+		return this.#room
 	}
 
 	set setRoom(room: Room | null) {
-		this.room = room
+		this.#room = room
 	}
 
 	/**

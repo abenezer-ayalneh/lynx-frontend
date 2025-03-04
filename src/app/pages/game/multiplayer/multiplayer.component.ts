@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, signal } from '@angular/core'
+import { Component, effect, ElementRef, HostListener, OnInit, signal, viewChild } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { ColyseusService } from '../../../shared/services/colyseus.service'
 import { MultiplayerRoomState } from '../../../shared/types/multiplayer-room-state.type'
@@ -6,7 +6,7 @@ import { PlayerService } from '../../../shared/services/player.service'
 import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
 import { GameStartComponent } from '../../../shared/components/game-start/game-start.component'
 import { RoundResultComponent } from '../../../shared/components/round-result/round-result.component'
-import { AsyncPipe, NgClass } from '@angular/common'
+import { NgClass } from '@angular/common'
 import { GameEndComponent } from '../../../shared/components/game-end/game-end.component'
 import { RoundComponent } from '../../../shared/components/round/round.component'
 import { CountdownComponent } from '../../../shared/components/countdown/countdown.component'
@@ -20,6 +20,9 @@ import { CloseGameDialogComponent } from '../../../shared/components/close-game-
 import { MatDialog } from '@angular/material/dialog'
 import { FormControl, FormGroup } from '@angular/forms'
 import { Word } from '../../../shared/types/word.type'
+import { PageState } from '../../../shared/types/page-state.type'
+import { Room } from 'colyseus.js'
+import { WRONG_GUESS } from '../../../shared/constants/colyseus-message.constant'
 
 @Component({
 	selector: 'app-multiplayer',
@@ -27,7 +30,6 @@ import { Word } from '../../../shared/types/word.type'
 		ErrorWhileLoadingComponent,
 		GameStartComponent,
 		RoundResultComponent,
-		AsyncPipe,
 		GameEndComponent,
 		RoundComponent,
 		CountdownComponent,
@@ -42,7 +44,11 @@ import { Word } from '../../../shared/types/word.type'
 	styleUrl: './multiplayer.component.scss',
 })
 export class MultiplayerComponent implements OnInit {
-	loaded = signal<boolean>(false)
+	roomState = signal<MultiplayerRoomState | null>(null)
+
+	pageState = signal<PageState>(PageState.LOADED)
+
+	guessField = viewChild(TextFieldComponent)
 
 	multiplayerPlayFormGroup = new FormGroup({
 		guess: new FormControl(''),
@@ -52,13 +58,22 @@ export class MultiplayerComponent implements OnInit {
 
 	icons = { faPaperPlane, faTimesCircle }
 
+	protected readonly PageState = PageState
+
 	constructor(
 		private readonly element: ElementRef<HTMLInputElement>,
 		private readonly activatedRoute: ActivatedRoute,
 		private readonly playerService: PlayerService,
 		private readonly matDialog: MatDialog,
 		protected readonly colyseusService: ColyseusService,
-	) {}
+	) {
+		effect(() => {
+			if (this.roomState()?.gameState) {
+				this.focusOnGuessInput()
+				this.inputFieldCleanStart()
+			}
+		})
+	}
 
 	ngOnInit() {
 		this.joinMultiplayerGame()
@@ -74,18 +89,19 @@ export class MultiplayerComponent implements OnInit {
 				.joinById<MultiplayerRoomState>(roomId)
 				.then((room) => {
 					this.colyseusService.setRoom = room
+					this.subscribeToColyseusMessages(room)
 
-					room.onStateChange((state) => this.colyseusService.multiPlayerRoomState$.next(state))
-					this.loaded.set(true)
+					room.onStateChange((state) => this.roomState.set(state))
+					this.pageState.set(PageState.LOADED)
 				})
 				.catch((e) => {
 					this.error = 'Error joining room'
-					this.loaded.set(true)
+					this.pageState.set(PageState.ERROR)
 					console.error(e)
 				})
 		} else {
 			this.error = 'No room id provided'
-			this.loaded.set(true)
+			this.pageState.set(PageState.LOADED)
 		}
 	}
 
@@ -106,15 +122,15 @@ export class MultiplayerComponent implements OnInit {
 	 * @param winnerSessionId
 	 */
 	isPlayerTheWinner(winnerSessionId: string) {
-		return this.colyseusService.getRoom?.sessionId === winnerSessionId
+		return this.colyseusService.room?.sessionId === winnerSessionId
 	}
 
 	getPlayerScore(scores: Map<string, number>) {
-		return scores.get(this.colyseusService.getRoom?.sessionId ?? '') ?? 0
+		return scores.get(this.colyseusService.room?.sessionId ?? '') ?? 0
 	}
 
 	getPlayerTotalScore(totalScores: Map<string, number>) {
-		return totalScores.get(this.colyseusService.getRoom?.sessionId ?? '') ?? 0
+		return totalScores.get(this.colyseusService.room?.sessionId ?? '') ?? 0
 	}
 
 	/**
@@ -125,18 +141,16 @@ export class MultiplayerComponent implements OnInit {
 		const guess = this.multiplayerPlayFormGroup.value.guess
 
 		if (guess) {
+			this.multiplayerPlayFormGroup.controls.guess.disable()
 			this.colyseusService.sendMessage<{ guess: string }>('guess', { guess })
 		}
-
-		this.multiplayerPlayFormGroup.controls.guess.reset()
-		this.focusOnGuessInput()
 	}
 
 	/**
 	 * Give the input field( the guess field) focus
 	 */
 	focusOnGuessInput() {
-		this.element.nativeElement.querySelector('input')?.focus()
+		this.guessField()?.focus()
 	}
 
 	/**
@@ -149,10 +163,23 @@ export class MultiplayerComponent implements OnInit {
 	}
 
 	startNewGame() {
-		this.colyseusService.getRoom?.send('start-new-game')
+		this.colyseusService.room?.send('start-new-game')
 	}
 
 	isPlayerGameOwner() {
-		return 1 === this.playerService.getPlayer.getValue()?.id
+		return this.roomState()?.ownerId === this.playerService.getPlayer.getValue()?.id
+	}
+
+	inputFieldCleanStart() {
+		this.multiplayerPlayFormGroup.controls.guess.enable()
+		this.multiplayerPlayFormGroup.controls.guess.reset()
+		this.focusOnGuessInput()
+	}
+
+	private subscribeToColyseusMessages(room: Room<MultiplayerRoomState>) {
+		room.onMessage(WRONG_GUESS, () => {
+			this.guessField()?.shake()
+			this.inputFieldCleanStart()
+		})
 	}
 }
