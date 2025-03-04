@@ -149,6 +149,7 @@ export class LobbyComponent implements AfterViewInit {
 		if (this.usernameFormGroup.valid) {
 			this.userInformation.set({ name: this.usernameFormGroup.value.username! })
 			this.loaded.set(true)
+			this.usernameModal?.nativeElement.close()
 		}
 	}
 }

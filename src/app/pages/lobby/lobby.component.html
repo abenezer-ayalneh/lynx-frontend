@@ -54,23 +54,15 @@
 
 				<div class="w-full md:w-1/2 h-full place-content-start overflow-y-scroll">
 					<div class="w-full h-full flex flex-col justify-start items-start gap-4 py-4 overflow-y-scroll">
-						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">Lynx Game Rules</p>
+						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">How To Play Lynx</p>
 						<p class="w-full text-font-primary text-sm md:text-lg font-light">
-							Lorem ipsum dolor sit amet consectetur. In malesuada vivamus mattis consequat. Tortor sagittis pharetra hac enim cursus faucibus. In a convallis viverra sem eu est massa.
-							Pharetra id molestie feugiat donec in sapien imperdiet venenatis malesuada. Diam sit eget at orci tincidunt leo laoreet aenean. Quam quis sed facilisis eros nisi euismod
-							mattis est. Est nisl diam morbi adipiscing ut auctor consequat. Sit integer sed magna justo lacus posuere rhoncus.
+							The challenge is to guess the word common to all of the words you see on the screen. You’ll see 3 “cue” words or phrases that all share that same unknown word. You will
+							compete to guess the word first before the time ends or other player guesses it.
 							<br />
-							Fringilla sit ultrices habitasse luctus amet nunc dignissim. Faucibus auctor fringilla id ut justo laoreet tortor sed lorem. Aliquam etiam ipsum elementum a et natoque
-							pellentesque aenean varius. Aliquam dolor egestas viverra lacus vivamus placerat non malesuada. Duis urna suspendisse sit arcu enim nunc molestie velit. Morbi erat amet
-							faucibus volutpat vulputate feugiat ultrices in. Erat tristique risus neque ut quis magna morbi. <br />
-							Quis blandit lectus fermentum potenti. Adipiscing diam pellentesque turpis proin egestas sapien gravida mauris. Habitant ipsum mi eget gravida elit scelerisque malesuada
-							morbi. Ipsum turpis venenatis turpis eu cursus iaculis fringilla sed. Consequat quisque iaculis aliquam scelerisque at vestibulum. Ut amet tincidunt proin urna etiam.
-							Rhoncus etiam faucibus ultrices diam habitant eleifend. <br />
-							Vel egestas nullam venenatis mollis viverra ut eget maecenas. Ut urna sed eu sit quis ipsum ultrices praesent sed. Aliquam eget accumsan potenti massa faucibus ultricies
-							eleifend etiam. Eu id dignissim sed pharetra morbi cursus. Est ultrices maecenas eget mi nunc sit commodo et. Volutpat interdum quam nisl volutpat aliquam dapibus ut
-							malesuada. Eu pellentesque diam laoreet faucibus integer ultricies vel ipsum dignissim. Morbi vestibulum sem semper et. Consequat posuere posuere egestas vestibulum
-							faucibus nec nisi eget. Dolor habitasse massa pharetra in. Auctor ipsum sed aliquam eget lacus. Libero volutpat urna adipiscing euismod quam. Quam rhoncus lobortis ornare
-							imperdiet urna diam. Lacus posuere venenatis vel tortor.
+							Players have 15 seconds to enter their guesses. If no solution is found, a 4th cue drops (with 10 more additional seconds). Still stuck? A 5th cue appears (with additional
+							5 seconds). The answers appear after the correct solution has been entered by one of the players or when time finally expires after the 5th cue's additional seconds. A
+							winner’s points depend on speed of their solution. There are 5 rounds to a game, followed by a tally of all players’ points. You can play as many games as you’d like.
+							<br />
 						</p>
 					</div>
 				</div>
@@ -84,10 +76,10 @@
 }
 
 <dialog #usernameModal class="modal">
-	<form class="modal-box bg-my-glass backdrop-blur-md text-font-primary" method="dialog" [formGroup]="usernameFormGroup" (ngSubmit)="setUsernameInformation()">
-		<h3 class="font-bold text-lg">Guest Mode</h3>
+	<form class="modal-box bg-my-glass backdrop-blur-md text-font-primary" [formGroup]="usernameFormGroup" (ngSubmit)="setUsernameInformation()">
+		<h3 class="font-bold text-2xl">Welcome!</h3>
 		<p class="py-4">Please put your username to be used in the game:</p>
-		<app-text-field [control]="usernameFormGroup.controls.username" placeholder="Type your guess here..." />
+		<app-text-field [control]="usernameFormGroup.controls.username" placeholder="Name" />
 		<div class="modal-action">
 			<button class="btn" type="submit">Ok</button>
 		</div>
