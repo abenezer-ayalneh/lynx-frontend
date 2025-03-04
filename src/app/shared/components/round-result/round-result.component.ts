@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core'
+import { Component, input, OnInit } from '@angular/core'
 import { HighlightKeyPipe } from '../../highlight-key.pipe'
 import { Word } from '../../types/word.type'
 import { NgClass } from '@angular/common'
@@ -9,7 +9,7 @@ import { NgClass } from '@angular/common'
 	templateUrl: './round-result.component.html',
 	styleUrl: './round-result.component.scss',
 })
-export class RoundResultComponent {
+export class RoundResultComponent implements OnInit {
 	winner = input.required<boolean>()
 
 	word = input<Word>()
@@ -17,4 +17,21 @@ export class RoundResultComponent {
 	score = input.required<number>()
 
 	waitingCountdownTime = input.required<number>()
+
+	allFailRoundAudio = new Audio()
+
+	solvedRoundAudio = new Audio()
+
+	constructor() {
+		this.allFailRoundAudio.src = 'audios/trumpet-all-fail-round.mp3'
+		this.solvedRoundAudio.src = 'audios/trumpet-solved-round.mp3'
+	}
+
+	ngOnInit(): void {
+		if (this.winner()) {
+			this.solvedRoundAudio.play()
+		} else {
+			this.allFailRoundAudio.play()
+		}
+	}
 }

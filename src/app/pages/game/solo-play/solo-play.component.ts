@@ -61,6 +61,8 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 
 	icons = { faPaperPlane, faTimesCircle }
 
+	wrongGuessAudio = new Audio()
+
 	protected readonly PageState = PageState
 
 	constructor(
@@ -69,6 +71,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 		private readonly matDialog: MatDialog,
 		protected readonly colyseusService: ColyseusService,
 	) {
+		this.wrongGuessAudio.src = 'audios/wrong-guess.wav'
 		effect(() => {
 			if (this.roomState()?.gameState) {
 				this.focusOnGuessInput()
@@ -160,6 +163,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 
 	private subscribeToColyseusMessages(room: Room<SoloPlayRoomState>) {
 		room.onMessage(WRONG_GUESS, () => {
+			this.wrongGuessAudio.play()
 			this.guessField()?.shake()
 			this.inputFieldCleanStart()
 		})
