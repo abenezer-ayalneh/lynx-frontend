@@ -58,6 +58,8 @@ export class MultiplayerComponent implements OnInit {
 
 	icons = { faPaperPlane, faTimesCircle }
 
+	wrongGuessAudio = new Audio()
+
 	protected readonly PageState = PageState
 
 	constructor(
@@ -67,6 +69,8 @@ export class MultiplayerComponent implements OnInit {
 		private readonly matDialog: MatDialog,
 		protected readonly colyseusService: ColyseusService,
 	) {
+		this.wrongGuessAudio.src = 'audios/wrong-guess.wav'
+
 		effect(() => {
 			if (this.roomState()?.gameState) {
 				this.focusOnGuessInput()
@@ -178,6 +182,7 @@ export class MultiplayerComponent implements OnInit {
 
 	private subscribeToColyseusMessages(room: Room<MultiplayerRoomState>) {
 		room.onMessage(WRONG_GUESS, () => {
+			this.wrongGuessAudio.play()
 			this.guessField()?.shake()
 			this.inputFieldCleanStart()
 		})

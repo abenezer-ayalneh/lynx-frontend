@@ -13,6 +13,7 @@ import { TIMEZONES } from '../../../../../shared/constants/timezones.constants'
 import { combineLatest, finalize } from 'rxjs'
 import { TZDateMini } from '@date-fns/tz'
 import { MultiplayerService } from '../../multiplayer.service'
+import { ScheduledGameType } from '../../dto/create-multiplayer-room.dto'
 
 @Component({
 	selector: 'app-create-multiplayer-game',
@@ -26,11 +27,10 @@ export class CreateMultiplayerGameComponent implements OnInit {
 		invitationText: new FormControl("Hey everyone, feeling the itch to play some Lynx together?! I'm inviting you to this game room to play. Let me know if you're in!", {
 			validators: [Validators.required],
 		}),
-		gameDateAndTime: new FormControl<string>('', { validators: [Validators.required] }),
-		timezone: new FormControl<string>('', { validators: [Validators.required] }),
+		gameScheduleType: new FormControl<ScheduledGameType>(ScheduledGameType.INSTANT, { validators: [Validators.required] }),
+		gameDateAndTime: new FormControl<string>({ value: '', disabled: true }, { validators: [Validators.required] }),
+		timezone: new FormControl<string>({ value: '', disabled: true }, { validators: [Validators.required] }),
 	})
-
-	timezoneMap = TIMEZONES
 
 	isCreatingGame = signal<boolean>(false)
 
@@ -40,7 +40,11 @@ export class CreateMultiplayerGameComponent implements OnInit {
 
 	@ViewChild('gameCreatedModal') gameCreatedModal!: ElementRef
 
+	protected readonly TIMEZONES = TIMEZONES
+
 	protected readonly MAXIMUM_NUMBER_OF_INVITE_EMAILS = MAXIMUM_NUMBER_OF_INVITE_EMAILS
+
+	protected readonly ScheduledGameType = ScheduledGameType
 
 	constructor(
 		private readonly router: Router,
@@ -56,6 +60,11 @@ export class CreateMultiplayerGameComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.updateLocalTimeData()
+		this.subscribeToGameScheduleType()
+	}
+
+	updateLocalTimeData() {
 		combineLatest([this.formControls.gameDateAndTime.valueChanges, this.formControls.timezone.valueChanges]).subscribe({
 			next: ([gameDateAndTime, timezone]) => {
 				if (gameDateAndTime && timezone) {
@@ -67,24 +76,44 @@ export class CreateMultiplayerGameComponent implements OnInit {
 		})
 	}
 
+	subscribeToGameScheduleType() {
+		this.formControls.gameScheduleType.valueChanges.subscribe({
+			next: (value) => {
+				if (value === ScheduledGameType.INSTANT) {
+					this.formControls.gameDateAndTime.disable()
+					this.formControls.timezone.disable()
+				} else if (value === ScheduledGameType.FUTURE) {
+					this.formControls.gameDateAndTime.enable()
+					this.formControls.timezone.enable()
+				}
+			},
+		})
+	}
+
 	async exit() {
 		await this.router.navigateByUrl('home')
 	}
 
 	createMultiplayerGameFormSubmit() {
 		if (this.createMultiplayerGameFormGroup.valid) {
+			const gameType = this.createMultiplayerGameFormGroup.value.gameScheduleType!
 			this.isCreatingGame.set(true)
 			this.multiplayerService
 				.createScheduledGame({
 					emails: this.createMultiplayerGameFormGroup.value.emails as string[],
 					invitation_text: this.createMultiplayerGameFormGroup.value.invitationText!,
-					start_time: this.createMultiplayerGameFormGroup.value.gameDateAndTime!,
-					timezone: this.createMultiplayerGameFormGroup.value.timezone!,
+					gameScheduleType: gameType,
+					start_time: this.createMultiplayerGameFormGroup.value.gameDateAndTime ?? undefined,
+					timezone: this.createMultiplayerGameFormGroup.value.timezone ?? undefined,
 				})
 				.pipe(finalize(() => this.isCreatingGame.set(false)))
 				.subscribe({
-					complete: () => {
-						this.gameCreatedModal.nativeElement.showModal()
+					next: (response) => {
+						if (gameType === ScheduledGameType.INSTANT) {
+							this.router.navigateByUrl(`/scheduled-game/lobby?id=${response.lobbyId}`)
+						} else {
+							this.gameCreatedModal.nativeElement.showModal()
+						}
 					},
 				})
 		}

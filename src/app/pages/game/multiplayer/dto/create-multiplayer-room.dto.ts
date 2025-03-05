@@ -1,9 +1,16 @@
+export enum ScheduledGameType {
+	INSTANT = 'INSTANT',
+	FUTURE = 'FUTURE',
+}
+
 export default interface CreateMultiplayerRoomDto {
 	invitation_text: string
 
 	emails: string[]
 
-	start_time: string
+	gameScheduleType: ScheduledGameType
 
-	timezone: string
+	start_time?: string
+
+	timezone?: string
 }
