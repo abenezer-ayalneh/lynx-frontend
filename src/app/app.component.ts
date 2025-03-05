@@ -11,10 +11,6 @@ import { PreloadService } from './shared/services/preload.service'
 })
 export class AppComponent implements OnInit {
 	private imageUrls = [
-		'audios/brass-end-of-game-results.mp3',
-		'audios/trumpet-all-fail-round.mp3',
-		'audios/trumpet-solved-round.mp3',
-		'audios/wrong-guess.wav',
 		'images/logos/lynx-logo.png',
 		'images/logos/lynx-logo.svg',
 		'images/logos/profile-image-sample.svg',
@@ -23,9 +19,12 @@ export class AppComponent implements OnInit {
 		'images/cue-word-balloon.svg',
 	]
 
+	private audioUrls = ['audios/brass-end-of-game-results.mp3', 'audios/trumpet-all-fail-round.mp3', 'audios/trumpet-solved-round.mp3', 'audios/wrong-guess.wav']
+
 	constructor(private readonly preloadService: PreloadService) {}
 
 	ngOnInit(): void {
 		this.preloadService.preloadImages(this.imageUrls)
+		this.preloadService.preloadAudios(this.audioUrls)
 	}
 }
