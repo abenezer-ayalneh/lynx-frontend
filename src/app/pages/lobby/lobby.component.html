@@ -57,11 +57,13 @@
 						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">How To Play Lynx</p>
 						<p class="w-full text-font-primary text-sm md:text-lg font-light">
 							The challenge is to guess the word common to all of the words you see on the screen. You’ll see 3 “cue” words or phrases that all share that same unknown word. You will
-							compete to guess the word first before the time ends or other player guesses it.
+							compete to guess the word first before the time ends or another player guesses it.
 							<br />
-							Players have 15 seconds to enter their guesses. If no solution is found, a 4th cue drops (with 10 more additional seconds). Still stuck? A 5th cue appears (with additional
-							5 seconds). The answers appear after the correct solution has been entered by one of the players or when time finally expires after the 5th cue's additional seconds. A
-							winner’s points depend on speed of their solution. There are 5 rounds to a game, followed by a tally of all players’ points. You can play as many games as you’d like.
+							Players have 15 seconds to enter their guesses. If no solution is found, a 4th cue drops (allowing 10 more seconds). Still stuck? A 5th cue appears, offering a final,
+							desperate 5 more seconds to snatch victory from defeat.
+							<br />
+							The answers appear after a correct solution, or when time expires. A winner’s points depend on speed of their solution. There are 5 rounds to a game, followed by a tally of
+							all players’ points. You can play as many games as you’d like.
 							<br />
 						</p>
 					</div>
@@ -78,7 +80,7 @@
 <dialog #usernameModal class="modal">
 	<form class="modal-box bg-my-glass backdrop-blur-md text-font-primary" [formGroup]="usernameFormGroup" (ngSubmit)="setUsernameInformation()">
 		<h3 class="font-bold text-2xl">Welcome!</h3>
-		<p class="py-4">Please put your username to be used in the game:</p>
+		<p class="py-4">Choose a name to be used in the game:</p>
 		<app-text-field [control]="usernameFormGroup.controls.username" placeholder="Name" />
 		<div class="modal-action">
 			<button class="btn" type="submit">Ok</button>
