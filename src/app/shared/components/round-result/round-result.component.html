@@ -1,6 +1,6 @@
-<div class="backdrop-blur-md rounded-2xl w-full h-full flex flex-col justify-start items-center pt-12" [ngClass]="winner() ? 'bg-[#0C740A50]' : 'bg-[#00000050]'">
+<div class="backdrop-blur-md rounded-2xl w-full h-full flex flex-col justify-start items-center pt-12" [ngClass]="isPlayerTheWinner ? 'bg-[#0C740A50]' : 'bg-[#00000050]'">
 	<p class="font-semibold text-font-primary text-4xl md:text-7xl uppercase">
-		{{ winner() ? 'You Won' : 'You Lost' }}
+		{{ isPlayerTheWinner ? 'You Won' : 'You Lost' }}
 	</p>
 	<div class="flex flex-col justify-center items-center gap-4 md:gap-8">
 		@for (cue of word()?.cues; track cue.id) {

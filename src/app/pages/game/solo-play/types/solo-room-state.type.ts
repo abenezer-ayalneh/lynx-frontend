@@ -1,4 +1,5 @@
 import { Word } from '../../../../shared/types/word.type'
+import { Winner } from '../../../../shared/types/winner.type'
 
 export interface SoloPlayRoomState {
 	guessing: boolean
@@ -10,7 +11,7 @@ export interface SoloPlayRoomState {
 	numberOfPlayers: number
 	waitingCountdownTime: number
 	gameState: 'START_COUNTDOWN' | 'ROUND_END' | 'GAME_STARTED' | 'GAME_END'
-	winner: boolean
+	winner: Winner
 	midGameCountdown: number
 	score: number
 	totalScore: number
