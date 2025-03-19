@@ -2,8 +2,9 @@ import { Component, input, OnInit } from '@angular/core'
 import { HighlightKeyPipe } from '../../highlight-key.pipe'
 import { Word } from '../../types/word.type'
 import { NgClass } from '@angular/common'
-import { Winner } from '../../types/winner.type'
+import { Score } from '../../types/winner.type'
 import { ColyseusService } from '../../services/colyseus.service'
+import { GameType } from '../../types/game.type'
 
 @Component({
 	selector: 'app-round-result',
@@ -12,13 +13,15 @@ import { ColyseusService } from '../../services/colyseus.service'
 	styleUrl: './round-result.component.scss',
 })
 export class RoundResultComponent implements OnInit {
-	winner = input.required<Winner>()
+	winner = input.required<Score | null>()
 
 	word = input<Word>()
 
 	score = input.required<number>()
 
 	waitingCountdownTime = input.required<number>()
+
+	gameType = input.required<GameType>()
 
 	allFailRoundAudio = new Audio()
 
@@ -36,6 +39,10 @@ export class RoundResultComponent implements OnInit {
 		return this.colyseusService.room?.sessionId === this.winner()?.id
 	}
 
+	get cuesToShow() {
+		return this.word()?.cues.filter((cue) => cue.shown)
+	}
+
 	ngOnInit(): void {
 		if (this.isPlayerTheWinner) {
 			this.solvedRoundAudio.play()
@@ -43,4 +50,6 @@ export class RoundResultComponent implements OnInit {
 			this.allFailRoundAudio.play()
 		}
 	}
+
+	protected readonly GameType = GameType
 }

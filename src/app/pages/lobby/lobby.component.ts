@@ -38,7 +38,7 @@ export class LobbyComponent implements AfterViewInit {
 	playerNames = signal<string[]>([])
 
 	usernameFormGroup = new FormGroup({
-		username: new FormControl<string>('', { validators: [Validators.required] }),
+		username: new FormControl<string>('', { validators: [Validators.required, Validators.minLength(1)] }),
 	})
 
 	room: Room<LobbyRoomState> | null = null
@@ -126,7 +126,7 @@ export class LobbyComponent implements AfterViewInit {
 					})
 
 					room.onMessage('startGame', ({ roomId }: { roomId: string }) => {
-						this.router.navigateByUrl(`/scheduled-game/multi/play/${roomId}`)
+						this.router.navigateByUrl(`/scheduled-game/multi/play/${roomId}?name=${this.userInformation()?.name}`)
 					})
 					this.loaded.set(true)
 				})

@@ -6,10 +6,15 @@
 					<app-game-start [waitingCountdownTime]="state.waitingCountdownTime" />
 				}
 				@case ('ROUND_END') {
-					<app-round-result [score]="getPlayerScore(state.score)" [winner]="isPlayerTheWinner(state.winner)" [word]="state.word" [waitingCountdownTime]="state.waitingCountdownTime" />
+					<app-round-result
+						[score]="getPlayerScore(state.score)"
+						[winner]="state.winner"
+						[word]="state.word"
+						[waitingCountdownTime]="state.waitingCountdownTime"
+						[gameType]="GameType.MULTIPLAYER" />
 				}
 				@case ('GAME_END') {
-					<app-game-end [totalScore]="getPlayerTotalScore(state.totalScore)" [shouldShowRestartGameButton]="isPlayerGameOwner()" (playNewGameClicked)="startNewGame()" />
+					<app-game-end [totalScore]="state.totalScore" [shouldShowRestartGameButton]="isPlayerGameOwner()" (playNewGameClicked)="startNewGame()" [gameType]="GameType.MULTIPLAYER" />
 				}
 				@case ('GAME_STARTED') {
 					<div class="w-full h-1/3 md:h-full flex flex-col pt-4 gap-10 relative">

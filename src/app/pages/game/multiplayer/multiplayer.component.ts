@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, HostListener, OnInit, signal, viewChild } from '@angular/core'
+import { Component, effect, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { ColyseusService } from '../../../shared/services/colyseus.service'
 import { MultiplayerRoomState } from '../../../shared/types/multiplayer-room-state.type'
@@ -23,6 +23,8 @@ import { Word } from '../../../shared/types/word.type'
 import { PageState } from '../../../shared/types/page-state.type'
 import { Room } from 'colyseus.js'
 import { WRONG_GUESS } from '../../../shared/constants/colyseus-message.constant'
+import { GameType } from '../../../shared/types/game.type'
+import { Subscription } from 'rxjs'
 
 @Component({
 	selector: 'app-multiplayer',
@@ -43,7 +45,9 @@ import { WRONG_GUESS } from '../../../shared/constants/colyseus-message.constant
 	templateUrl: './multiplayer.component.html',
 	styleUrl: './multiplayer.component.scss',
 })
-export class MultiplayerComponent implements OnInit {
+export class MultiplayerComponent implements OnInit, OnDestroy {
+	subscriptions$ = new Subscription()
+
 	roomState = signal<MultiplayerRoomState | null>(null)
 
 	pageState = signal<PageState>(PageState.LOADED)
@@ -61,9 +65,9 @@ export class MultiplayerComponent implements OnInit {
 	wrongGuessAudio = new Audio()
 
 	protected readonly PageState = PageState
+	protected readonly GameType = GameType
 
 	constructor(
-		private readonly element: ElementRef<HTMLInputElement>,
 		private readonly activatedRoute: ActivatedRoute,
 		private readonly playerService: PlayerService,
 		private readonly matDialog: MatDialog,
@@ -83,12 +87,17 @@ export class MultiplayerComponent implements OnInit {
 		this.joinMultiplayerGame()
 	}
 
+	ngOnDestroy() {
+		this.subscriptions$.unsubscribe()
+	}
+
 	joinMultiplayerGame() {
 		const roomId = this.activatedRoute.snapshot.params['roomId']
+		const name = this.activatedRoute.snapshot.queryParams['name']
 
 		// Join a websocket room with the gameId
-		if (roomId) {
-			this.colyseusService.getClient.auth.token = this.playerService.getPlayer.getValue()?.name ?? 'random-name'
+		if (roomId && name) {
+			this.colyseusService.getClient.auth.token = name
 			this.colyseusService.getClient
 				.joinById<MultiplayerRoomState>(roomId)
 				.then((room) => {
@@ -121,20 +130,8 @@ export class MultiplayerComponent implements OnInit {
 		return []
 	}
 
-	/**
-	 * Check if the current player is the winner
-	 * @param winnerSessionId
-	 */
-	isPlayerTheWinner(winnerSessionId: string) {
-		return this.colyseusService.room?.sessionId === winnerSessionId
-	}
-
 	getPlayerScore(scores: Map<string, number>) {
 		return scores.get(this.colyseusService.room?.sessionId ?? '') ?? 0
-	}
-
-	getPlayerTotalScore(totalScores: Map<string, number>) {
-		return totalScores.get(this.colyseusService.room?.sessionId ?? '') ?? 0
 	}
 
 	/**
