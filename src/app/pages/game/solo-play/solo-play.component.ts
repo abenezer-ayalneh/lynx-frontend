@@ -168,4 +168,6 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 			this.inputFieldCleanStart()
 		})
 	}
+
+	protected readonly GameType = GameType
 }

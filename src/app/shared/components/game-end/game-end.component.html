@@ -7,12 +7,23 @@
 	<p class="font-semibold text-font-primary text-4xl md:text-7xl uppercase">Game Ended</p>
 	<div class="flex flex-col justify-center items-center gap-4 md:gap-8">
 		<p class="font-semibold text-font-primary text-3xl md:text-5xl text-center">
-			Total Score:&nbsp;
-			<span class="text-my-orange">{{ totalScore() }}</span>
+			Your Total Score:&nbsp;
+			<span class="text-my-orange">{{ myTotalScore }}</span>
 		</p>
 	</div>
-	@if (shouldShowRestartGameButton()) {
+	@if (gameType() === GameType.MULTIPLAYER) {
 		<div class="flex flex-col justify-center items-center gap-4 md:gap-8">
+			<p class="font-bold text-font-primary text-xl md:text-3xl text-center">Rank</p>
+			@for (score of rankedScores; track score; let index = $index) {
+				<p class="font-medium text-font-primary text-xl md:text-3xl text-center">
+					{{ index + 1 }}. {{ score.name }} (<span class="text-my-orange">{{ score.score }}</span
+					>)
+				</p>
+			}
+		</div>
+	}
+	@if (gameType() === GameType.SOLO || shouldShowRestartGameButton()) {
+		<div class="flex flex-col justify-center items-center gap-4 md:gap-8 mt-4 md:mt-8">
 			<p class="font-normal text-font-primary text-xl md:text-3xl text-center">Want to play again?</p>
 			<app-button text="Play New Game" type="button" buttonType="button" (click)="playNewGame()" />
 		</div>
