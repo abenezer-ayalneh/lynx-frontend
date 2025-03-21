@@ -35,6 +35,11 @@
 								class="text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center"
 								matTooltip="Leave game"
 								(click)="exitGame()" />
+							<fa-icon
+								[icon]="mic() ? icons.faMicrophone : icons.faMicrophoneSlash"
+								class="cursor-pointer text-xl"
+								[ngClass]="mic() ? 'text-my-orange' : 'text-grey-300'"
+								(click)="toggleMic()" />
 							<span class="w-[85%] md:w-[50%] mr-2 md:mr-6">
 								<app-text-field [control]="multiplayerPlayFormGroup.controls.guess" placeholder="Type your guess here..." [autoFocus]="true" />
 							</span>

@@ -13,7 +13,7 @@ import { CountdownComponent } from '../../../shared/components/countdown/countdo
 import { WordBubbleComponent } from '../../../shared/components/word-bubble/word-bubble.component'
 import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
-import { faPaperPlane, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { faMicrophone, faMicrophoneSlash, faPaperPlane, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { MatTooltip } from '@angular/material/tooltip'
 import { LoadingComponent } from '../../../shared/components/loading/loading.component'
 import { CloseGameDialogComponent } from '../../../shared/components/close-game-dialog/close-game-dialog.component'
@@ -52,6 +52,8 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	pageState = signal<PageState>(PageState.LOADED)
 
+	mic = signal<boolean>(false)
+
 	guessField = viewChild(TextFieldComponent)
 
 	multiplayerPlayFormGroup = new FormGroup({
@@ -60,7 +62,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	error: string | null = null
 
-	icons = { faPaperPlane, faTimesCircle }
+	icons = { faPaperPlane, faTimesCircle, faMicrophone, faMicrophoneSlash }
 
 	wrongGuessAudio = new Audio()
 
@@ -103,6 +105,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 				.then((room) => {
 					this.colyseusService.setRoom = room
 					this.subscribeToColyseusMessages(room)
+					this.initiateVoiceChat(room)
 
 					room.onStateChange((state) => this.roomState.set(state))
 					this.pageState.set(PageState.LOADED)
@@ -177,11 +180,60 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		this.focusOnGuessInput()
 	}
 
+	toggleMic() {
+		this.mic.update((currentMic) => !currentMic)
+	}
+
 	private subscribeToColyseusMessages(room: Room<MultiplayerRoomState>) {
 		room.onMessage(WRONG_GUESS, () => {
 			this.wrongGuessAudio.play()
 			this.guessField()?.shake()
 			this.inputFieldCleanStart()
+		})
+	}
+
+	private initiateVoiceChat(room: Room<MultiplayerRoomState>, time = 1000) {
+		navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+			this.mic.set(true)
+			const mediaRecorder = new MediaRecorder(stream)
+			mediaRecorder.start()
+
+			let audioChunks: Blob[] = []
+
+			mediaRecorder.addEventListener('dataavailable', function (event) {
+				audioChunks.push(event.data)
+			})
+
+			mediaRecorder.addEventListener('stop', () => {
+				const audioBlob = new Blob(audioChunks)
+
+				audioChunks = []
+
+				const fileReader = new FileReader()
+				fileReader.readAsDataURL(audioBlob)
+				fileReader.onloadend = () => {
+					const base64String = fileReader.result
+
+					if (!this.mic()) return
+
+					room.send('talk', base64String)
+				}
+
+				mediaRecorder.start()
+
+				setTimeout(() => {
+					mediaRecorder.stop()
+				}, time)
+			})
+
+			setTimeout(() => {
+				mediaRecorder.stop()
+			}, time)
+
+			room.onMessage('listen', function (data) {
+				const audio = new Audio(data)
+				audio.play()
+			})
 		})
 	}
 }
