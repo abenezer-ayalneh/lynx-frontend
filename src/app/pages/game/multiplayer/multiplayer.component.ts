@@ -181,7 +181,12 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 	}
 
 	toggleMic() {
-		this.mic.update((currentMic) => !currentMic)
+		// this.mic.update((currentMic) => !currentMic)
+		if (!this.mic() && this.colyseusService.room) {
+			this.initiateVoiceChat(this.colyseusService.room)
+		} else {
+			this.mic.set(false)
+		}
 	}
 
 	private subscribeToColyseusMessages(room: Room<MultiplayerRoomState>) {
