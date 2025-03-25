@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
 		'images/cue-word-balloon.svg',
 	]
 
-	private audioUrls = ['audios/brass-end-of-game-results.mp3', 'audios/trumpet-all-fail-round.mp3', 'audios/trumpet-solved-round.mp3', 'audios/wrong-guess.wav']
+	private audioUrls = ['audios/end-of-game-results.mp3', 'audios/failed-round.mp3', 'audios/solved-round.mp3', 'audios/wrong-guess.wav']
 
 	constructor(private readonly preloadService: PreloadService) {}
 

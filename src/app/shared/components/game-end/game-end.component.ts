@@ -36,7 +36,7 @@ export class GameEndComponent implements OnInit {
 		private readonly colyseusService: ColyseusService,
 		private readonly playerService: PlayerService,
 	) {
-		this.endOfGameAudio.src = 'audios/brass-end-of-game-results.mp3'
+		this.endOfGameAudio.src = 'audios/end-of-game-results.mp3'
 	}
 
 	get myTotalScore() {

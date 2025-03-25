@@ -28,8 +28,8 @@ export class RoundResultComponent implements OnInit {
 	solvedRoundAudio = new Audio()
 
 	constructor(protected readonly colyseusService: ColyseusService) {
-		this.allFailRoundAudio.src = 'audios/trumpet-all-fail-round.mp3'
-		this.solvedRoundAudio.src = 'audios/trumpet-solved-round.mp3'
+		this.allFailRoundAudio.src = 'audios/failed-round.mp3'
+		this.solvedRoundAudio.src = 'audios/solved-round.mp3'
 	}
 
 	/**
