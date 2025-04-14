@@ -37,6 +37,7 @@ export class GameEndComponent implements OnInit {
 		private readonly playerService: PlayerService,
 	) {
 		this.endOfGameAudio.src = 'audios/end-of-game-results.mp3'
+		this.endOfGameAudio.volume = 0.25
 	}
 
 	get myTotalScore() {

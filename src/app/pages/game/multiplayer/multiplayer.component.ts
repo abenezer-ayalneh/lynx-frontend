@@ -76,6 +76,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		protected readonly colyseusService: ColyseusService,
 	) {
 		this.wrongGuessAudio.src = 'audios/wrong-guess.wav'
+		this.wrongGuessAudio.volume = 0.25
 
 		effect(() => {
 			if (this.roomState()?.gameState) {
