@@ -92,6 +92,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.subscriptions$.unsubscribe()
+		this.mic.set(false)
 	}
 
 	joinMultiplayerGame() {
