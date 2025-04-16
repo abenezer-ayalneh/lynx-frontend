@@ -72,7 +72,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 		protected readonly colyseusService: ColyseusService,
 	) {
 		this.wrongGuessAudio.src = 'audios/wrong-guess.wav'
-		this.wrongGuessAudio.volume = 0.25
+		this.wrongGuessAudio.volume = 0.2
 
 		effect(() => {
 			if (this.roomState()?.gameState) {
