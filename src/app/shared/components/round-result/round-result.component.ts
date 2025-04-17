@@ -1,5 +1,5 @@
 import { Component, input, OnInit } from '@angular/core'
-import { HighlightKeyPipe } from '../../highlight-key.pipe'
+import { HighlightKeyPipe } from '../../pipes/highlight-key.pipe'
 import { Word } from '../../types/word.type'
 import { NgClass } from '@angular/common'
 import { Score } from '../../types/winner.type'
