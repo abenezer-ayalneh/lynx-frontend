@@ -152,6 +152,22 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		}
 	}
 
+	@HostListener('window:beforeunload', ['$event'])
+	unloadNotification(event: BeforeUnloadEvent): void {
+		event.preventDefault()
+		event.returnValue = 'Are you sure you want to leave?' // For legacy compatability
+	}
+
+	@HostListener('window:popstate', ['$event'])
+	onPopState(event: PopStateEvent) {
+		console.log({ cancelable: event.cancelable, bubbles: event.bubbles })
+		//Here you can handle your modal
+		event.preventDefault()
+		event.stopPropagation()
+		event.stopImmediatePropagation()
+		event.returnValue = false // For legacy compatability
+	}
+
 	/**
 	 * Give the input field( the guess field) focus
 	 */

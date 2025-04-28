@@ -64,6 +64,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 	wrongGuessAudio = new Audio()
 
 	protected readonly PageState = PageState
+	protected readonly GameType = GameType
 
 	constructor(
 		private readonly soloPlayService: SoloPlayService,
@@ -98,6 +99,22 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 			this.soloPlayFormGroup.controls.guess.disable()
 			this.colyseusService.sendMessage<{ guess: string }>(GUESS, { guess })
 		}
+	}
+
+	@HostListener('window:beforeunload', ['$event'])
+	unloadNotification(event: BeforeUnloadEvent): void {
+		event.preventDefault()
+		event.returnValue = 'Are you sure you want to leave?' // For legacy compatability
+	}
+
+	@HostListener('window:popstate', ['$event'])
+	onPopState(event: PopStateEvent) {
+		console.log({ cancelable: event.cancelable, bubbles: event.bubbles })
+		//Here you can handle your modal
+		event.preventDefault()
+		event.stopPropagation()
+		event.stopImmediatePropagation()
+		event.returnValue = false // For legacy compatability
 	}
 
 	initSoloPlay() {
@@ -170,6 +187,4 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 			this.inputFieldCleanStart()
 		})
 	}
-
-	protected readonly GameType = GameType
 }
