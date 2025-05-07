@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router'
 import { AuthService } from '../../../pages/auth/auth.service'
 import { Player } from '../../models/player.model'
 import { PlayerService } from '../../services/player.service'
+import { MultiplayerService } from '../../../pages/game/multiplayer/multiplayer.service'
 
 @Component({
 	selector: 'app-header',
@@ -16,6 +17,7 @@ export class HeaderComponent {
 	constructor(
 		private readonly authService: AuthService,
 		private readonly playerService: PlayerService,
+		protected readonly multiplayerService: MultiplayerService,
 	) {
 		this.playerService.getPlayer.subscribe((player) => this.player.set(player))
 	}

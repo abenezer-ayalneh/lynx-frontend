@@ -17,6 +17,7 @@ export interface MultiplayerRoomState {
 	winner: Score
 	score: Map<string, number>
 	totalScore: Map<string, Score>
+	sessionScore: Map<string, Score>
 	words: Word
 	gameStarted: boolean
 	ownerId: number

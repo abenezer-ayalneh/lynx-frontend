@@ -25,6 +25,7 @@ import { Room } from 'colyseus.js'
 import { WRONG_GUESS } from '../../../shared/constants/colyseus-message.constant'
 import { GameType } from '../../../shared/types/game.type'
 import { Subscription } from 'rxjs'
+import { MultiplayerService } from './multiplayer.service'
 
 @Component({
 	selector: 'app-multiplayer',
@@ -67,21 +68,30 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 	wrongGuessAudio = new Audio()
 
 	protected readonly PageState = PageState
+
 	protected readonly GameType = GameType
 
 	constructor(
 		private readonly activatedRoute: ActivatedRoute,
 		private readonly playerService: PlayerService,
 		private readonly matDialog: MatDialog,
+		private readonly multiplayerService: MultiplayerService,
 		protected readonly colyseusService: ColyseusService,
 	) {
 		this.wrongGuessAudio.src = 'audios/wrong-guess.wav'
 		this.wrongGuessAudio.volume = 0.2
 
 		effect(() => {
-			if (this.roomState()?.gameState) {
-				this.focusOnGuessInput()
-				this.inputFieldCleanStart()
+			const roomState = this.roomState()
+			if (roomState) {
+				// if (roomState.gameState === 'GAME_STARTED') {
+				// 	this.focusOnGuessInput()
+				// 	this.inputFieldCleanStart()
+				// }
+
+				if (this.colyseusService.room?.sessionId && roomState.sessionScore.has(this.colyseusService.room?.sessionId)) {
+					this.multiplayerService.sessionScore.set(roomState.sessionScore.get(this.colyseusService.room.sessionId))
+				}
 			}
 		})
 	}
@@ -109,7 +119,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 					this.subscribeToColyseusMessages(room)
 					this.initiateVoiceChat(room)
 
-					room.onStateChange((state) => this.roomState.set(state))
+					room.onStateChange((state) => this.roomState.set({ ...state }))
 					this.pageState.set(PageState.LOADED)
 				})
 				.catch((e) => {
@@ -160,7 +170,6 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	@HostListener('window:popstate', ['$event'])
 	onPopState(event: PopStateEvent) {
-		console.log({ cancelable: event.cancelable, bubbles: event.bubbles })
 		//Here you can handle your modal
 		event.preventDefault()
 		event.stopPropagation()

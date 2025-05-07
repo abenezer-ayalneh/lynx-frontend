@@ -109,7 +109,6 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 
 	@HostListener('window:popstate', ['$event'])
 	onPopState(event: PopStateEvent) {
-		console.log({ cancelable: event.cancelable, bubbles: event.bubbles })
 		//Here you can handle your modal
 		event.preventDefault()
 		event.stopPropagation()
