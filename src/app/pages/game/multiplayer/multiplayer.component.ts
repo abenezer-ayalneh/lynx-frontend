@@ -102,6 +102,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.subscriptions$.unsubscribe()
+		this.multiplayerService.sessionScore.set(undefined)
 		this.mic.set(false)
 	}
 
