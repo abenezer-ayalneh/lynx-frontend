@@ -1,8 +1,13 @@
 <form class="w-full h-full py-6 md:py-8 md:px-12" [formGroup]="createMultiplayerGameFormGroup" (ngSubmit)="createMultiplayerGameFormSubmit()">
-	<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-6">
+	<div
+		class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-6">
 		<div class="w-full flex justify-between items-center">
 			<p class="text-font-primary text-lg md:text-2xl font-normal">Create Game Room</p>
-			<fa-icon [icon]="icons.faTimesCircle" class="text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center" matTooltip="Leave game" (click)="exit()" />
+			<fa-icon
+				[icon]="icons.faTimesCircle"
+				class="text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center"
+				matTooltip="Leave game"
+				(click)="exit()" />
 		</div>
 		<div class="w-full flex justify-center items-center gap-x-4 text-font-primary">
 			<input type="radio" formControlName="gameScheduleType" [defaultChecked]="true" [value]="ScheduledGameType.INSTANT" />Instant
@@ -62,7 +67,13 @@
 					</div>
 				}
 
-				<app-button text="Create Room" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="submit" [disabled]="createMultiplayerGameFormGroup.invalid" [loading]="isCreatingGame()" />
+				<app-button
+					text="Create Room"
+					class="h-12 md:h-20 w-full mt-4"
+					buttonType="button"
+					type="submit"
+					[disabled]="createMultiplayerGameFormGroup.invalid"
+					[loading]="isCreatingGame()" />
 			</div>
 		</div>
 	</div>

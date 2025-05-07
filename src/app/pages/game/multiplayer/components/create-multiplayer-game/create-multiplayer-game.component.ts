@@ -24,9 +24,12 @@ import { ScheduledGameType } from '../../dto/create-multiplayer-room.dto'
 export class CreateMultiplayerGameComponent implements OnInit {
 	createMultiplayerGameFormGroup = new FormGroup({
 		emails: new FormArray([new FormControl<string>('', { validators: [Validators.required, Validators.email] })]),
-		invitationText: new FormControl("Hey everyone, feeling the itch to play some Lynx together?! I'm inviting you to this game room to play. Let me know if you're in!", {
-			validators: [Validators.required],
-		}),
+		invitationText: new FormControl(
+			"Hey everyone, feeling the itch to play some Lynx together?! I'm inviting you to this game room to play. Let me know if you're in!",
+			{
+				validators: [Validators.required],
+			},
+		),
 		gameScheduleType: new FormControl<ScheduledGameType>(ScheduledGameType.INSTANT, { validators: [Validators.required] }),
 		gameDateAndTime: new FormControl<string>({ value: '', disabled: true }, { validators: [Validators.required] }),
 		timezone: new FormControl<string>({ value: '', disabled: true }, { validators: [Validators.required] }),

@@ -6,7 +6,12 @@
 					<app-game-start [waitingCountdownTime]="state.waitingCountdownTime" />
 				}
 				@case ('ROUND_END') {
-					<app-round-result [score]="state.score" [winner]="state.winner" [word]="state.word" [waitingCountdownTime]="state.waitingCountdownTime" [gameType]="GameType.SOLO" />
+					<app-round-result
+						[score]="state.score"
+						[winner]="state.winner"
+						[word]="state.word"
+						[waitingCountdownTime]="state.waitingCountdownTime"
+						[gameType]="GameType.SOLO" />
 				}
 				@case ('GAME_END') {
 					<app-game-end [totalScore]="state.totalScore" (playNewGameClicked)="initSoloPlay()" [gameType]="GameType.SOLO" />

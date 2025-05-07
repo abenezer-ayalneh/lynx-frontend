@@ -7,7 +7,7 @@
 	"arrowParens": "always",
 	"trailingComma": "all",
 	"bracketSameLine": true,
-	"printWidth": 200,
+	"printWidth": 160,
 	"overrides": [
 		{
 			"files": "*.html",

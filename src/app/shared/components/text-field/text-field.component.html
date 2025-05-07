@@ -15,7 +15,8 @@
 
 	@if (control().errors?.['minlength']) {
 		<p class="text-red-400">
-			The value you input is {{ control().errors?.['minlength']['actualLength'] }} characters long. It should be at least {{ control().errors?.['minlength']['requiredLength'] }} characters long.
+			The value you input is {{ control().errors?.['minlength']['actualLength'] }} characters long. It should be at least
+			{{ control().errors?.['minlength']['requiredLength'] }} characters long.
 		</p>
 	}
 
