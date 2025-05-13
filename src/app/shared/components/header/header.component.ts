@@ -1,9 +1,10 @@
 import { Component, signal } from '@angular/core'
 import { RouterLink } from '@angular/router'
+
 import { AuthService } from '../../../pages/auth/auth.service'
+import { MultiplayerService } from '../../../pages/game/multiplayer/multiplayer.service'
 import { Player } from '../../models/player.model'
 import { PlayerService } from '../../services/player.service'
-import { MultiplayerService } from '../../../pages/game/multiplayer/multiplayer.service'
 
 @Component({
 	selector: 'app-header',

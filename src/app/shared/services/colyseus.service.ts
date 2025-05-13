@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Client, Room } from 'colyseus.js'
+
 import { environment } from '../../../environments/environment'
 
 const COLYSEUS_URL = environment.colyseusUrl

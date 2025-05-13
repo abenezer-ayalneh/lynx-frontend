@@ -1,12 +1,13 @@
-import { Component } from '@angular/core'
-import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
 import { NgOptimizedImage } from '@angular/common'
+import { Component } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
-import { ButtonComponent } from '../../../shared/components/button/button.component'
 import { Router, RouterLink } from '@angular/router'
+
+import { ButtonComponent } from '../../../shared/components/button/button.component'
+import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
 import { MatchValidator } from '../../../shared/validators/match-validator'
-import { RegisterRequest } from './types/register.type'
 import { AuthService } from '../auth.service'
+import { RegisterRequest } from './types/register.type'
 
 @Component({
 	selector: 'app-register',

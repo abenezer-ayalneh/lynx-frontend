@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { RegisterRequest } from './register/types/register.type'
-import { LoginRequest, LoginResponse } from './login/types/login.type'
-import { TokenService } from '../../shared/services/token.service'
+import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
+
 import { Player } from '../../shared/models/player.model'
+import { TokenService } from '../../shared/services/token.service'
+import { LoginRequest, LoginResponse } from './login/types/login.type'
+import { RegisterRequest } from './register/types/register.type'
 
 @Injectable({
 	providedIn: 'root',

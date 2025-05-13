@@ -1,4 +1,5 @@
 import { Component, computed, input } from '@angular/core'
+
 import { Cue } from '../../types/word.type'
 
 @Component({

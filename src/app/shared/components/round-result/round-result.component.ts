@@ -1,10 +1,11 @@
-import { Component, input, OnInit } from '@angular/core'
-import { HighlightKeyPipe } from '../../pipes/highlight-key.pipe'
-import { Word } from '../../types/word.type'
 import { NgClass } from '@angular/common'
-import { Score } from '../../types/winner.type'
+import { Component, input, OnInit } from '@angular/core'
+
+import { HighlightKeyPipe } from '../../pipes/highlight-key.pipe'
 import { ColyseusService } from '../../services/colyseus.service'
 import { GameType } from '../../types/game.type'
+import { Score } from '../../types/winner.type'
+import { Word } from '../../types/word.type'
 
 @Component({
 	selector: 'app-round-result',

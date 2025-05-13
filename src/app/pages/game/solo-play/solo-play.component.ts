@@ -1,31 +1,32 @@
+import { NgClass } from '@angular/common'
 import { Component, effect, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
-import { LoadingComponent } from '../../../shared/components/loading/loading.component'
-import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
-import { SoloPlayService } from './solo-play.service'
-import { GameType } from '../../../shared/types/game.type'
-import { Subscription } from 'rxjs'
-import { TokenService } from '../../../shared/services/token.service'
-import { ColyseusService } from '../../../shared/services/colyseus.service'
-import { SoloPlayRoomState } from './types/solo-room-state.type'
-import { Game } from '../../../shared/models/game.model'
-import { Room } from 'colyseus.js'
-import { GameStartComponent } from '../../../shared/components/game-start/game-start.component'
-import { RoundResultComponent } from '../../../shared/components/round-result/round-result.component'
-import { GameEndComponent } from '../../../shared/components/game-end/game-end.component'
-import { RoundComponent } from '../../../shared/components/round/round.component'
-import { CountdownComponent } from '../../../shared/components/countdown/countdown.component'
-import { Word } from '../../../shared/types/word.type'
-import { WordBubbleComponent } from '../../../shared/components/word-bubble/word-bubble.component'
-import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
 import { FormControl, FormGroup } from '@angular/forms'
+import { MatDialog } from '@angular/material/dialog'
+import { MatTooltip } from '@angular/material/tooltip'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faPaperPlane, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { MatTooltip } from '@angular/material/tooltip'
-import { MatDialog } from '@angular/material/dialog'
+import { Room } from 'colyseus.js'
+import { Subscription } from 'rxjs'
+
 import { CloseGameDialogComponent } from '../../../shared/components/close-game-dialog/close-game-dialog.component'
-import { NgClass } from '@angular/common'
-import { PageState } from '../../../shared/types/page-state.type'
+import { CountdownComponent } from '../../../shared/components/countdown/countdown.component'
+import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
+import { GameEndComponent } from '../../../shared/components/game-end/game-end.component'
+import { GameStartComponent } from '../../../shared/components/game-start/game-start.component'
+import { LoadingComponent } from '../../../shared/components/loading/loading.component'
+import { RoundComponent } from '../../../shared/components/round/round.component'
+import { RoundResultComponent } from '../../../shared/components/round-result/round-result.component'
+import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
+import { WordBubbleComponent } from '../../../shared/components/word-bubble/word-bubble.component'
 import { GUESS, WRONG_GUESS } from '../../../shared/constants/colyseus-message.constant'
+import { Game } from '../../../shared/models/game.model'
+import { ColyseusService } from '../../../shared/services/colyseus.service'
+import { TokenService } from '../../../shared/services/token.service'
+import { GameType } from '../../../shared/types/game.type'
+import { PageState } from '../../../shared/types/page-state.type'
+import { Word } from '../../../shared/types/word.type'
+import { SoloPlayService } from './solo-play.service'
+import { SoloPlayRoomState } from './types/solo-room-state.type'
 
 @Component({
 	selector: 'app-solo-play',
@@ -64,6 +65,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 	wrongGuessAudio = new Audio()
 
 	protected readonly PageState = PageState
+
 	protected readonly GameType = GameType
 
 	constructor(

@@ -9,5 +9,6 @@ import { RouterLink } from '@angular/router'
 })
 export class GameTypeComponent {
 	url = input.required<string>()
+
 	text = input.required<string>()
 }

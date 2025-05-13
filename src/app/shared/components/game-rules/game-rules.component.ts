@@ -1,6 +1,6 @@
 import { Component } from '@angular/core'
-import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { MatTooltip } from '@angular/material/tooltip'
+import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 @Component({

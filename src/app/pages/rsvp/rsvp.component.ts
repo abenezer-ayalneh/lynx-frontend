@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit, signal } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { RsvpService } from './rsvp.service'
 import { finalize, Subscription } from 'rxjs'
+
+import { ErrorWhileLoadingComponent } from '../../shared/components/error-while-loading/error-while-loading.component'
 import { LoadingComponent } from '../../shared/components/loading/loading.component'
 import { ScheduledGame } from '../../shared/types/scheduled-game.type'
 import { startCountdown } from '../../shared/utils/timer.util'
-import { ErrorWhileLoadingComponent } from '../../shared/components/error-while-loading/error-while-loading.component'
+import { RsvpService } from './rsvp.service'
 
 @Component({
 	selector: 'app-rsvp',

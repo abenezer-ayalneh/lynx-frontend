@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
+
 import { PreloadService } from './shared/services/preload.service'
 
 @Component({

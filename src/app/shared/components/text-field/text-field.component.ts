@@ -1,6 +1,6 @@
+import { NgClass } from '@angular/common'
 import { Component, ElementRef, input, signal, viewChild } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
-import { NgClass } from '@angular/common'
 
 @Component({
 	selector: 'app-text-field',

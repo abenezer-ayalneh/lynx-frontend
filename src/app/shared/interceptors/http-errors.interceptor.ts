@@ -1,10 +1,11 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http'
-import { catchError, throwError } from 'rxjs'
 import { inject } from '@angular/core'
-import { SnackbarService } from '../services/snackbar.service'
-import FilterResponseInterface from '../interfaces/error-response.interface'
-import { TokenService } from '../services/token.service'
 import { Router } from '@angular/router'
+import { catchError, throwError } from 'rxjs'
+
+import FilterResponseInterface from '../interfaces/error-response.interface'
+import { SnackbarService } from '../services/snackbar.service'
+import { TokenService } from '../services/token.service'
 
 export const httpErrorsInterceptor: HttpInterceptorFn = (req, next) => {
 	const snackbarService = inject(SnackbarService)

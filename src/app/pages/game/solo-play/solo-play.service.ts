@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
+import { Injectable } from '@angular/core'
+
 import { Game } from '../../../shared/models/game.model'
 import { CreateSoloGameRequest } from './types/solo-play.type'
 

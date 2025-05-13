@@ -1,14 +1,15 @@
-import { Component, OnInit, signal } from '@angular/core'
-import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { NgOptimizedImage } from '@angular/common'
-import { ButtonComponent } from '../../../shared/components/button/button.component'
+import { Component, OnInit, signal } from '@angular/core'
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
-import { LoginRequest } from './types/login.type'
+import { finalize, tap } from 'rxjs'
+
+import { ButtonComponent } from '../../../shared/components/button/button.component'
+import { LoadingComponent } from '../../../shared/components/loading/loading.component'
+import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
 import { TokenService } from '../../../shared/services/token.service'
 import { AuthService } from '../auth.service'
-import { finalize, tap } from 'rxjs'
-import { LoadingComponent } from '../../../shared/components/loading/loading.component'
+import { LoginRequest } from './types/login.type'
 
 @Component({
 	selector: 'app-login',

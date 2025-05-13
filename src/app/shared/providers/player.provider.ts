@@ -1,8 +1,9 @@
 import { inject } from '@angular/core'
-import { PlayerService } from '../services/player.service'
+
 import { environment } from '../../../environments/environment'
-import { TokenService } from '../services/token.service'
 import { Player } from '../models/player.model'
+import { PlayerService } from '../services/player.service'
+import { TokenService } from '../services/token.service'
 
 const API_URL = environment.apiUrl
 

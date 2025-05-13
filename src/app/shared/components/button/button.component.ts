@@ -9,10 +9,16 @@ import { RouterLink } from '@angular/router'
 })
 export class ButtonComponent {
 	text = input<string>('')
+
 	buttonType = input<'button' | 'link'>('button')
+
 	url = input<string>('/')
+
 	loading = input<boolean>(false)
+
 	disabled = input<boolean>(false)
+
 	class = input<string>('')
+
 	type = input<'button' | 'submit'>('button')
 }

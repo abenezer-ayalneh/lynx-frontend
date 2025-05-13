@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog'
 import { MatButton } from '@angular/material/button'
+import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog'
 import { Router } from '@angular/router'
+
 import { ColyseusService } from '../../services/colyseus.service'
 
 @Component({

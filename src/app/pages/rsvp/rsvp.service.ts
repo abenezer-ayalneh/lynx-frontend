@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
+import { Injectable } from '@angular/core'
+
 import { ScheduledGame } from '../../shared/types/scheduled-game.type'
 
 @Injectable({

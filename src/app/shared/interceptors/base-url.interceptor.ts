@@ -1,6 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http'
-import { environment } from '../../../environments/environment'
 import { timeout } from 'rxjs'
+
+import { environment } from '../../../environments/environment'
 
 const BASE_URL = environment.apiUrl
 const TIMEOUT = environment.timeout

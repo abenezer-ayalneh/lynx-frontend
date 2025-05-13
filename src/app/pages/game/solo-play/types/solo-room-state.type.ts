@@ -1,5 +1,5 @@
-import { Word } from '../../../../shared/types/word.type'
 import { Score } from '../../../../shared/types/winner.type'
+import { Word } from '../../../../shared/types/word.type'
 
 export interface SoloPlayRoomState {
 	guessing: boolean

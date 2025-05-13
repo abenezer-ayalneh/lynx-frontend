@@ -1,7 +1,8 @@
-import { Injectable, signal } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import CreateMultiplayerRoomDto from './dto/create-multiplayer-room.dto'
+import { Injectable, signal } from '@angular/core'
+
 import { Score } from '../../../shared/types/winner.type'
+import CreateMultiplayerRoomDto from './dto/create-multiplayer-room.dto'
 
 @Injectable({
 	providedIn: 'root',

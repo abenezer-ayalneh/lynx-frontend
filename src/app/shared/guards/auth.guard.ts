@@ -1,9 +1,10 @@
-import { CanActivateFn, RedirectCommand, Router } from '@angular/router'
 import { inject } from '@angular/core'
-import { TokenService } from '../services/token.service'
-import { PlayerService } from '../services/player.service'
-import { AuthService } from '../../pages/auth/auth.service'
+import { CanActivateFn, RedirectCommand, Router } from '@angular/router'
 import { lastValueFrom } from 'rxjs'
+
+import { AuthService } from '../../pages/auth/auth.service'
+import { PlayerService } from '../services/player.service'
+import { TokenService } from '../services/token.service'
 
 export const authGuard: CanActivateFn = async () => {
 	const tokenService = inject(TokenService)

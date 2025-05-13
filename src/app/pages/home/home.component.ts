@@ -1,4 +1,5 @@
 import { Component } from '@angular/core'
+
 import { GameTypeComponent } from '../../shared/components/game-type/game-type.component'
 
 @Component({

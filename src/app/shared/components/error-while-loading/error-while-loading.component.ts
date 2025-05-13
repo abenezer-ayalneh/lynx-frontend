@@ -1,4 +1,5 @@
 import { Component, input } from '@angular/core'
+
 import { ButtonComponent } from '../button/button.component'
 
 @Component({
@@ -9,5 +10,6 @@ import { ButtonComponent } from '../button/button.component'
 })
 export class ErrorWhileLoadingComponent {
 	subTitle = input<string>('')
+
 	retryFn = input<() => void>()
 }
