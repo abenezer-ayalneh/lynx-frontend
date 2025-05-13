@@ -4,14 +4,23 @@
 		[icon]="icons.faTimesCircle"
 		class="text-my-glass text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center absolute right-2 top-2 md:right-4 md:top-4"
 		matTooltip="Leave game"
-		(click)="exitSoloPlay()" />
+		(click)="exitGame()" />
 	<p class="font-semibold text-font-primary text-4xl md:text-7xl uppercase">Game Ended</p>
 	@if (gameType() === GameType.SOLO || shouldShowRestartGameButton()) {
 		<div class="flex flex-col justify-center items-center gap-4 md:gap-8 mt-4 md:mt-8">
 			<p class="font-normal text-font-primary text-xl md:text-3xl text-center">Want to play again?</p>
-			<app-button text="Play New Game" type="button" buttonType="button" (click)="playNewGame()" />
+			<app-button text="Play New Game" type="button" buttonType="button" [disabled]="disablePlayNewGameButton(votes())" (click)="playNewGame()" />
+		</div>
+	} @else {
+		<div class="flex flex-col justify-center items-center gap-4 md:gap-8 mt-4 md:mt-8">
+			<p class="font-normal text-font-primary text-xl md:text-3xl text-center">Well played! Are you up for another?</p>
+			<div class="w-full flex justify-between items-center gap-2">
+				<app-button text="No" type="button" buttonType="button" (click)="voteForGameRestart(false)" />
+				<app-button text="Yes" type="button" buttonType="button" (click)="voteForGameRestart(true)" />
+			</div>
 		</div>
 	}
+
 	<div class="flex flex-col justify-center items-center gap-4 md:gap-8">
 		<p class="font-semibold text-font-primary text-3xl md:text-5xl text-center">
 			Your Total Score:&nbsp;
@@ -20,13 +29,30 @@
 	</div>
 	@if (gameType() === GameType.MULTIPLAYER) {
 		<div class="flex flex-col justify-center items-center gap-4 md:gap-8">
-			<p class="font-bold text-font-primary text-xl md:text-3xl text-center">Rank</p>
-			@for (score of rankedScores; track score; let index = $index) {
-				<p class="font-medium text-font-primary text-xl md:text-3xl text-center">
-					{{ index + 1 }}. {{ score.name }} (<span class="text-my-orange">{{ score.score }}</span
-					>)
-				</p>
-			}
+			<table class="table text-white">
+				<thead>
+					<tr class="text-xl">
+						<th>Rank</th>
+						<th>Name</th>
+						<th>Score</th>
+						<th>Vote</th>
+					</tr>
+				</thead>
+
+				<tbody class="text-lg">
+					@for (score of rankedScores(); track score; let index = $index) {
+						<tr>
+							<td class="text-center">{{ index + 1 }}</td>
+							<td>{{ score.name }}</td>
+							<td class="text-my-orange text-center">{{ score.score }}</td>
+							<td class="text-center">
+								@let playerVote = votes()?.get(score.id);
+								{{ playerVote !== undefined ? (playerVote?.vote ? '✅' : '❌') : '' }}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
 		</div>
 	}
 </div>

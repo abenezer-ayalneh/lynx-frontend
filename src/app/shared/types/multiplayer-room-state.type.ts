@@ -1,6 +1,7 @@
 import { Player } from '../models/player.model'
-import { Word } from './word.type'
+import { RestartGameVote } from './restart-game-vote.type'
 import { Score } from './winner.type'
+import { Word } from './word.type'
 
 export interface MultiplayerRoomState {
 	players: Player[]
@@ -21,4 +22,5 @@ export interface MultiplayerRoomState {
 	words: Word
 	gameStarted: boolean
 	ownerId: number
+	restartGameVote: Map<string, RestartGameVote>
 }
