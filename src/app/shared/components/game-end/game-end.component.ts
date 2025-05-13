@@ -7,7 +7,6 @@ import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { ColyseusService } from '../../services/colyseus.service'
 import { PlayerService } from '../../services/player.service'
 import { GameType } from '../../types/game.type'
-import { RestartGameVote } from '../../types/restart-game-vote.type'
 import { Score } from '../../types/winner.type'
 import { ButtonComponent } from '../button/button.component'
 import { CloseGameDialogComponent } from '../close-game-dialog/close-game-dialog.component'
@@ -22,8 +21,6 @@ export class GameEndComponent implements OnInit {
 	totalScore = input.required<Map<string, Score>>()
 
 	gameType = input.required<GameType>()
-
-	votes = input<Map<string, RestartGameVote>>()
 
 	shouldShowRestartGameButton = input<boolean>(true)
 
@@ -83,16 +80,11 @@ export class GameEndComponent implements OnInit {
 	/**
 	 * Disables the "Play New Game" button based on the current votes and total score.
 	 *
-	 * @param {Map<string, RestartGameVote> | undefined} votes - A map containing the votes for restarting the game. The key is the session ID, and the value is a RestartGameVote object.
 	 * @return {boolean} Returns true if the button should be disabled, otherwise false.
+	 * @param totalScore
 	 */
-	disablePlayNewGameButton(votes: Map<string, RestartGameVote> | undefined): boolean {
-		if (votes) {
-			console.log({ logic: votes.size < this.totalScore().size - 1, votesSize: votes?.size, totalScoreSize: this.totalScore().size })
-			return votes.size < this.totalScore().size - 1
-		}
-
-		return false
+	disablePlayNewGameButton(totalScore: Map<string, Score>): boolean {
+		return Array.from(totalScore.values()).some((score) => !score.vote)
 	}
 
 	/**
