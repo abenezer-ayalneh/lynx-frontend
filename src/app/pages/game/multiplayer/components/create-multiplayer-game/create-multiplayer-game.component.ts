@@ -63,6 +63,10 @@ export class CreateMultiplayerGameComponent implements OnInit {
 		return this.createMultiplayerGameFormGroup.controls.emails as FormArray<FormControl<string | null>>
 	}
 
+	get minStartTime() {
+		return new Date().toISOString().slice(0, 16)
+	}
+
 	ngOnInit() {
 		this.updateLocalTimeData()
 		this.subscribeToGameScheduleType()
