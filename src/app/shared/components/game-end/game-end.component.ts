@@ -1,4 +1,4 @@
-import { Component, computed, input, OnInit, output } from '@angular/core'
+import { Component, input, OnInit, output } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatTooltip } from '@angular/material/tooltip'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
@@ -23,8 +23,6 @@ export class GameEndComponent implements OnInit {
 	gameType = input.required<GameType>()
 
 	shouldShowRestartGameButton = input<boolean>(true)
-
-	rankedScores = computed(() => Array.from(this.totalScore().values()).sort((a, b) => b.score - a.score))
 
 	playNewGameClicked = output()
 
@@ -103,5 +101,9 @@ export class GameEndComponent implements OnInit {
 		}
 
 		return totalScores.get(this.colyseusService.room?.sessionId ?? '') ?? null
+	}
+
+	getRankedScores(totalScore: Map<string, Score>) {
+		return Array.from(totalScore.values()).sort((a, b) => b.score - a.score)
 	}
 }

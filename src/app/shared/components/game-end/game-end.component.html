@@ -35,19 +35,19 @@
 						<th>Rank</th>
 						<th>Name</th>
 						<th>Score</th>
-						<th>Vote</th>
+						<!--						<th>Vote</th>-->
 					</tr>
 				</thead>
 
 				<tbody class="text-lg">
-					@for (score of rankedScores(); track score; let index = $index) {
+					@for (score of getRankedScores(totalScore()); track score; let index = $index) {
 						<tr>
 							<td class="text-center">{{ index + 1 }}</td>
 							<td>{{ score.name }}</td>
 							<td class="text-my-orange text-center">{{ score.score }}</td>
-							<td class="text-center">
-								{{ score.vote !== undefined ? (score.vote ? '✅' : '❌') : '' }}
-							</td>
+							<!--							<td class="text-center">-->
+							<!--								{{ score.vote !== undefined ? (score.vote ? '✅' : '❌') : '' }}-->
+							<!--							</td>-->
 						</tr>
 					}
 				</tbody>
