@@ -91,6 +91,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.subscriptions.unsubscribe()
+		this.colyseusService.leaveRoom()
 	}
 
 	@HostListener('window:keydown.enter', ['$event'])
@@ -107,15 +108,6 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 	unloadNotification(event: BeforeUnloadEvent): void {
 		event.preventDefault()
 		event.returnValue = 'Are you sure you want to leave?' // For legacy compatability
-	}
-
-	@HostListener('window:popstate', ['$event'])
-	onPopState(event: PopStateEvent) {
-		//Here you can handle your modal
-		event.preventDefault()
-		event.stopPropagation()
-		event.stopImmediatePropagation()
-		event.returnValue = false // For legacy compatability
 	}
 
 	initSoloPlay() {
