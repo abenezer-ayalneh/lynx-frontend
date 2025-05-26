@@ -23,7 +23,7 @@ import { Game } from '../../../shared/models/game.model'
 import { ColyseusService } from '../../../shared/services/colyseus.service'
 import { TokenService } from '../../../shared/services/token.service'
 import { GameType } from '../../../shared/types/game.type'
-import { PageState } from '../../../shared/types/page-state.type'
+import { RequestState } from '../../../shared/types/page-state.type'
 import { Word } from '../../../shared/types/word.type'
 import { SoloPlayService } from './solo-play.service'
 import { SoloPlayRoomState } from './types/solo-room-state.type'
@@ -52,7 +52,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 
 	roomState = signal<SoloPlayRoomState | null>(null)
 
-	pageState = signal<PageState>(PageState.LOADED)
+	pageState = signal<RequestState>(RequestState.READY)
 
 	guessField = viewChild(TextFieldComponent)
 
@@ -64,7 +64,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 
 	wrongGuessAudio = new Audio()
 
-	protected readonly PageState = PageState
+	protected readonly PageState = RequestState
 
 	protected readonly GameType = GameType
 
@@ -116,7 +116,7 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 				next: (game) => {
 					this.createColyseusGame(game)
 				},
-				error: () => this.pageState.set(PageState.ERROR),
+				error: () => this.pageState.set(RequestState.ERROR),
 			}),
 		)
 	}
@@ -134,9 +134,9 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 				this.colyseusService.setRoom = soloPlayRoomStateRoom
 				this.subscribeToColyseusMessages(soloPlayRoomStateRoom)
 				soloPlayRoomStateRoom.onStateChange((state) => this.roomState.set(state))
-				this.pageState.set(PageState.LOADED)
+				this.pageState.set(RequestState.READY)
 			})
-			.catch(() => this.pageState.set(PageState.ERROR))
+			.catch(() => this.pageState.set(RequestState.ERROR))
 	}
 
 	/**

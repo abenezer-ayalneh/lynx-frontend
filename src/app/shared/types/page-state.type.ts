@@ -1,6 +1,8 @@
-export enum PageState {
+export enum RequestState {
 	LOADING = 'LOADING',
-	LOADED = 'LOADED',
+	RELOADING = 'RELOADING',
+	READY = 'READY',
 	EMPTY = 'EMPTY',
 	ERROR = 'ERROR',
+	IDLE = 'IDLE',
 }

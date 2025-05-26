@@ -24,7 +24,7 @@ import { ColyseusService } from '../../../shared/services/colyseus.service'
 import { PlayerService } from '../../../shared/services/player.service'
 import { GameType } from '../../../shared/types/game.type'
 import { MultiplayerRoomState } from '../../../shared/types/multiplayer-room-state.type'
-import { PageState } from '../../../shared/types/page-state.type'
+import { RequestState } from '../../../shared/types/page-state.type'
 import { Word } from '../../../shared/types/word.type'
 import { MultiplayerService } from './multiplayer.service'
 
@@ -52,7 +52,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	roomState = signal<MultiplayerRoomState | null>(null)
 
-	pageState = signal<PageState>(PageState.LOADED)
+	pageState = signal<RequestState>(RequestState.READY)
 
 	mic = signal<boolean>(false)
 
@@ -68,7 +68,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	wrongGuessAudio = new Audio()
 
-	protected readonly PageState = PageState
+	protected readonly PageState = RequestState
 
 	protected readonly GameType = GameType
 
@@ -122,16 +122,16 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 					this.initiateVoiceChat(room)
 
 					room.onStateChange((state) => this.roomState.set({ ...state }))
-					this.pageState.set(PageState.LOADED)
+					this.pageState.set(RequestState.READY)
 				})
 				.catch((e) => {
 					this.error = 'Error joining room'
-					this.pageState.set(PageState.ERROR)
+					this.pageState.set(RequestState.ERROR)
 					console.error(e)
 				})
 		} else {
 			this.error = 'No room id provided'
-			this.pageState.set(PageState.LOADED)
+			this.pageState.set(RequestState.READY)
 		}
 	}
 

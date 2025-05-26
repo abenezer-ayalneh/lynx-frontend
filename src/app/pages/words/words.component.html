@@ -1,0 +1,55 @@
+<div class="w-full h-full flex flex-col justify-start items-center p-2 md:p-6 relative bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl">
+	<div class="w-full h-fit flex justify-between items-center sticky top-0">
+		<h1 class="text-font-primary text-lg md:text-2xl font-normal">Manage Words Database</h1>
+	</div>
+	<br />
+	<div class="w-full h-fit flex justify-between items-center sticky top-0">
+		<app-button text="Add" (click)="openAddWordDialog()" />
+		<app-text-field type="text" autoComplete="new-search" placeholder="Search" [control]="searchControl" class="w-fit" />
+	</div>
+	<br />
+
+	<div class="w-full h-fit overflow-y-scroll relative" (scroll)="onScroll($event)">
+		<table class="table text-white">
+			<thead class="bg-my-blue sticky top-0 z-[1]">
+				<tr class="text-lg">
+					<th>Key</th>
+					<th>Cue 1</th>
+					<th>Cue 2</th>
+					<th>Cue 3</th>
+					<th>Cue 4</th>
+					<th>Cue 5</th>
+					<th class="text-center">Active</th>
+					<th class="text-center">Actions</th>
+				</tr>
+			</thead>
+
+			<tbody class="text-base">
+				@for (word of wordsService.words; track $index) {
+					<tr>
+						<td>
+							<span class="text-my-orange font-bold">{{ word.key }}</span>
+						</td>
+						<td [innerHTML]="word.cue_word_1 | highlightKey: word.key : 'text-my-orange'"></td>
+						<td [innerHTML]="word.cue_word_2 | highlightKey: word.key : 'text-my-orange'"></td>
+						<td [innerHTML]="word.cue_word_3 | highlightKey: word.key : 'text-my-orange'"></td>
+						<td [innerHTML]="word.cue_word_4 | highlightKey: word.key : 'text-my-orange'"></td>
+						<td [innerHTML]="word.cue_word_5 | highlightKey: word.key : 'text-my-orange'"></td>
+						<td class="text-center">{{ word.status ? '✅' : '❌' }}</td>
+						<td class="text-center">
+							<button mat-icon-button aria-label="Edit word" matTooltip="Edit word" (click)="openEditWordDialog(word)">
+								<mat-icon class="text-my-orange">edit</mat-icon>
+							</button>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+
+	<!--  <div class="join text-white">-->
+	<!--    <button class="join-item btn btn-sm">«</button>-->
+	<!--    <button class="join-item btn btn-sm">Page {{page()}}</button>-->
+	<!--    <button class="join-item btn btn-sm">»</button>-->
+	<!--  </div>-->
+</div>

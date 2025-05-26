@@ -43,4 +43,8 @@
 	@if (control().errors?.['emailTaken']) {
 		<p class="text-red-400">Email taken. Please try another email.</p>
 	}
+
+	@if (control().errors?.['cueContainsKey']) {
+		<p class="text-red-400">Cue word doesn't contain the key word.</p>
+	}
 }

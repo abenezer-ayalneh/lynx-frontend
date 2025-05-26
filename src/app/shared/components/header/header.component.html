@@ -18,15 +18,26 @@
 		}
 	</div>
 	<div class="w-1/3 flex justify-end items-center">
-		@if (player()) {
+		@let letPlayer = player();
+		@if (letPlayer) {
 			<div class="dropdown dropdown-end">
 				<div tabIndex="0" role="button" class="flex justify-end items-center gap-2 pl-2 cursor-pointer">
 					<p class="font-normal text-sm lg:text-lg text-font-primary">
-						{{ player()?.name }}
+						{{ letPlayer.name }}
 					</p>
 					<img [src]="'images/logos/profile-image-sample.svg'" class="h-[36px] lg:h-[56px]" alt="logo" />
 				</div>
 				<span tabindex="0" class="dropdown-content menu bg-my-glass z-[100] w-full p-2 shadow rounded-b-lg">
+					@if (letPlayer.role === Role.ADMIN) {
+						<p
+							class="font-semibold text-sm lg:text-lg text-font-primary p-2 cursor-pointer hover:bg-my-glass hover:rounded-sm"
+							(click)="manageWords()"
+							(keyup)="manageWords()"
+							role="button"
+							tabindex="1">
+							Manage
+						</p>
+					}
 					<p
 						class="font-semibold text-sm lg:text-lg text-font-primary p-2 cursor-pointer hover:bg-my-glass hover:rounded-sm"
 						(click)="logout()"

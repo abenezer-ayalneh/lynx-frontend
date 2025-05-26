@@ -7,10 +7,12 @@ import { Pipe, PipeTransform } from '@angular/core'
 	name: 'highlightKey',
 })
 export class HighlightKeyPipe implements PipeTransform {
-	transform(sentence: string, keyword: string): unknown {
+	transform(sentence: string, keyword: string, extraClasses?: string): unknown {
 		if (!keyword) return sentence
 
-		const regex = new RegExp(`(${keyword})`, 'gi') // Case-insensitive match
-		return sentence.replace(regex, `<span class="font-semibold text-my-orange">$1</span>`)
+		const colorClassAttribute = extraClasses ? `${extraClasses}` : 'text-my-orange'
+
+		const regex = new RegExp(`(${keyword})`, 'i') // Case-insensitive match
+		return sentence.replace(regex, `<span class="font-semibold ${colorClassAttribute}">$1</span>`)
 	}
 }

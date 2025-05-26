@@ -1,5 +1,5 @@
-@if (pageState() === PageState.LOADED) {
-	<div class="h-full w-full">
+@if (pageState() === PageState.READY) {
+	<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl overflow-hidden">
 		@if (roomState(); as state) {
 			@switch (state.gameState) {
 				@case ('START_COUNTDOWN') {
