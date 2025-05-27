@@ -8,15 +8,7 @@
 	@if (gameType() === GameType.SOLO || shouldShowRestartGameButton()) {
 		<div class="flex flex-col justify-center items-center gap-4 md:gap-8 mt-4 md:mt-8">
 			<p class="font-normal text-font-primary text-xl md:text-3xl text-center">Want to play again?</p>
-			<app-button text="Play New Game" type="button" buttonType="button" (click)="playNewGame()" [disabled]="disablePlayNewGameButton(totalScore())" />
-		</div>
-	} @else {
-		<div class="flex flex-col justify-center items-center gap-4 md:gap-8 mt-4 md:mt-8">
-			<p class="font-normal text-font-primary text-xl md:text-3xl text-center">Well played! Are you up for another?</p>
-			<div class="w-full flex justify-between items-center gap-2">
-				<app-button text="No" type="button" buttonType="button" (click)="voteForGameRestart(false)" />
-				<app-button text="Yes" type="button" buttonType="button" (click)="voteForGameRestart(true)" />
-			</div>
+			<app-button text="Play New Game" type="button" buttonType="button" (click)="playNewGame()" />
 		</div>
 	}
 
