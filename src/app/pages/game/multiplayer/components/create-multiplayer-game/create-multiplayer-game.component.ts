@@ -6,7 +6,7 @@ import { Router } from '@angular/router'
 import { TZDateMini } from '@date-fns/tz'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { format } from 'date-fns'
+import { constructNow, format, subDays } from 'date-fns'
 import { combineLatest, finalize } from 'rxjs'
 
 import { ButtonComponent } from '../../../../../shared/components/button/button.component'
@@ -64,7 +64,7 @@ export class CreateMultiplayerGameComponent implements OnInit {
 	}
 
 	get minStartTime() {
-		return new Date().toISOString().slice(0, 16)
+		return subDays(constructNow(new Date()), 1).toISOString().slice(0, 16)
 	}
 
 	ngOnInit() {
