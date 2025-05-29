@@ -1,24 +1,17 @@
-import { NgClass } from '@angular/common'
 import { Component, effect, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
-import { MatDialog } from '@angular/material/dialog'
-import { MatTooltip } from '@angular/material/tooltip'
 import { ActivatedRoute } from '@angular/router'
-import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faMicrophone, faMicrophoneSlash, faPaperPlane, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { Room } from 'colyseus.js'
 import { Subscription } from 'rxjs'
 
-import { CloseGameDialogComponent } from '../../../shared/components/close-game-dialog/close-game-dialog.component'
-import { CountdownComponent } from '../../../shared/components/countdown/countdown.component'
 import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
 import { GameEndComponent } from '../../../shared/components/game-end/game-end.component'
+import { GamePlayComponent } from '../../../shared/components/game-play/game-play.component'
 import { GameStartComponent } from '../../../shared/components/game-start/game-start.component'
 import { LoadingComponent } from '../../../shared/components/loading/loading.component'
-import { RoundComponent } from '../../../shared/components/round/round.component'
 import { RoundResultComponent } from '../../../shared/components/round-result/round-result.component'
 import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
-import { WordBubbleComponent } from '../../../shared/components/word-bubble/word-bubble.component'
 import { WRONG_GUESS } from '../../../shared/constants/colyseus-message.constant'
 import { ColyseusService } from '../../../shared/services/colyseus.service'
 import { PlayerService } from '../../../shared/services/player.service'
@@ -30,20 +23,7 @@ import { MultiplayerService } from './multiplayer.service'
 
 @Component({
 	selector: 'app-multiplayer',
-	imports: [
-		ErrorWhileLoadingComponent,
-		GameStartComponent,
-		RoundResultComponent,
-		GameEndComponent,
-		RoundComponent,
-		CountdownComponent,
-		WordBubbleComponent,
-		TextFieldComponent,
-		FaIconComponent,
-		MatTooltip,
-		LoadingComponent,
-		NgClass,
-	],
+	imports: [ErrorWhileLoadingComponent, GameStartComponent, RoundResultComponent, GameEndComponent, LoadingComponent, GamePlayComponent],
 	templateUrl: './multiplayer.component.html',
 	styleUrl: './multiplayer.component.scss',
 })
@@ -75,7 +55,6 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 	constructor(
 		private readonly activatedRoute: ActivatedRoute,
 		private readonly playerService: PlayerService,
-		private readonly matDialog: MatDialog,
 		private readonly multiplayerService: MultiplayerService,
 		protected readonly colyseusService: ColyseusService,
 	) {
@@ -85,11 +64,6 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		effect(() => {
 			const roomState = this.roomState()
 			if (roomState) {
-				// if (roomState.gameState === 'GAME_STARTED') {
-				// 	this.focusOnGuessInput()
-				// 	this.inputFieldCleanStart()
-				// }
-
 				if (this.colyseusService.room?.sessionId && roomState.sessionScore.has(this.colyseusService.room?.sessionId)) {
 					this.multiplayerService.sessionScore.set(roomState.sessionScore.get(this.colyseusService.room.sessionId))
 				}
@@ -151,19 +125,6 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		return scores.get(this.colyseusService.room?.sessionId ?? '') ?? 0
 	}
 
-	/**
-	 * Submit the guess provided in the attached input field
-	 */
-	@HostListener('window:keydown.enter', ['$event'])
-	submitGuess() {
-		const guess = this.multiplayerPlayFormGroup.value.guess
-
-		if (guess) {
-			this.multiplayerPlayFormGroup.controls.guess.disable()
-			this.colyseusService.sendMessage<{ guess: string }>('guess', { guess })
-		}
-	}
-
 	@HostListener('window:beforeunload', ['$event'])
 	unloadNotification(event: BeforeUnloadEvent): void {
 		event.preventDefault()
@@ -186,15 +147,6 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		this.guessField()?.focus()
 	}
 
-	/**
-	 * Exit the currently being played multiplayer game
-	 */
-	exitGame() {
-		this.matDialog.open(CloseGameDialogComponent, {
-			width: '250px',
-		})
-	}
-
 	startNewGame() {
 		this.colyseusService.room?.send('start-new-game')
 	}
@@ -207,15 +159,6 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		this.multiplayerPlayFormGroup.controls.guess.enable()
 		this.multiplayerPlayFormGroup.controls.guess.reset()
 		this.focusOnGuessInput()
-	}
-
-	toggleMic() {
-		// this.mic.update((currentMic) => !currentMic)
-		if (!this.mic() && this.colyseusService.room) {
-			this.initiateVoiceChat(this.colyseusService.room)
-		} else {
-			this.mic.set(false)
-		}
 	}
 
 	private subscribeToColyseusMessages(room: Room<MultiplayerRoomState>) {

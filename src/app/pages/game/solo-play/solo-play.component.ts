@@ -12,6 +12,7 @@ import { CloseGameDialogComponent } from '../../../shared/components/close-game-
 import { CountdownComponent } from '../../../shared/components/countdown/countdown.component'
 import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
 import { GameEndComponent } from '../../../shared/components/game-end/game-end.component'
+import { GamePlayComponent } from '../../../shared/components/game-play/game-play.component'
 import { GameStartComponent } from '../../../shared/components/game-start/game-start.component'
 import { LoadingComponent } from '../../../shared/components/loading/loading.component'
 import { RoundComponent } from '../../../shared/components/round/round.component'
@@ -43,6 +44,7 @@ import { SoloPlayRoomState } from './types/solo-room-state.type'
 		FaIconComponent,
 		MatTooltip,
 		NgClass,
+		GamePlayComponent,
 	],
 	templateUrl: './solo-play.component.html',
 	styleUrl: './solo-play.component.scss',
