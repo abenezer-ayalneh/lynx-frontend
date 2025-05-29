@@ -86,6 +86,11 @@
               "buildTarget": "lynx-frontend-angular:build:development"
             }
           },
+          "options": {
+            "allowedHosts": [
+              "dogfish-together-locust.ngrok-free.app"
+            ]
+          },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {

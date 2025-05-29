@@ -64,7 +64,6 @@ export class WordsComponent implements OnInit {
 	private subscribeToSearch() {
 		this.searchControl.valueChanges.pipe(debounce(() => interval(DEBOUNCE_DELAY))).subscribe({
 			next: (searchQuery) => {
-				console.log({ searchQuery })
 				if (searchQuery) {
 					this.fetchWordsEffect({ searchQuery, clearData: true })
 				} else {

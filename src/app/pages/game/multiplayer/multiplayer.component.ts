@@ -36,8 +36,6 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	mic = signal<boolean>(false)
 
-	guessField = viewChild(TextFieldComponent)
-
 	multiplayerPlayFormGroup = new FormGroup({
 		guess: new FormControl(''),
 	})
@@ -45,8 +43,6 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 	error: string | null = null
 
 	icons = { faPaperPlane, faTimesCircle, faMicrophone, faMicrophoneSlash }
-
-	wrongGuessAudio = new Audio()
 
 	protected readonly PageState = RequestState
 
@@ -58,9 +54,6 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		private readonly multiplayerService: MultiplayerService,
 		protected readonly colyseusService: ColyseusService,
 	) {
-		this.wrongGuessAudio.src = 'audios/wrong-guess.wav'
-		this.wrongGuessAudio.volume = 0.2
-
 		effect(() => {
 			const roomState = this.roomState()
 			if (roomState) {
@@ -92,7 +85,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 				.joinById<MultiplayerRoomState>(roomId)
 				.then((room) => {
 					this.colyseusService.setRoom = room
-					this.subscribeToColyseusMessages(room)
+					// this.subscribeToColyseusMessages(room)
 					this.initiateVoiceChat(room)
 
 					room.onStateChange((state) => this.roomState.set({ ...state }))
@@ -109,24 +102,12 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	/**
-	 * Return words that have true value for the shown attribute
-	 * @param word
-	 */
-	getVisibleWords(word: Word | undefined) {
-		if (word) {
-			return word.cues.filter((cue) => cue.shown)
-		}
-
-		return []
-	}
-
 	getPlayerScore(scores: Map<string, number>) {
 		return scores.get(this.colyseusService.room?.sessionId ?? '') ?? 0
 	}
 
 	@HostListener('window:beforeunload', ['$event'])
-	unloadNotification(event: BeforeUnloadEvent): void {
+	unloadConfirmation(event: BeforeUnloadEvent): void {
 		event.preventDefault()
 		event.returnValue = 'Are you sure you want to leave?' // For legacy compatability
 	}
@@ -140,33 +121,12 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		event.returnValue = false // For legacy compatability
 	}
 
-	/**
-	 * Give the input field( the guess field) focus
-	 */
-	focusOnGuessInput() {
-		this.guessField()?.focus()
-	}
-
 	startNewGame() {
 		this.colyseusService.room?.send('start-new-game')
 	}
 
 	isPlayerGameOwner() {
 		return this.roomState()?.ownerId === this.playerService.getPlayer.getValue()?.id
-	}
-
-	inputFieldCleanStart() {
-		this.multiplayerPlayFormGroup.controls.guess.enable()
-		this.multiplayerPlayFormGroup.controls.guess.reset()
-		this.focusOnGuessInput()
-	}
-
-	private subscribeToColyseusMessages(room: Room<MultiplayerRoomState>) {
-		room.onMessage(WRONG_GUESS, () => {
-			this.wrongGuessAudio.play()
-			this.guessField()?.shake()
-			this.inputFieldCleanStart()
-		})
 	}
 
 	private initiateVoiceChat(room: Room<MultiplayerRoomState>, time = 1000) {

@@ -80,7 +80,7 @@ export class WordDialogComponent implements OnInit {
 						this.wordsService.closeModals()
 					},
 					error: () => {
-						console.log('Error creating word')
+						console.error('Error creating word')
 					},
 				})
 		}
@@ -95,7 +95,7 @@ export class WordDialogComponent implements OnInit {
 						this.wordsService.closeModals()
 					},
 					error: () => {
-						console.log('Error updating word')
+						console.error('Error updating word')
 					},
 				})
 		}
@@ -113,7 +113,7 @@ export class WordDialogComponent implements OnInit {
 						this.wordsService.closeModals()
 					},
 					error: () => {
-						console.log('Error deleting word')
+						console.error('Error deleting word')
 					},
 				})
 		}
