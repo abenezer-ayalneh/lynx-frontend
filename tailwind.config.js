@@ -10,7 +10,7 @@ module.exports = {
 				my: {
 					blue: '#0D3B66',
 					orange: '#F87060',
-					burgundy: '#773344',
+					burgundy: '#601410',
 					green: '#0C740A',
 					glass: '#FFFFFF10',
 				},

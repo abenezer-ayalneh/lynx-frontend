@@ -1,29 +1,41 @@
-import { Component, effect, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
+import { NgClass } from '@angular/common'
+import { Component, effect, HostListener, OnDestroy, OnInit, signal } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
+import { MatDialog } from '@angular/material/dialog'
+import { MatTooltip } from '@angular/material/tooltip'
 import { ActivatedRoute } from '@angular/router'
-import { faMicrophone, faMicrophoneSlash, faPaperPlane, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { FaIconComponent } from '@fortawesome/angular-fontawesome'
+import { faMicrophone, faMicrophoneSlash, faPaperPlane, faTimes,faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { Room } from 'colyseus.js'
 import { Subscription } from 'rxjs'
 
+import { CloseGameDialogComponent } from '../../../shared/components/close-game-dialog/close-game-dialog.component'
 import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
 import { GameEndComponent } from '../../../shared/components/game-end/game-end.component'
 import { GamePlayComponent } from '../../../shared/components/game-play/game-play.component'
 import { GameStartComponent } from '../../../shared/components/game-start/game-start.component'
 import { LoadingComponent } from '../../../shared/components/loading/loading.component'
 import { RoundResultComponent } from '../../../shared/components/round-result/round-result.component'
-import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
-import { WRONG_GUESS } from '../../../shared/constants/colyseus-message.constant'
 import { ColyseusService } from '../../../shared/services/colyseus.service'
 import { PlayerService } from '../../../shared/services/player.service'
 import { GameType } from '../../../shared/types/game.type'
 import { MultiplayerRoomState } from '../../../shared/types/multiplayer-room-state.type'
 import { RequestState } from '../../../shared/types/page-state.type'
-import { Word } from '../../../shared/types/word.type'
 import { MultiplayerService } from './multiplayer.service'
 
 @Component({
 	selector: 'app-multiplayer',
-	imports: [ErrorWhileLoadingComponent, GameStartComponent, RoundResultComponent, GameEndComponent, LoadingComponent, GamePlayComponent],
+	imports: [
+		ErrorWhileLoadingComponent,
+		GameStartComponent,
+		RoundResultComponent,
+		GameEndComponent,
+		LoadingComponent,
+		GamePlayComponent,
+		FaIconComponent,
+		MatTooltip,
+		NgClass,
+	],
 	templateUrl: './multiplayer.component.html',
 	styleUrl: './multiplayer.component.scss',
 })
@@ -42,7 +54,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	error: string | null = null
 
-	icons = { faPaperPlane, faTimesCircle, faMicrophone, faMicrophoneSlash }
+	icons = { faPaperPlane, faTimesCircle, faMicrophone, faMicrophoneSlash, faTimes }
 
 	protected readonly PageState = RequestState
 
@@ -52,6 +64,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		private readonly activatedRoute: ActivatedRoute,
 		private readonly playerService: PlayerService,
 		private readonly multiplayerService: MultiplayerService,
+		private readonly matDialog: MatDialog,
 		protected readonly colyseusService: ColyseusService,
 	) {
 		effect(() => {
@@ -121,12 +134,26 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		event.returnValue = false // For legacy compatability
 	}
 
+	@HostListener('window:keydown.control.m')
+	toggleMic() {
+		this.mic.update((currentValue) => !currentValue)
+	}
+
 	startNewGame() {
 		this.colyseusService.room?.send('start-new-game')
 	}
 
 	isPlayerGameOwner() {
 		return this.roomState()?.ownerId === this.playerService.getPlayer.getValue()?.id
+	}
+
+	/**
+	 * Exit the currently being played multiplayer game
+	 */
+	exitGame() {
+		this.matDialog.open(CloseGameDialogComponent, {
+			width: '250px',
+		})
 	}
 
 	private initiateVoiceChat(room: Room<MultiplayerRoomState>, time = 1000) {
