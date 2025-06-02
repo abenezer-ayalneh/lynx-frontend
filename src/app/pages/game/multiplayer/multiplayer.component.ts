@@ -1,11 +1,11 @@
 import { NgClass } from '@angular/common'
-import { Component, effect, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
+import { AfterViewInit, Component, effect, HostListener, OnDestroy, signal, viewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatTooltip } from '@angular/material/tooltip'
 import { ActivatedRoute } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faMicrophone, faMicrophoneSlash, faPaperPlane, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { RemoteTrack, Room as LiveKitRoom, RoomEvent, Track } from 'livekit-client'
+import { Room as LiveKitRoom, RoomEvent, Track } from 'livekit-client'
 import { Subscription } from 'rxjs'
 
 import { environment } from '../../../../environments/environment'
@@ -42,7 +42,7 @@ import { MicState } from './types/mic-state.type'
 	templateUrl: './multiplayer.component.html',
 	styleUrl: './multiplayer.component.scss',
 })
-export class MultiplayerComponent implements OnInit, OnDestroy {
+export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 	subscriptions$ = new Subscription()
 
 	roomState = signal<MultiplayerRoomState | null>(null)
@@ -51,7 +51,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	mic = signal<MicState>(MicState.LOADING)
 
-	parentElement = viewChild.required<HTMLDivElement>('parentElement')
+	parentElement = viewChild<HTMLDivElement>('parentElement')
 
 	room: LiveKitRoom | null = null
 
@@ -83,7 +83,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		})
 	}
 
-	ngOnInit() {
+	ngAfterViewInit() {
 		this.joinMultiplayerGame()
 	}
 
@@ -185,7 +185,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 				const room = new LiveKitRoom()
 				await room.connect(environment.liveKitServerUrl, token)
 				this.room = room
-				room.on(RoomEvent.TrackSubscribed, this.handleTrackSubscribed)
+				room.on(RoomEvent.TrackSubscribed, (track) => track.attach())
 
 				// Enables the microphone and publishes it to a new audio track
 				// TODO: test this on the hosted version and if it has a glitch, add {echoCancellation: false} option
@@ -203,13 +203,5 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 				console.log({ err })
 			},
 		})
-	}
-
-	private handleTrackSubscribed(track: RemoteTrack) {
-		// Attach track to a new HTMLVideoElement or HTMLAudioElement
-		const element = track.attach()
-		this.parentElement().appendChild(element)
-		// Or attach to existing element
-		// track.attach(element)
 	}
 }

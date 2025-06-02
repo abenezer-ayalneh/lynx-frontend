@@ -28,7 +28,7 @@
 			}
 		</div>
 
-		<div #parentElement class="w-full h-16 flex justify-center items-center gap-4">
+		<div class="w-full h-16 flex justify-center items-center gap-4">
 			<button
 				class="w-fit h-12 disabled:bg-[#333537] disabled:rounded-md"
 				(click)="toggleMic()"
@@ -63,3 +63,5 @@
 } @else if (pageState() === PageState.ERROR && error) {
 	<app-error-while-loading [subTitle]="error" />
 }
+
+<div #parentElement></div>

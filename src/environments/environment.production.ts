@@ -3,5 +3,5 @@ export const environment = {
 	apiUrl: 'https://api.gametrix.org/api',
 	colyseusUrl: 'wss://api.gametrix.org/api',
 	timeout: 10000,
-	liveKitServerUrl: 'ws://localhost:7880',
+	liveKitServerUrl: 'wss://livekit.gametrix.org',
 }
