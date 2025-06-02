@@ -28,12 +28,25 @@
 			}
 		</div>
 
-		<div class="w-full h-16 flex justify-center items-center gap-4">
-			<button class="w-fit h-12" (click)="toggleMic()" [matTooltip]="mic() ? 'Turn off microphone (CTRL + m)' : 'Turn on microphone (CTRL + m)'">
+		<div #parentElement class="w-full h-16 flex justify-center items-center gap-4">
+			<button
+				class="w-fit h-12 disabled:bg-[#333537] disabled:rounded-md"
+				(click)="toggleMic()"
+				[disabled]="mic() === MicState.LOADING"
+				[matTooltip]="mic() ? 'Turn off microphone (CTRL + m)' : 'Turn on microphone (CTRL + m)'">
 				<div
 					class="w-16 h-full px-2 flex justify-center items-center rounded-md hover:rounded-lg"
-					[ngClass]="{ 'bg-white text-[#333537]': mic(), 'bg-[#f2b8b5] text-my-burgundy': !mic() }">
-					<fa-icon [icon]="mic() ? icons.faMicrophone : icons.faMicrophoneSlash" class="text-xl flex justify-center items-center" />
+					[ngClass]="{
+						'bg-white text-[#333537]': mic() === MicState.ON,
+						'bg-[#f2b8b5] text-my-burgundy': mic() === MicState.MUTED || mic() === MicState.NOT_ALLOWED,
+					}">
+					@if (mic() === MicState.LOADING) {
+						<span class="loading loading-dots loading-md"></span>
+					} @else {
+						<fa-icon
+							[icon]="mic() === MicState.ON ? icons.faMicrophone : icons.faMicrophoneSlash"
+							class="text-xl flex justify-center items-center" />
+					}
 				</div>
 			</button>
 			<button class="w-fit h-12" (click)="exitGame()">

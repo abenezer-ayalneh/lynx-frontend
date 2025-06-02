@@ -1,27 +1,30 @@
 import { NgClass } from '@angular/common'
-import { Component, effect, HostListener, OnDestroy, OnInit, signal } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
+import { Component, effect, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatTooltip } from '@angular/material/tooltip'
 import { ActivatedRoute } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
-import { faMicrophone, faMicrophoneSlash, faPaperPlane, faTimes,faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { Room } from 'colyseus.js'
+import { faMicrophone, faMicrophoneSlash, faPaperPlane, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { RemoteTrack, Room as LiveKitRoom, RoomEvent, Track } from 'livekit-client'
 import { Subscription } from 'rxjs'
 
+import { environment } from '../../../../environments/environment'
 import { CloseGameDialogComponent } from '../../../shared/components/close-game-dialog/close-game-dialog.component'
 import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
 import { GameEndComponent } from '../../../shared/components/game-end/game-end.component'
 import { GamePlayComponent } from '../../../shared/components/game-play/game-play.component'
 import { GameStartComponent } from '../../../shared/components/game-start/game-start.component'
 import { LoadingComponent } from '../../../shared/components/loading/loading.component'
+import { RequestPermissionComponent } from '../../../shared/components/request-permission/request-permission.component'
 import { RoundResultComponent } from '../../../shared/components/round-result/round-result.component'
 import { ColyseusService } from '../../../shared/services/colyseus.service'
+import { LiveKitService } from '../../../shared/services/live-kit.service'
 import { PlayerService } from '../../../shared/services/player.service'
 import { GameType } from '../../../shared/types/game.type'
 import { MultiplayerRoomState } from '../../../shared/types/multiplayer-room-state.type'
 import { RequestState } from '../../../shared/types/page-state.type'
 import { MultiplayerService } from './multiplayer.service'
+import { MicState } from './types/mic-state.type'
 
 @Component({
 	selector: 'app-multiplayer',
@@ -46,11 +49,11 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	pageState = signal<RequestState>(RequestState.READY)
 
-	mic = signal<boolean>(false)
+	mic = signal<MicState>(MicState.LOADING)
 
-	multiplayerPlayFormGroup = new FormGroup({
-		guess: new FormControl(''),
-	})
+	parentElement = viewChild.required<HTMLDivElement>('parentElement')
+
+	room: LiveKitRoom | null = null
 
 	error: string | null = null
 
@@ -60,11 +63,14 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	protected readonly GameType = GameType
 
+	protected readonly MicState = MicState
+
 	constructor(
 		private readonly activatedRoute: ActivatedRoute,
 		private readonly playerService: PlayerService,
 		private readonly multiplayerService: MultiplayerService,
 		private readonly matDialog: MatDialog,
+		private readonly liveKitService: LiveKitService,
 		protected readonly colyseusService: ColyseusService,
 	) {
 		effect(() => {
@@ -82,9 +88,9 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
+		this.room?.disconnect(true)
 		this.subscriptions$.unsubscribe()
 		this.multiplayerService.sessionScore.set(undefined)
-		this.mic.set(false)
 	}
 
 	joinMultiplayerGame() {
@@ -99,7 +105,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 				.then((room) => {
 					this.colyseusService.setRoom = room
 					// this.subscribeToColyseusMessages(room)
-					this.initiateVoiceChat(room)
+					this.initiateVoiceChat(room.roomId, room.sessionId)
 
 					room.onStateChange((state) => this.roomState.set({ ...state }))
 					this.pageState.set(RequestState.READY)
@@ -136,7 +142,24 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 
 	@HostListener('window:keydown.control.m')
 	toggleMic() {
-		this.mic.update((currentValue) => !currentValue)
+		const micStatus = this.room?.localParticipant?.isMicrophoneEnabled
+		const micTrackPublication = this.room?.localParticipant?.getTrackPublication(Track.Source.Microphone)
+
+		if (micStatus !== undefined && micTrackPublication) {
+			const mic = this.mic()
+			if (mic === MicState.ON) {
+				micTrackPublication.mute().then(() => this.mic.set(MicState.MUTED))
+			} else if (mic === MicState.MUTED) {
+				micTrackPublication.unmute().then(() => this.mic.set(MicState.ON))
+			}
+		}
+		// Ask for permission
+		else {
+			this.matDialog.open(RequestPermissionComponent, {
+				height: '400px',
+				width: '600px',
+			})
+		}
 	}
 
 	startNewGame() {
@@ -156,48 +179,37 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
 		})
 	}
 
-	private initiateVoiceChat(room: Room<MultiplayerRoomState>, time = 1000) {
-		navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-			this.mic.set(true)
-			const mediaRecorder = new MediaRecorder(stream)
-			mediaRecorder.start()
+	private initiateVoiceChat(colyseusRoomId: string, sessionId: string) {
+		this.liveKitService.getToken(colyseusRoomId, sessionId).subscribe({
+			next: async ({ token }) => {
+				const room = new LiveKitRoom()
+				await room.connect(environment.liveKitServerUrl, token)
+				this.room = room
+				room.on(RoomEvent.TrackSubscribed, this.handleTrackSubscribed)
 
-			let audioChunks: Blob[] = []
-
-			mediaRecorder.addEventListener('dataavailable', function (event) {
-				audioChunks.push(event.data)
-			})
-
-			mediaRecorder.addEventListener('stop', () => {
-				const audioBlob = new Blob(audioChunks)
-
-				audioChunks = []
-
-				const fileReader = new FileReader()
-				fileReader.readAsDataURL(audioBlob)
-				fileReader.onloadend = () => {
-					const base64String = fileReader.result
-
-					if (!this.mic()) return
-
-					room.send('talk', base64String)
-				}
-
-				mediaRecorder.start()
-
-				setTimeout(() => {
-					mediaRecorder.stop()
-				}, time)
-			})
-
-			setTimeout(() => {
-				mediaRecorder.stop()
-			}, time)
-
-			room.onMessage('listen', function (data) {
-				const audio = new Audio(data)
-				audio.play()
-			})
+				// Enables the microphone and publishes it to a new audio track
+				// TODO: test this on the hosted version and if it has a glitch, add {echoCancellation: false} option
+				room.localParticipant
+					.setMicrophoneEnabled(true)
+					.then(() => {
+						// Set initial mic status
+						this.mic.set(room.localParticipant.isMicrophoneEnabled ? MicState.ON : MicState.MUTED)
+					})
+					.catch(() => {
+						this.mic.set(MicState.NOT_ALLOWED)
+					})
+			},
+			error: (err) => {
+				console.log({ err })
+			},
 		})
+	}
+
+	private handleTrackSubscribed(track: RemoteTrack) {
+		// Attach track to a new HTMLVideoElement or HTMLAudioElement
+		const element = track.attach()
+		this.parentElement().appendChild(element)
+		// Or attach to existing element
+		// track.attach(element)
 	}
 }
