@@ -3,4 +3,5 @@ export enum MicState {
 	MUTED = 'MUTED',
 	NOT_ALLOWED = 'NOT_ALLOWED',
 	LOADING = 'LOADING',
+	ERROR = 'ERROR',
 }

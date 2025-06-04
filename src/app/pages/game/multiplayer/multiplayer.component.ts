@@ -1,10 +1,10 @@
 import { NgClass } from '@angular/common'
-import { AfterViewInit, Component, effect, HostListener, OnDestroy, signal, viewChild } from '@angular/core'
+import { AfterViewInit, Component, effect, HostListener, OnDestroy, signal } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatTooltip } from '@angular/material/tooltip'
 import { ActivatedRoute } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
-import { faMicrophone, faMicrophoneSlash, faPaperPlane, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { faExclamation, faMicrophone, faMicrophoneSlash, faPaperPlane, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { Room as LiveKitRoom, RoomEvent, Track } from 'livekit-client'
 import { Subscription } from 'rxjs'
 
@@ -20,6 +20,7 @@ import { RoundResultComponent } from '../../../shared/components/round-result/ro
 import { ColyseusService } from '../../../shared/services/colyseus.service'
 import { LiveKitService } from '../../../shared/services/live-kit.service'
 import { PlayerService } from '../../../shared/services/player.service'
+import { SnackbarService } from '../../../shared/services/snackbar.service'
 import { GameType } from '../../../shared/types/game.type'
 import { MultiplayerRoomState } from '../../../shared/types/multiplayer-room-state.type'
 import { RequestState } from '../../../shared/types/page-state.type'
@@ -49,15 +50,13 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 
 	pageState = signal<RequestState>(RequestState.READY)
 
-	mic = signal<MicState>(MicState.LOADING)
-
-	parentElement = viewChild<HTMLDivElement>('parentElement')
+	micState = signal<MicState>(MicState.LOADING)
 
 	room: LiveKitRoom | null = null
 
 	error: string | null = null
 
-	icons = { faPaperPlane, faTimesCircle, faMicrophone, faMicrophoneSlash, faTimes }
+	icons = { faPaperPlane, faTimesCircle, faMicrophone, faMicrophoneSlash, faTimes, faExclamation }
 
 	protected readonly PageState = RequestState
 
@@ -71,6 +70,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 		private readonly multiplayerService: MultiplayerService,
 		private readonly matDialog: MatDialog,
 		private readonly liveKitService: LiveKitService,
+		private readonly snackbarService: SnackbarService,
 		protected readonly colyseusService: ColyseusService,
 	) {
 		effect(() => {
@@ -146,19 +146,32 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 		const micTrackPublication = this.room?.localParticipant?.getTrackPublication(Track.Source.Microphone)
 
 		if (micStatus !== undefined && micTrackPublication) {
-			const mic = this.mic()
+			const mic = this.micState()
 			if (mic === MicState.ON) {
-				micTrackPublication.mute().then(() => this.mic.set(MicState.MUTED))
+				micTrackPublication.mute().then(() => this.micState.set(MicState.MUTED))
 			} else if (mic === MicState.MUTED) {
-				micTrackPublication.unmute().then(() => this.mic.set(MicState.ON))
+				micTrackPublication.unmute().then(() => this.micState.set(MicState.ON))
 			}
 		}
 		// Ask for permission
-		else {
-			this.matDialog.open(RequestPermissionComponent, {
-				height: '400px',
-				width: '600px',
-			})
+		else if (this.room && MicState.NOT_ALLOWED) {
+			const room = this.room
+			// Enables the microphone and publishes it to a new audio track
+			room.localParticipant
+				.setMicrophoneEnabled(true)
+				.then(() => {
+					// Set initial mic status
+					this.micState.set(room.localParticipant.isMicrophoneEnabled ? MicState.ON : MicState.MUTED)
+				})
+				.catch(() => {
+					this.micState.set(MicState.NOT_ALLOWED)
+					this.matDialog.open(RequestPermissionComponent, {
+						height: '400px',
+						width: '600px',
+					})
+				})
+		} else if (this.micState() === MicState.ERROR) {
+			this.snackbarService.showSnackbar('Error: communication server failed! Reload page to retry.')
 		}
 	}
 
@@ -179,28 +192,42 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 		})
 	}
 
+	getMicButtonTooltip() {
+		switch (this.micState()) {
+			case MicState.ON:
+				return 'Turn off microphone (CTRL + m)'
+			case MicState.MUTED:
+				return 'Turn on microphone (CTRL + m)'
+			default:
+				return ''
+		}
+	}
+
 	private initiateVoiceChat(colyseusRoomId: string, sessionId: string) {
 		this.liveKitService.getToken(colyseusRoomId, sessionId).subscribe({
 			next: async ({ token }) => {
-				const room = new LiveKitRoom()
-				await room.connect(environment.liveKitServerUrl, token)
-				this.room = room
-				room.on(RoomEvent.TrackSubscribed, (track) => track.attach())
-
-				// Enables the microphone and publishes it to a new audio track
-				// TODO: test this on the hosted version and if it has a glitch, add {echoCancellation: false} option
-				room.localParticipant
-					.setMicrophoneEnabled(true)
-					.then(() => {
-						// Set initial mic status
-						this.mic.set(room.localParticipant.isMicrophoneEnabled ? MicState.ON : MicState.MUTED)
-					})
-					.catch(() => {
-						this.mic.set(MicState.NOT_ALLOWED)
-					})
+				try {
+					const room = new LiveKitRoom()
+					await room.connect(environment.liveKitServerUrl, token)
+					this.room = room
+					room.on(RoomEvent.TrackSubscribed, (track) => track.attach())
+					// Enables the microphone and publishes it to a new audio track
+					room.localParticipant
+						.setMicrophoneEnabled(true)
+						.then(() => {
+							// Set initial mic status
+							this.micState.set(room.localParticipant.isMicrophoneEnabled ? MicState.ON : MicState.MUTED)
+						})
+						.catch(() => {
+							this.micState.set(MicState.NOT_ALLOWED)
+						})
+				} catch (e) {
+					console.error(e)
+					this.micState.set(MicState.ERROR)
+				}
 			},
 			error: (err) => {
-				console.log({ err })
+				console.error({ err })
 			},
 		})
 	}
