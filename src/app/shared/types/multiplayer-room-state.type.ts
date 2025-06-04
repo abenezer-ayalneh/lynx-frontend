@@ -14,6 +14,7 @@ export interface MultiplayerRoomState {
 	word: Word
 	waitingCountdownTime: number
 	gameState: 'START_COUNTDOWN' | 'ROUND_END' | 'GAME_STARTED' | 'GAME_END'
+	gameStatus: 'ONGOING' | 'PAUSED'
 	winner: Score
 	score: Map<string, number>
 	totalScore: Map<string, Score>

@@ -1,31 +1,39 @@
 @if (pageState() === PageState.READY) {
 	<div class="w-full h-full flex flex-col">
 		<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl overflow-hidden">
-			@if (roomState(); as state) {
-				@switch (state.gameState) {
-					@case ('START_COUNTDOWN') {
-						<app-game-start [waitingCountdownTime]="state.waitingCountdownTime" />
-					}
-					@case ('ROUND_END') {
-						<app-round-result
-							[score]="getPlayerScore(state.score)"
-							[winner]="state.winner"
-							[word]="state.word"
-							[waitingCountdownTime]="state.waitingCountdownTime"
-							[gameType]="GameType.MULTIPLAYER" />
-					}
-					@case ('GAME_END') {
-						<app-game-end
-							[totalScore]="state.totalScore"
-							[shouldShowRestartGameButton]="isPlayerGameOwner()"
-							(playNewGameClicked)="startNewGame()"
-							[gameType]="GameType.MULTIPLAYER" />
-					}
-					@case ('GAME_STARTED') {
-						<app-game-play [round]="state.round" [totalRound]="state.totalRound" [time]="state.time" [word]="state.word" />
+			@if (roomState()?.gameStatus === 'PAUSED') {
+				<div class="h-full w-full flex flex-col justify-center items-center gap-2 md:gap-6 absolute top-0 left-0 z-10">
+					<fa-icon [icon]="icons.faPause" class="text-my-glass opacity-65 text-[320px] md:text-[400px] absolute self-center" />
+					<p class="font-bold text-font-primary text-4xl md:text-7xl">Game Paused</p>
+				</div>
+			}
+			<div [hidden]="roomState()?.gameStatus === 'PAUSED'" class="w-full h-full overflow-y-scroll rounded-2xl overflow-hidden">
+				@if (roomState(); as state) {
+					@switch (state.gameState) {
+						@case ('START_COUNTDOWN') {
+							<app-game-start [waitingCountdownTime]="state.waitingCountdownTime" />
+						}
+						@case ('ROUND_END') {
+							<app-round-result
+								[score]="getPlayerScore(state.score)"
+								[winner]="state.winner"
+								[word]="state.word"
+								[waitingCountdownTime]="state.waitingCountdownTime"
+								[gameType]="GameType.MULTIPLAYER" />
+						}
+						@case ('GAME_END') {
+							<app-game-end
+								[totalScore]="state.totalScore"
+								[shouldShowRestartGameButton]="isPlayerGameOwner()"
+								(playNewGameClicked)="startNewGame()"
+								[gameType]="GameType.MULTIPLAYER" />
+						}
+						@case ('GAME_STARTED') {
+							<app-game-play [round]="state.round" [totalRound]="state.totalRound" [time]="state.time" [word]="state.word" />
+						}
 					}
 				}
-			}
+			</div>
 		</div>
 
 		<div class="w-full h-16 flex justify-center items-center gap-4">
@@ -54,6 +62,16 @@
 					}
 				</div>
 			</button>
+			@if (isPlayerGameOwner()) {
+				<button class="w-fit h-10 md:h12" (click)="toggleGameStatus()">
+					<div class="w-16 h-full px-2 flex justify-center items-center rounded-md hover:rounded-lg text-white bg-my-glass backdrop-blur-md">
+						<fa-icon
+							[icon]="roomState()?.gameStatus === 'ONGOING' ? icons.faPause : icons.faPlay"
+							class="text-xl flex justify-center items-center"
+							matTooltip="Pause game" />
+					</div>
+				</button>
+			}
 			<button class="w-fit h-10 md:h12" (click)="exitGame()">
 				<div class="w-16 h-full px-2 flex justify-center items-center rounded-md hover:rounded-lg text-white bg-[#dc362e]">
 					<fa-icon [icon]="icons.faTimes" class="text-xl flex justify-center items-center" matTooltip="Exit game" />

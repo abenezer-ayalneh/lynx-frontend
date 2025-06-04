@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { MatTooltip } from '@angular/material/tooltip'
 import { ActivatedRoute } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
-import { faExclamation, faMicrophone, faMicrophoneSlash, faPaperPlane, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { faExclamation, faMicrophone, faMicrophoneSlash, faPaperPlane, faPause, faPlay, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { Room as LiveKitRoom, RoomEvent, Track } from 'livekit-client'
 import { Subscription } from 'rxjs'
 
@@ -56,7 +56,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 
 	error: string | null = null
 
-	icons = { faPaperPlane, faTimesCircle, faMicrophone, faMicrophoneSlash, faTimes, faExclamation }
+	icons = { faPaperPlane, faTimesCircle, faMicrophone, faMicrophoneSlash, faTimes, faExclamation, faPause, faPlay }
 
 	protected readonly PageState = RequestState
 
@@ -190,6 +190,17 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 		this.matDialog.open(CloseGameDialogComponent, {
 			width: '250px',
 		})
+	}
+
+	/**
+	 * Exit the currently being played multiplayer game
+	 */
+	toggleGameStatus() {
+		if (this.roomState()?.gameStatus === 'ONGOING') {
+			this.colyseusService.pauseGame()
+		} else if (this.roomState()?.gameStatus === 'PAUSED') {
+			this.colyseusService.resumeGame()
+		}
 	}
 
 	getMicButtonTooltip() {

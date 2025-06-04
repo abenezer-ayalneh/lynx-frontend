@@ -41,4 +41,12 @@ export class ColyseusService {
 	leaveRoom() {
 		this.sendMessage<undefined>('exit')
 	}
+
+	pauseGame() {
+		this.sendMessage<undefined>('pause')
+	}
+
+	resumeGame() {
+		this.sendMessage<undefined>('resume')
+	}
 }
