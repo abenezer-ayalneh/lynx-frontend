@@ -224,7 +224,11 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 					await room.connect(environment.liveKitServerUrl, token)
 					this.room = room
 					room.on(RoomEvent.TrackSubscribed, (track) => track.attach())
+
 					// Enables the microphone and publishes it to a new audio track
+					// NOTE: it is intentional that I am passing `false` for the `setMicrophoneEnabled` method.
+					// This is because an interaction is needed for the audio stream to be attached and be able to play.
+					// For more info check: https://developer.chrome.com/blog/autoplay/#web_audio
 					room.localParticipant
 						.setMicrophoneEnabled(false)
 						.then(() => {
