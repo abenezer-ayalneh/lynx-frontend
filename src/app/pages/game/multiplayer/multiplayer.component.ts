@@ -141,20 +141,22 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 	}
 
 	@HostListener('window:keydown.control.m')
-	toggleMic() {
-		const micStatus = this.room?.localParticipant?.isMicrophoneEnabled
+	async toggleMic() {
+		const micState = this.micState()
+		const isMicEnabled = this.room?.localParticipant?.isMicrophoneEnabled
 		const micTrackPublication = this.room?.localParticipant?.getTrackPublication(Track.Source.Microphone)
 
-		if (micStatus !== undefined && micTrackPublication) {
-			const mic = this.micState()
-			if (mic === MicState.ON) {
+		if (isMicEnabled !== undefined && micTrackPublication) {
+			if (micState === MicState.ON) {
 				micTrackPublication.mute().then(() => this.micState.set(MicState.MUTED))
-			} else if (mic === MicState.MUTED) {
+			} else if (micState === MicState.MUTED) {
 				micTrackPublication.unmute().then(() => this.micState.set(MicState.ON))
 			}
 		}
 		// Ask for permission
 		else if (this.room && MicState.NOT_ALLOWED) {
+			this.micState.set(MicState.LOADING)
+			await new Promise((resolve) => setTimeout(resolve, 3000))
 			const room = this.room
 			// Enables the microphone and publishes it to a new audio track
 			room.localParticipant
@@ -170,7 +172,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 						width: '600px',
 					})
 				})
-		} else if (this.micState() === MicState.ERROR) {
+		} else if (micState === MicState.ERROR) {
 			this.snackbarService.showSnackbar('Error: communication server failed! Reload page to retry.')
 		}
 	}
@@ -224,7 +226,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 					room.on(RoomEvent.TrackSubscribed, (track) => track.attach())
 					// Enables the microphone and publishes it to a new audio track
 					room.localParticipant
-						.setMicrophoneEnabled(true)
+						.setMicrophoneEnabled(false)
 						.then(() => {
 							// Set initial mic status
 							this.micState.set(room.localParticipant.isMicrophoneEnabled ? MicState.ON : MicState.MUTED)

@@ -38,7 +38,7 @@
 
 		<div class="w-full h-16 flex justify-center items-center gap-4">
 			<button
-				class="w-fit h-10 md:h12 disabled:bg-[#333537] disabled:rounded-md relative"
+				class="w-fit h-10 md:h12 disabled:bg-gray-500 disabled:rounded-md relative"
 				(click)="toggleMic()"
 				[disabled]="micState() === MicState.LOADING"
 				[matTooltip]="getMicButtonTooltip()">
@@ -49,7 +49,7 @@
 						'bg-[#f2b8b5] text-my-burgundy': micState() === MicState.MUTED || micState() === MicState.NOT_ALLOWED || micState() === MicState.ERROR,
 					}">
 					@if (micState() === MicState.LOADING) {
-						<span class="loading loading-dots loading-md"></span>
+						<span class="loading loading-dots loading-md text-white"></span>
 					} @else {
 						@if (micState() === MicState.NOT_ALLOWED || micState() === MicState.ERROR) {
 							<div class="w-5 h-5 aspect-square flex justify-center items-center p-2 rounded-full bg-my-orange absolute -top-0.5 -right-1">
