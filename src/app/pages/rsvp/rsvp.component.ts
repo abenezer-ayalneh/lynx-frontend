@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common'
 import { Component, OnDestroy, OnInit, signal } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
@@ -11,7 +12,7 @@ import { RsvpService } from './rsvp.service'
 
 @Component({
 	selector: 'app-rsvp',
-	imports: [LoadingComponent, ErrorWhileLoadingComponent],
+	imports: [LoadingComponent, ErrorWhileLoadingComponent, DatePipe],
 	templateUrl: './rsvp.component.html',
 	styleUrl: './rsvp.component.scss',
 })
@@ -48,17 +49,17 @@ export class RsvpComponent implements OnInit, OnDestroy {
 				.rsvp(email, gameId)
 				.pipe(finalize(() => this.loaded.set(true)))
 				.subscribe({
-					// next: (scheduledGame) => {
-					// this.scheduledGame.set(scheduledGame)
-					// startCountdown(new Date(scheduledGame.start_time)).subscribe({
-					// 	next: ({ days, hours, minutes, seconds }) => {
-					// 		this.days.set(days)
-					// 		this.hours.set(hours)
-					// 		this.minutes.set(minutes)
-					// 		this.seconds.set(seconds)
-					// 	},
-					// })
-					// },
+					next: (scheduledGame) => {
+						this.scheduledGame.set(scheduledGame)
+						// startCountdown(new Date(scheduledGame.start_time)).subscribe({
+						// 	next: ({ days, hours, minutes, seconds }) => {
+						// 		this.days.set(days)
+						// 		this.hours.set(hours)
+						// 		this.minutes.set(minutes)
+						// 		this.seconds.set(seconds)
+						// 	},
+						// })
+					},
 				})
 		} else {
 			this.error.set(true)
@@ -70,7 +71,7 @@ export class RsvpComponent implements OnInit, OnDestroy {
 				tap((value) => this.seconds.set(RSVP_PAGE_CLOSING_COUNTDOWN_SECONDS - value)),
 				scan((accumulator) => accumulator - 1, RSVP_PAGE_CLOSING_COUNTDOWN_SECONDS + 1),
 				take(RSVP_PAGE_CLOSING_COUNTDOWN_SECONDS + 1),
-				finalize(() => window.close()),
+				// finalize(() => window.close()),
 			)
 			.subscribe()
 	}

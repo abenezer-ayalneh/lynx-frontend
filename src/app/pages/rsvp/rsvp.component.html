@@ -9,49 +9,15 @@
 				<div
 					class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl px-6 md:px-16 flex flex-col justify-start items-center gap-2 md:gap-6">
 					<div class="w-full h-full flex flex-col justify-center items-start gap-4 py-4 overflow-y-scroll">
-						<p class="w-full text-font-primary text-2xl md:text-3xl font-light text-center">Thank you for accepting the invitation!</p>
-						<!--						<p class="w-full text-font-primary text-lg text-center md:text-2xl">The game will start in:</p>-->
-
-						<!--						<div class="w-full flex justify-center items-center">-->
-						<!--							<div class="grid auto-cols-max grid-flow-col gap-5 text-center text-font-primary">-->
-						<!--								<div class="flex flex-col">-->
-						<!--									<span class="countdown font-mono text-5xl">-->
-						<!--										<span [style]="{ '&#45;&#45;value': days() }"></span>-->
-						<!--									</span>-->
-						<!--									Days-->
-						<!--								</div>-->
-						<!--								<div class="flex flex-col">-->
-						<!--									<span class="countdown font-mono text-5xl">-->
-						<!--										<span [style]="{ '&#45;&#45;value': hours() }"></span>-->
-						<!--									</span>-->
-						<!--									Hours-->
-						<!--								</div>-->
-						<!--								<div class="flex flex-col">-->
-						<!--									<span class="countdown font-mono text-5xl">-->
-						<!--										<span [style]="{ '&#45;&#45;value': minutes() }"></span>-->
-						<!--									</span>-->
-						<!--									Min-->
-						<!--								</div>-->
-						<!--								<div class="flex flex-col">-->
-						<!--									<span class="countdown font-mono text-5xl">-->
-						<!--										<span [style]="{ '&#45;&#45;value': seconds() }"></span>-->
-						<!--									</span>-->
-						<!--									Seconds-->
-						<!--								</div>-->
-						<!--							</div>-->
-						<!--						</div>-->
+						<p class="w-full text-font-primary text-2xl md:text-3xl font-light text-center">Welcome to fun!</p>
 						<p class="w-full text-font-primary text-base md:text-xl font-light text-center">
-							<!--							Don't want the countdown? No problem. -->
-							You'll receive an email 10 minutes before start time with the link to play Lynx. Watch for it.
+							Thank you for accepting the invitation! <br />Game time is set for
+							<span class="font-bold">{{ scheduledGame()?.start_time | date: 'dd MMM' }}</span> at
+							<span class="font-bold">{{ scheduledGame()?.start_time | date: 'hh:mm aaa' }}</span>
 						</p>
 
-						<br />
-
 						<div class="w-full flex justify-center items-center">
-							<div class="text-center text-font-primary">
-								This page will automatically close in&nbsp;<span class="countdown"><span [style]="{ '--value': seconds() }"></span></span
-								>&nbsp;seconds
-							</div>
+							<p class="w-2/3 text-center text-font-primary">We've sent you a countdown email. Open it anytime as you check on game time.</p>
 						</div>
 					</div>
 				</div>
