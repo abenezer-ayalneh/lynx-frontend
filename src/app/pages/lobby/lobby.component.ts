@@ -17,7 +17,7 @@ import { LobbyRoomState } from './types/lobby-room-state.type'
 
 @Component({
 	selector: 'app-lobby',
-	imports: [LoadingComponent, ButtonComponent, ReactiveFormsModule, TextFieldComponent, ErrorWhileLoadingComponent],
+	imports: [ReactiveFormsModule, TextFieldComponent, LoadingComponent, ErrorWhileLoadingComponent, ButtonComponent],
 	templateUrl: './lobby.component.html',
 	styleUrl: './lobby.component.scss',
 })
@@ -144,6 +144,15 @@ export class LobbyComponent implements AfterViewInit {
 
 	startGame() {
 		this.room?.send('startGame', { playerId: this.playerService.getPlayer.getValue()?.id })
+	}
+
+	async goToLogin() {
+		localStorage.setItem('redirectionUrl', this.router.url)
+		await this.router.navigate(['auth', 'login'], {
+			replaceUrl: false,
+			skipLocationChange: true,
+			onSameUrlNavigation: 'ignore',
+		})
 	}
 
 	setUsernameInformation() {

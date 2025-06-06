@@ -84,10 +84,16 @@
 <dialog #usernameModal class="modal">
 	<form class="modal-box bg-my-glass backdrop-blur-md text-font-primary" [formGroup]="usernameFormGroup" (ngSubmit)="setUsernameInformation()">
 		<h3 class="font-bold text-2xl">Welcome!</h3>
-		<p class="py-4">Choose a name to be used in the game:</p>
-		<app-text-field [control]="usernameFormGroup.controls.username" placeholder="Name" />
-		<div class="modal-action">
-			<button class="btn" type="submit">Ok</button>
-		</div>
+		<br />
+		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+			<legend class="fieldset-legend px-2 font-bold">Guest</legend>
+			<p class="py-4">Choose a name to be used in the game:</p>
+			<div class="w-full h-fit flex justify-start items-center gap-3">
+				<app-text-field [control]="usernameFormGroup.controls.username" placeholder="Name" class="grow" />
+				<button class="btn btn-sm md:btn-md" type="submit">Ok</button>
+			</div>
+		</fieldset>
+		<div class="divider">OR</div>
+		<button class="btn btn-md btn-block" type="button" (click)="goToLogin()">Login</button>
 	</form>
 </dialog>
