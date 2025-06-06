@@ -27,6 +27,8 @@ export class LoginComponent implements OnInit {
 
 	loggingIn = signal<boolean>(false)
 
+	redirectionUrl = ''
+
 	constructor(
 		private readonly authService: AuthService,
 		private readonly router: Router,
@@ -43,6 +45,8 @@ export class LoginComponent implements OnInit {
 		}
 
 		this.loaded.set(true)
+
+		this.redirectionUrl = localStorage.getItem('redirectionUrl') ?? 'home'
 	}
 
 	loginFormSubmit() {
@@ -61,7 +65,8 @@ export class LoginComponent implements OnInit {
 				)
 				.subscribe({
 					next: async () => {
-						await this.router.navigateByUrl('home')
+						localStorage.removeItem('redirectionUrl')
+						await this.router.navigateByUrl(this.redirectionUrl)
 					},
 				})
 		}
