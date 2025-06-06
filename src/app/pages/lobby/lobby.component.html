@@ -1,14 +1,14 @@
 @if (loaded()) {
 	@if (error) {
-		<div class="w-full h-full place-content-center">
+		<div class="h-full w-full flex justify-center items-center relative">
 			<app-error-while-loading [subTitle]="error" />
 		</div>
 	} @else {
 		<div
 			class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-2 md:gap-6">
-			<p class="w-full h-1/6 text-font-primary text-2xl md:text-4xl lg:text-6xl font-bold text-center">Lobby</p>
-			<div class="flex flex-col items-center md:flex-row gap-8 h-5/6 w-full">
-				<div class="w-full md:w-1/2 h-full place-content-start">
+			<p class="w-full h-fit text-font-primary text-3xl md:text-4xl lg:text-6xl font-bold text-center">Lobby</p>
+			<div class="w-full h-full flex flex-col items-center md:flex-row gap-6 md:gap-8">
+				<div class="w-full md:w-1/2 h-fit md:h-full flex flex-col justify-start items-start">
 					@if (countdownEnded()) {
 						@if (this.isGameOwner()) {
 							<app-button text="Start Game" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="button" (click)="startGame()" />
@@ -47,7 +47,7 @@
 						</div>
 					}
 
-					<p class="w-full text-font-primary mt-12 mb-4 text-lg md:text-3xl font-normal text-center">Players in the Lobby</p>
+					<p class="w-full text-font-primary mt-12 mb-1 text-lg md:text-3xl font-normal text-center">Players in the Lobby</p>
 					@for (name of playerNames(); track name; let index = $index) {
 						<p class="w-full text-my-orange py-2 text-sm md:text-2xl font-medium text-center">{{ index + 1 }}. {{ name }}</p>
 					}
@@ -56,14 +56,17 @@
 				<div class="w-full md:w-1/2 h-full place-content-start overflow-y-scroll">
 					<div class="w-full h-full flex flex-col justify-start items-start gap-4 py-4 overflow-y-scroll">
 						<p class="w-full text-font-primary text-lg md:text-2xl font-normal text-center">How To Play Lynx</p>
-						<p class="w-full text-font-primary text-sm md:text-lg font-light">
-							The challenge is to guess the word common to all of the words you see on the screen. You’ll see 3 “cue” words or phrases that all
+						<p class="w-full text-font-primary text-sm md:text-lg font-light text-center">
+							The challenge is to guess the word common to all of the words you see on the screen. You’ll see 2 “cue” words or phrases that all
 							share that same unknown word. You will compete to guess the word first before the time ends or another player guesses it.
-							<br />
-							Players have 15 seconds to enter their guesses. If no solution is found, a 4th cue drops (allowing 10 more seconds). Still stuck? A
-							5th cue appears, offering a final, desperate 5 more seconds to snatch victory from defeat.
-							<br />
-							The answers appear after a correct solution, or when time expires. A winner’s points depend on speed of their solution. There are 5
+						</p>
+						<p class="w-full text-font-primary text-sm md:text-lg font-light text-center">
+							Players have 20 seconds to enter their guesses. If no solution is found, a 3rd cue drops allowing 15 more seconds. Still stuck? A
+							4th cue appears allowing 10 more seconds. Still nothing? a 5th cue will appear offering a final, desperate 5 more seconds to snatch
+							victory from defeat.
+						</p>
+						<p class="w-full text-font-primary text-sm md:text-lg font-light text-center">
+							The answers appear after a correct solution, or when time expires. A winner’s points depend on speed of their solution. There are 10
 							rounds to a game, followed by a tally of all players’ points. You can play as many games as you’d like.
 							<br />
 						</p>

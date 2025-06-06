@@ -27,5 +27,7 @@
 		<app-loading />
 	</div>
 } @else if (pageState() === PageState.ERROR) {
-	<app-error-while-loading [retryFn]="initSoloPlay" />
+	<div class="h-full w-full flex justify-center items-center relative">
+		<app-error-while-loading [canRetry]="true" (retryOutput)="initSoloPlay()" />
+	</div>
 }

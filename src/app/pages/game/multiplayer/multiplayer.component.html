@@ -84,5 +84,7 @@
 		<app-loading />
 	</div>
 } @else if (pageState() === PageState.ERROR && error) {
-	<app-error-while-loading [subTitle]="error" />
+	<div class="h-full w-full flex justify-center items-center relative">
+		<app-error-while-loading [subTitle]="error" (retryOutput)="reconnect()" />
+	</div>
 }

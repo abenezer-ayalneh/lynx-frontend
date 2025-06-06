@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core'
+import { Component, input, output } from '@angular/core'
 
 import { ButtonComponent } from '../button/button.component'
 
@@ -11,5 +11,11 @@ import { ButtonComponent } from '../button/button.component'
 export class ErrorWhileLoadingComponent {
 	subTitle = input<string>('')
 
-	retryFn = input<() => void>()
+	canRetry = input<boolean>(false)
+
+	retryOutput = output()
+
+	retry() {
+		this.retryOutput.emit()
+	}
 }

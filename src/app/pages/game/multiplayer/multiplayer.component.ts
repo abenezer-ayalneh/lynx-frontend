@@ -88,7 +88,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.room?.disconnect(true)
+		this.colyseusService.leaveRoom()
 		this.subscriptions$.unsubscribe()
 		this.multiplayerService.sessionScore.set(undefined)
 	}
@@ -106,6 +106,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 					this.colyseusService.setRoom = room
 					// this.subscribeToColyseusMessages(room)
 					this.initiateVoiceChat(room.roomId, room.sessionId)
+					sessionStorage.setItem('reconnectionToken', room.reconnectionToken)
 
 					room.onStateChange((state) => this.roomState.set({ ...state }))
 					this.pageState.set(RequestState.READY)
@@ -118,6 +119,16 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 		} else {
 			this.error = 'No room id provided'
 			this.pageState.set(RequestState.READY)
+		}
+	}
+
+	reconnect() {
+		const reconnectionToken = sessionStorage.getItem('reconnectionToken')
+		if (reconnectionToken && this.colyseusService.getClient) {
+			this.colyseusService.getClient
+				.reconnect<MultiplayerRoomState>(reconnectionToken)
+				.then((room) => (this.colyseusService.setRoom = room))
+				.catch((error) => console.error('join error', error))
 		}
 	}
 

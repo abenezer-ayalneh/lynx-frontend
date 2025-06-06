@@ -39,7 +39,7 @@ export class ColyseusService {
 	}
 
 	leaveRoom() {
-		this.sendMessage<undefined>('exit')
+		this.room?.leave()
 	}
 
 	pauseGame() {

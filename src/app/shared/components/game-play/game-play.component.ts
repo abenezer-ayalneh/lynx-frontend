@@ -76,9 +76,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
 
 		if (guess) {
 			this.guessing.set(true)
-			setTimeout(() => {
-				this.colyseusService.sendMessage<{ guess: string }>('guess', { guess })
-			}, 2000)
+			this.colyseusService.sendMessage<{ guess: string }>('guess', { guess })
 		}
 	}
 
