@@ -52,7 +52,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 
 	micState = signal<MicState>(MicState.LOADING)
 
-	room: LiveKitRoom | null = null
+	liveKitRoom: LiveKitRoom | null = null
 
 	error: string | null = null
 
@@ -89,6 +89,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.colyseusService.leaveRoom()
+		this.liveKitRoom?.disconnect(true)
 		this.subscriptions$.unsubscribe()
 		this.multiplayerService.sessionScore.set(undefined)
 	}
@@ -154,8 +155,8 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 	@HostListener('window:keydown.control.m')
 	async toggleMic() {
 		const micState = this.micState()
-		const isMicEnabled = this.room?.localParticipant?.isMicrophoneEnabled
-		const micTrackPublication = this.room?.localParticipant?.getTrackPublication(Track.Source.Microphone)
+		const isMicEnabled = this.liveKitRoom?.localParticipant?.isMicrophoneEnabled
+		const micTrackPublication = this.liveKitRoom?.localParticipant?.getTrackPublication(Track.Source.Microphone)
 
 		if (isMicEnabled !== undefined && micTrackPublication) {
 			if (micState === MicState.ON) {
@@ -165,10 +166,10 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 			}
 		}
 		// Ask for permission
-		else if (this.room && MicState.NOT_ALLOWED) {
+		else if (this.liveKitRoom && MicState.NOT_ALLOWED) {
 			this.micState.set(MicState.LOADING)
 			await new Promise((resolve) => setTimeout(resolve, 3000))
-			const room = this.room
+			const room = this.liveKitRoom
 			// Enables the microphone and publishes it to a new audio track
 			room.localParticipant
 				.setMicrophoneEnabled(true)
@@ -233,7 +234,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 				try {
 					const room = new LiveKitRoom()
 					await room.connect(environment.liveKitServerUrl, token)
-					this.room = room
+					this.liveKitRoom = room
 					room.on(RoomEvent.TrackSubscribed, (track) => track.attach())
 
 					// Enables the microphone and publishes it to a new audio track
