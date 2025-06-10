@@ -168,7 +168,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 		// Ask for permission
 		else if (this.liveKitRoom && MicState.NOT_ALLOWED) {
 			this.micState.set(MicState.LOADING)
-			await new Promise((resolve) => setTimeout(resolve, 3000))
+
 			const room = this.liveKitRoom
 			// Enables the microphone and publishes it to a new audio track
 			room.localParticipant
