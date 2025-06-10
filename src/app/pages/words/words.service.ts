@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { Injectable, signal } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
+import { delay } from 'rxjs'
 
 import { WordDialogComponent } from './components/word-dialog/word-dialog.component'
 import CreateWordDto from './dto/create-word.dto'

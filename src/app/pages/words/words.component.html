@@ -7,9 +7,14 @@
 		<app-button text="Add" (click)="openAddWordDialog()" />
 		<app-text-field type="text" autoComplete="new-search" placeholder="Search" [control]="searchControl" class="w-fit" />
 	</div>
-	<br />
 
-	<div class="w-full h-fit overflow-y-scroll relative" (scroll)="onScroll($event)">
+	<div class="w-full h-4 min-h-4 flex flex-col justify-end bg-transparent">
+		@if (pageState() === RequestState.LOADING) {
+			<mat-progress-bar mode="indeterminate"></mat-progress-bar>
+		}
+	</div>
+
+	<div #intersectionRoot class="w-full h-fit flex flex-col justify-start items-start overflow-y-scroll relative">
 		<table class="table text-white">
 			<thead class="bg-my-blue sticky top-0 z-[1]">
 				<tr class="text-lg">
@@ -45,11 +50,11 @@
 				}
 			</tbody>
 		</table>
-	</div>
 
-	<!--  <div class="join text-white">-->
-	<!--    <button class="join-item btn btn-sm">«</button>-->
-	<!--    <button class="join-item btn btn-sm">Page {{page()}}</button>-->
-	<!--    <button class="join-item btn btn-sm">»</button>-->
-	<!--  </div>-->
+		<div #intersectionTarget class="w-full h-fit text-center py-2 text-white">
+			@if (pageState() === RequestState.EMPTY) {
+				Nothing more to load
+			}
+		</div>
+	</div>
 </div>

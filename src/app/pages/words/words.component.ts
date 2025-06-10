@@ -1,7 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core'
+import { JsonPipe } from '@angular/common'
+import { AfterViewInit, Component, ElementRef, OnInit, signal, viewChild } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { MatIconButton } from '@angular/material/button'
 import { MatIcon } from '@angular/material/icon'
+import { MatProgressBar } from '@angular/material/progress-bar'
 import { MatTooltip } from '@angular/material/tooltip'
 import { debounce, interval } from 'rxjs'
 
@@ -16,24 +18,43 @@ import { WordsService } from './words.service'
 
 @Component({
 	selector: 'app-words',
-	imports: [TextFieldComponent, HighlightKeyPipe, MatIconButton, MatTooltip, MatIcon, ButtonComponent],
+	imports: [MatIcon, HighlightKeyPipe, MatIconButton, MatTooltip, ButtonComponent, TextFieldComponent, MatProgressBar, JsonPipe],
 	templateUrl: './words.component.html',
 	styleUrl: './words.component.scss',
 })
-export class WordsComponent implements OnInit {
+export class WordsComponent implements OnInit, AfterViewInit {
 	pageState = signal<RequestState>(RequestState.LOADING)
 
-	searchQuery = ''
+	intersectionRoot = viewChild.required<ElementRef<HTMLDivElement>>('intersectionRoot')
 
-	sort = signal<string | undefined>('updated_at:desc')
+	intersectionTarget = viewChild.required<ElementRef<HTMLDivElement>>('intersectionTarget')
 
 	searchControl = new FormControl<string | undefined>('')
+
+	protected readonly RequestState = RequestState
 
 	constructor(protected readonly wordsService: WordsService) {}
 
 	ngOnInit() {
-		this.fetchWordsEffect({})
+		this.fetchWords({})
 		this.subscribeToSearch()
+	}
+
+	ngAfterViewInit() {
+		new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (this.pageState() === RequestState.READY && this.wordsService.words.length >= WORDS_PER_INFINITY_LOAD && entry.isIntersecting) {
+						this.fetchWords({ lastWordId: this.wordsService.words[this.wordsService.words.length - 1]?.id })
+					}
+				})
+			},
+			{
+				root: this.intersectionRoot().nativeElement,
+				rootMargin: '0px',
+				threshold: 0,
+			},
+		).observe(this.intersectionTarget().nativeElement)
 	}
 
 	openAddWordDialog() {
@@ -44,13 +65,7 @@ export class WordsComponent implements OnInit {
 		this.wordsService.openEditWordDialog(word)
 	}
 
-	onScroll(event: Event) {
-		if (this.atBottom(event) && this.wordsService.words.length >= WORDS_PER_INFINITY_LOAD) {
-			this.fetchWordsEffect({ lastWordId: this.wordsService.words[this.wordsService.words.length - 1]?.id })
-		}
-	}
-
-	private fetchWordsEffect({ lastWordId, searchQuery, sort, clearData = false }: FindAllWordsDto & { clearData?: boolean }) {
+	private fetchWords({ lastWordId, searchQuery, sort, clearData = false }: FindAllWordsDto & { clearData?: boolean }) {
 		this.pageState.set(RequestState.LOADING)
 		this.wordsService.fetchWords({ lastWordId, searchQuery, sort }).subscribe({
 			next: (words) => {
@@ -65,18 +80,11 @@ export class WordsComponent implements OnInit {
 		this.searchControl.valueChanges.pipe(debounce(() => interval(DEBOUNCE_DELAY))).subscribe({
 			next: (searchQuery) => {
 				if (searchQuery) {
-					this.fetchWordsEffect({ searchQuery, clearData: true })
+					this.fetchWords({ searchQuery, clearData: true })
 				} else {
-					this.fetchWordsEffect({ clearData: true })
+					this.fetchWords({ clearData: true })
 				}
 			},
 		})
-	}
-
-	private atBottom(event: Event) {
-		const tracker = event.target as HTMLDivElement
-		const limit = tracker.scrollHeight - tracker.clientHeight
-
-		return tracker.scrollTop >= limit - 5
 	}
 }
