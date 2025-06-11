@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common'
 import { Component, Inject, OnInit, signal } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatCheckbox } from '@angular/material/checkbox'
@@ -5,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogContent, MatDialogTitle } from '@angular/mate
 import { finalize } from 'rxjs'
 
 import { ButtonComponent } from '../../../../shared/components/button/button.component'
+import { ButtonColor, ButtonType } from '../../../../shared/components/button/enums/button.enum'
 import { TextFieldComponent } from '../../../../shared/components/text-field/text-field.component'
 import { AutoCapitalizeDirective } from '../../../../shared/directives/auto-capitalize.directive'
 import { RequestState } from '../../../../shared/types/page-state.type'
@@ -15,7 +17,7 @@ import { WordsService } from '../../words.service'
 
 @Component({
 	selector: 'app-word-dialog',
-	imports: [MatDialogTitle, MatDialogContent, TextFieldComponent, ButtonComponent, MatCheckbox, ReactiveFormsModule, AutoCapitalizeDirective],
+	imports: [MatDialogTitle, MatDialogContent, TextFieldComponent, ButtonComponent, MatCheckbox, ReactiveFormsModule, AutoCapitalizeDirective, JsonPipe],
 	templateUrl: './word-dialog.component.html',
 	styleUrl: './word-dialog.component.scss',
 })
@@ -24,15 +26,18 @@ export class WordDialogComponent implements OnInit {
 
 	deleteButtonStatus = signal<RequestState>(RequestState.IDLE)
 
-	wordDialogFormGroup = new FormGroup({
-		key: new FormControl<string>('', { validators: [Validators.required] }),
-		cue1: new FormControl<string>('', { validators: [Validators.required, cueContainsKeyValidator('key')] }),
-		cue2: new FormControl<string>('', { validators: [Validators.required, cueContainsKeyValidator('key')] }),
-		cue3: new FormControl<string>('', { validators: [Validators.required, cueContainsKeyValidator('key')] }),
-		cue4: new FormControl<string>('', { validators: [Validators.required, cueContainsKeyValidator('key')] }),
-		cue5: new FormControl<string>('', { validators: [Validators.required, cueContainsKeyValidator('key')] }),
-		status: new FormControl<boolean>(true, { validators: [Validators.required] }),
-	})
+	wordDialogFormGroup = new FormGroup(
+		{
+			key: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
+			cue1: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
+			cue2: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
+			cue3: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
+			cue4: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
+			cue5: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
+			status: new FormControl<boolean>(true, { validators: [Validators.required], nonNullable: true }),
+		},
+		{ validators: [cueContainsKeyValidator()] },
+	)
 
 	protected readonly RequestState = RequestState
 
@@ -62,13 +67,13 @@ export class WordDialogComponent implements OnInit {
 	wordDialogFormSubmit() {
 		this.saveButtonStatus.set(RequestState.LOADING)
 		const word: CreateWordDto = {
-			key: this.formControls.key.value!,
-			cue_word_1: this.formControls.cue1.value!,
-			cue_word_2: this.formControls.cue2.value!,
-			cue_word_3: this.formControls.cue3.value!,
-			cue_word_4: this.formControls.cue4.value!,
-			cue_word_5: this.formControls.cue5.value!,
-			status: this.formControls.status.value!,
+			key: this.formControls.key.value,
+			cue_word_1: this.formControls.cue1.value,
+			cue_word_2: this.formControls.cue2.value,
+			cue_word_3: this.formControls.cue3.value,
+			cue_word_4: this.formControls.cue4.value,
+			cue_word_5: this.formControls.cue5.value,
+			status: this.formControls.status.value,
 		}
 
 		if (this.data.type === 'ADD') {
@@ -119,4 +124,8 @@ export class WordDialogComponent implements OnInit {
 				})
 		}
 	}
+
+	protected readonly ButtonType = ButtonType
+
+	protected readonly ButtonColor = ButtonColor
 }

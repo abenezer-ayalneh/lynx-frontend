@@ -46,14 +46,14 @@
 					class="w-16 h-full px-2 flex justify-center items-center rounded-md hover:rounded-lg"
 					[ngClass]="{
 						'bg-white text-[#333537]': micState() === MicState.ON,
-						'bg-[#f2b8b5] text-my-burgundy': micState() === MicState.MUTED || micState() === MicState.NOT_ALLOWED || micState() === MicState.ERROR,
+						'bg-[#f2b8b5] text-my-red': micState() === MicState.MUTED || micState() === MicState.NOT_ALLOWED || micState() === MicState.ERROR,
 					}">
 					@if (micState() === MicState.LOADING) {
 						<span class="loading loading-dots loading-md text-white"></span>
 					} @else {
 						@if (micState() === MicState.NOT_ALLOWED || micState() === MicState.ERROR) {
 							<div class="w-5 h-5 aspect-square flex justify-center items-center p-2 rounded-full bg-my-orange absolute -top-0.5 -right-1">
-								<fa-icon [icon]="icons.faExclamation" class="text-xs text-my-burgundy m-0" />
+								<fa-icon [icon]="icons.faExclamation" class="text-xs text-my-red m-0" />
 							</div>
 						}
 						<fa-icon

@@ -1,16 +1,21 @@
-import { Component, input } from '@angular/core'
+import { Component, input, output } from '@angular/core'
+import { MatIcon } from '@angular/material/icon'
 import { RouterLink } from '@angular/router'
+
+import { ButtonColor, ButtonType } from './enums/button.enum'
 
 @Component({
 	selector: 'app-button',
-	imports: [RouterLink],
+	imports: [RouterLink, MatIcon],
 	templateUrl: './button.component.html',
 	styleUrl: './button.component.scss',
 })
 export class ButtonComponent {
-	text = input<string>('')
+	text = input.required<string>()
 
-	buttonType = input<'button' | 'link'>('button')
+	buttonType = input<ButtonType>(ButtonType.BUTTON)
+
+	color = input<ButtonColor>(ButtonColor.PRIMARY)
 
 	url = input<string>('/')
 
@@ -20,5 +25,13 @@ export class ButtonComponent {
 
 	class = input<string>('')
 
-	type = input<'button' | 'submit'>('button')
+	iconName = input<string>('')
+
+	whenClickedOutput = output()
+
+	protected readonly ButtonType = ButtonType
+
+	whenClicked() {
+		this.whenClickedOutput.emit()
+	}
 }

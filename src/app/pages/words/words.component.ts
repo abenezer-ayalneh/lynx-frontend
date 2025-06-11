@@ -17,7 +17,7 @@ import { WordsService } from './words.service'
 
 @Component({
 	selector: 'app-words',
-	imports: [MatIcon, HighlightKeyPipe, MatIconButton, MatTooltip, ButtonComponent, TextFieldComponent, MatProgressBar],
+	imports: [MatIcon, HighlightKeyPipe, MatIconButton, MatTooltip, ButtonComponent, TextFieldComponent, MatProgressBar, ButtonComponent],
 	templateUrl: './words.component.html',
 	styleUrl: './words.component.scss',
 })

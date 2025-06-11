@@ -6,7 +6,7 @@
 				<app-text-field [control]="formControls.email" placeholder="Email" type="email" />
 				<app-text-field [control]="formControls.password" placeholder="Password" type="password" />
 			</span>
-			<app-button text="Login" buttonType="button" type="submit" [disabled]="loginFormGroup.invalid" [loading]="loggingIn()" />
+			<app-button text="Login" [buttonType]="ButtonType.SUBMIT" [disabled]="loginFormGroup.invalid" [loading]="loggingIn()" />
 			<span class="w-full flex justify-center items-center">
 				<p class="text-font-primary text-[12px] md:text-sm font-light leading-none">Don&apos;t have an account?&nbsp;</p>
 				<a routerLink="/auth/register" class="text-font-authSubtitle text-[12px] md:text-sm font-light leading-none"> Register here </a>

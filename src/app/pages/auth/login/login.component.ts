@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router'
 import { finalize, tap } from 'rxjs'
 
 import { ButtonComponent } from '../../../shared/components/button/button.component'
+import { ButtonType } from '../../../shared/components/button/enums/button.enum'
 import { LoadingComponent } from '../../../shared/components/loading/loading.component'
 import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
 import { TokenService } from '../../../shared/services/token.service'
@@ -71,4 +72,6 @@ export class LoginComponent implements OnInit {
 				})
 		}
 	}
+
+	protected readonly ButtonType = ButtonType
 }

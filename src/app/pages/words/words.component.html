@@ -4,7 +4,7 @@
 	</div>
 	<br />
 	<div class="w-full h-fit flex justify-between items-center sticky top-0">
-		<app-button text="Add" (click)="openAddWordDialog()" />
+		<app-button text="Add" (whenClickedOutput)="openAddWordDialog()" />
 		<app-text-field type="text" autoComplete="new-search" placeholder="Search" [control]="searchControl" class="w-fit" />
 	</div>
 
@@ -16,7 +16,7 @@
 
 	<div #intersectionRoot class="w-full h-fit flex flex-col justify-start items-start overflow-y-scroll relative">
 		<table class="table text-white">
-			<thead class="bg-my-blue sticky top-0 z-[1]">
+			<thead class="bg-my-burgundy sticky top-0 z-[1]">
 				<tr class="text-lg">
 					<th>Key</th>
 					<th>Cue 1</th>
@@ -33,17 +33,17 @@
 				@for (word of wordsService.words; track $index) {
 					<tr>
 						<td>
-							<span class="text-my-orange font-bold">{{ word.key }}</span>
+							<span class="text-font-authSubtitle font-bold">{{ word.key }}</span>
 						</td>
-						<td [innerHTML]="word.cue_word_1 | highlightKey: word.key : 'text-my-orange'"></td>
-						<td [innerHTML]="word.cue_word_2 | highlightKey: word.key : 'text-my-orange'"></td>
-						<td [innerHTML]="word.cue_word_3 | highlightKey: word.key : 'text-my-orange'"></td>
-						<td [innerHTML]="word.cue_word_4 | highlightKey: word.key : 'text-my-orange'"></td>
-						<td [innerHTML]="word.cue_word_5 | highlightKey: word.key : 'text-my-orange'"></td>
+						<td [innerHTML]="word.cue_word_1 | highlightKey: word.key : 'text-font-authSubtitle'"></td>
+						<td [innerHTML]="word.cue_word_2 | highlightKey: word.key : 'text-font-authSubtitle'"></td>
+						<td [innerHTML]="word.cue_word_3 | highlightKey: word.key : 'text-font-authSubtitle'"></td>
+						<td [innerHTML]="word.cue_word_4 | highlightKey: word.key : 'text-font-authSubtitle'"></td>
+						<td [innerHTML]="word.cue_word_5 | highlightKey: word.key : 'text-font-authSubtitle'"></td>
 						<td class="text-center">{{ word.status ? '✅' : '❌' }}</td>
 						<td class="text-center">
 							<button mat-icon-button aria-label="Edit word" matTooltip="Edit word" (click)="openEditWordDialog(word)">
-								<mat-icon class="text-my-orange">edit</mat-icon>
+								<mat-icon class="text-font-authSubtitle">edit</mat-icon>
 							</button>
 						</td>
 					</tr>

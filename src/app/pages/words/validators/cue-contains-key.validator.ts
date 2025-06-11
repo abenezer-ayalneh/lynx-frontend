@@ -6,16 +6,26 @@ import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn 
  * @return {ValidatorFn} A function that takes an AbstractControl and returns a ValidationErrors object
  * if the key is not found in the rest of the controllers' values, or null if it does.
  */
-export function cueContainsKeyValidator(keyControlName: string): ValidatorFn {
+export function cueContainsKeyValidator(): ValidatorFn {
 	return (abstractControl: AbstractControl): ValidationErrors | null => {
-		const formControl = abstractControl as FormControl
-		const formGroup = formControl.parent as FormGroup
+		const formGroup = abstractControl as FormGroup<{
+			key: FormControl<string>
+			cue1: FormControl<string>
+			cue2: FormControl<string>
+			cue3: FormControl<string>
+			cue4: FormControl<string>
+			cue5: FormControl<string>
+			status: FormControl<boolean>
+		}>
 
-		if (formGroup && formControl) {
-			const keyFormControl = formGroup.controls[keyControlName] as FormControl
-			if (keyFormControl && keyFormControl.valid && formControl.value && !(formControl.value as string).includes(keyFormControl.value)) {
-				return { cueContainsKey: true }
-			}
+		if (
+			!formGroup.controls.cue1.value.includes(formGroup.controls.key.value) ||
+			!formGroup.controls.cue2.value.includes(formGroup.controls.key.value) ||
+			!formGroup.controls.cue3.value.includes(formGroup.controls.key.value) ||
+			!formGroup.controls.cue4.value.includes(formGroup.controls.key.value) ||
+			!formGroup.controls.cue5.value.includes(formGroup.controls.key.value)
+		) {
+			return { cueContainsKey: true }
 		}
 
 		return null

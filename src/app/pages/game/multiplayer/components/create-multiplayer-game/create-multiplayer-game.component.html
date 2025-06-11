@@ -5,7 +5,7 @@
 			<p class="text-font-primary text-lg md:text-2xl font-normal">Create Game Room</p>
 			<fa-icon
 				[icon]="icons.faTimesCircle"
-				class="text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center"
+				class="text-2xl md:w-10 md:h-10 text-my-red cursor-pointer flex justify-center items-center"
 				matTooltip="Leave game"
 				(click)="exit()" />
 		</div>
@@ -22,13 +22,16 @@
 						@if (index > 0) {
 							<fa-icon
 								[icon]="icons.faTimesCircle"
-								class="text-2xl md:w-10 md:h-10 text-my-burgundy cursor-pointer flex justify-center items-center"
+								class="text-2xl md:w-10 md:h-10 text-my-red cursor-pointer flex justify-center items-center"
 								matTooltip="Remove email"
 								(click)="removeEmailField(index)" />
 						}
 					</span>
 				}
-				<app-button text="Add" (click)="addNewEmailField()" [disabled]="emailsFormArray.controls.length >= MAXIMUM_NUMBER_OF_INVITE_EMAILS" />
+				<app-button
+					text="Add"
+					(whenClickedOutput)="addNewEmailField()"
+					[disabled]="emailsFormArray.controls.length >= MAXIMUM_NUMBER_OF_INVITE_EMAILS" />
 			</div>
 			<div class="flex flex-col gap-2 w-full md:flex-grow h-full">
 				<p class="text-font-primary text-lg font-light">Email Content</p>
@@ -71,8 +74,7 @@
 				<app-button
 					text="Create Room"
 					class="h-12 md:h-20 w-full mt-4"
-					buttonType="button"
-					type="submit"
+					[buttonType]="ButtonType.SUBMIT"
 					[disabled]="createMultiplayerGameFormGroup.invalid"
 					[loading]="isCreatingGame()" />
 			</div>

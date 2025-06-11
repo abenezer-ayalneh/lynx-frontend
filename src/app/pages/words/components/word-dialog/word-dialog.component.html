@@ -14,18 +14,11 @@
 		<div class="w-1/2 flex flex-col justify-start items-start gap-4">
 			<app-button
 				text="Save"
-				buttonType="button"
-				type="submit"
-				[disabled]="!wordDialogFormGroup.valid"
+				[buttonType]="ButtonType.SUBMIT"
+				[disabled]="wordDialogFormGroup.invalid"
 				[loading]="saveButtonStatus() === RequestState.LOADING" />
 			@if (this.data.type === 'UPDATE') {
-				<app-button
-					text="Delete"
-					buttonType="button"
-					type="button"
-					class="bg-my-burgundy rounded-lg"
-					[loading]="deleteButtonStatus() === RequestState.LOADING"
-					(click)="deleteWord()" />
+				<app-button text="Delete" [color]="ButtonColor.DANGER" [loading]="deleteButtonStatus() === RequestState.LOADING" (click)="deleteWord()" />
 			}
 		</div>
 	</form>

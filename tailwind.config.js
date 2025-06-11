@@ -8,10 +8,11 @@ module.exports = {
 			},
 			colors: {
 				my: {
-					blue: '#0D3B66',
+					burgundy: '#6c2c43',
+					blueGreen: '#25636c',
+					green: '#057e03',
 					orange: '#F87060',
-					burgundy: '#601410',
-					green: '#0C740A',
+					red: '#bd1d14',
 					glass: '#FFFFFF10',
 				},
 				font: {

@@ -11,7 +11,7 @@
 				<div class="w-full md:w-1/2 h-fit md:h-full flex flex-col justify-start items-start">
 					@if (countdownEnded()) {
 						@if (this.isGameOwner()) {
-							<app-button text="Start Game" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="button" (click)="startGame()" />
+							<app-button text="Start Game" class="h-12 md:h-20 w-full mt-4" (whenClickedOutput)="startGame()" />
 						} @else {
 							<p class="w-full text-font-primary text-xl text-center md:text-2xl animate-bounce">Waiting for the game host to start the game</p>
 						}

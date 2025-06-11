@@ -4,6 +4,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router, RouterLink } from '@angular/router'
 
 import { ButtonComponent } from '../../../shared/components/button/button.component'
+import { ButtonType } from '../../../shared/components/button/enums/button.enum'
 import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
 import { MatchValidator } from '../../../shared/validators/match-validator'
 import { AuthService } from '../auth.service'
@@ -51,4 +52,6 @@ export class RegisterComponent {
 			})
 		}
 	}
+
+	protected readonly ButtonType = ButtonType
 }

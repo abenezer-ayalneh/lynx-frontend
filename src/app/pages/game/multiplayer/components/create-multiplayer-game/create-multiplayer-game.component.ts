@@ -10,6 +10,7 @@ import { constructNow, format, subDays } from 'date-fns'
 import { combineLatest, finalize } from 'rxjs'
 
 import { ButtonComponent } from '../../../../../shared/components/button/button.component'
+import { ButtonType } from '../../../../../shared/components/button/enums/button.enum'
 import { TextFieldComponent } from '../../../../../shared/components/text-field/text-field.component'
 import { MAXIMUM_NUMBER_OF_INVITE_EMAILS } from '../../../../../shared/constants/common.constants'
 import { TIMEZONES } from '../../../../../shared/constants/timezones.constants'
@@ -134,4 +135,6 @@ export class CreateMultiplayerGameComponent implements OnInit {
 	removeEmailField(index: number) {
 		this.emailsFormArray.removeAt(index)
 	}
+
+	protected readonly ButtonType = ButtonType
 }

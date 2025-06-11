@@ -4,6 +4,6 @@
 		{{ subTitle() }}
 	</p>
 	@if (canRetry()) {
-		<app-button text="Retry" buttonType="button" (click)="retry()" />
+		<app-button text="Retry" (whenClickedOutput)="retry()" />
 	}
 </div>
