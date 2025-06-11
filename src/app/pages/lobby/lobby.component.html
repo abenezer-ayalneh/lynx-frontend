@@ -13,7 +13,7 @@
 						@if (this.isGameOwner()) {
 							<app-button text="Start Game" class="h-12 md:h-20 w-full mt-4" buttonType="button" type="button" (click)="startGame()" />
 						} @else {
-							<p class="w-full text-font-primary text-xl text-center md:text-2xl animate-bounce">Waiting for the game owner to start the game</p>
+							<p class="w-full text-font-primary text-xl text-center md:text-2xl animate-bounce">Waiting for the game host to start the game</p>
 						}
 					} @else {
 						<p class="w-full text-font-primary text-lg text-center md:text-2xl">Game start in:</p>
@@ -62,7 +62,7 @@
 						</p>
 						<p class="w-full text-font-primary text-sm md:text-lg font-light text-center">
 							Players have 20 seconds to enter their guesses. If no solution is found, a 3rd cue drops allowing 15 more seconds. Still stuck? A
-							4th cue appears allowing 10 more seconds. Still nothing? a 5th cue will appear offering a final, desperate 5 more seconds to snatch
+							4th cue appears allowing 10 more seconds. Still nothing? A 5th cue will appear offering a final, desperate 5 more seconds to snatch
 							victory from defeat.
 						</p>
 						<p class="w-full text-font-primary text-sm md:text-lg font-light text-center">

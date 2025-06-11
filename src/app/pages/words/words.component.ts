@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common'
 import { AfterViewInit, Component, ElementRef, OnInit, signal, viewChild } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { MatIconButton } from '@angular/material/button'
@@ -18,7 +17,7 @@ import { WordsService } from './words.service'
 
 @Component({
 	selector: 'app-words',
-	imports: [MatIcon, HighlightKeyPipe, MatIconButton, MatTooltip, ButtonComponent, TextFieldComponent, MatProgressBar, JsonPipe],
+	imports: [MatIcon, HighlightKeyPipe, MatIconButton, MatTooltip, ButtonComponent, TextFieldComponent, MatProgressBar],
 	templateUrl: './words.component.html',
 	styleUrl: './words.component.scss',
 })

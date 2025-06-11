@@ -6,6 +6,7 @@ import { finalize } from 'rxjs'
 
 import { ButtonComponent } from '../../../../shared/components/button/button.component'
 import { TextFieldComponent } from '../../../../shared/components/text-field/text-field.component'
+import { AutoCapitalizeDirective } from '../../../../shared/directives/auto-capitalize.directive'
 import { RequestState } from '../../../../shared/types/page-state.type'
 import CreateWordDto from '../../dto/create-word.dto'
 import { Word } from '../../types/words.type'
@@ -14,7 +15,7 @@ import { WordsService } from '../../words.service'
 
 @Component({
 	selector: 'app-word-dialog',
-	imports: [MatDialogTitle, MatDialogContent, TextFieldComponent, ButtonComponent, MatCheckbox, ReactiveFormsModule],
+	imports: [MatDialogTitle, MatDialogContent, TextFieldComponent, ButtonComponent, MatCheckbox, ReactiveFormsModule, AutoCapitalizeDirective],
 	templateUrl: './word-dialog.component.html',
 	styleUrl: './word-dialog.component.scss',
 })

@@ -2,12 +2,12 @@
 <mat-dialog-content>
 	<form class="w-96 md:w-[620px] flex gap-8" [formGroup]="wordDialogFormGroup" (ngSubmit)="wordDialogFormSubmit()">
 		<div class="w-1/2 flex flex-col gap-2">
-			<app-text-field [control]="formControls.key" placeholder="Key" />
-			<app-text-field [control]="formControls.cue1" placeholder="Cue 1" />
-			<app-text-field [control]="formControls.cue2" placeholder="Cue 2" />
-			<app-text-field [control]="formControls.cue3" placeholder="Cue 3" />
-			<app-text-field [control]="formControls.cue4" placeholder="Cue 4" />
-			<app-text-field [control]="formControls.cue5" placeholder="Cue 5" />
+			<app-text-field [control]="formControls.key" placeholder="Key" appAutoCapitalize />
+			<app-text-field [control]="formControls.cue1" placeholder="Cue 1" appAutoCapitalize />
+			<app-text-field [control]="formControls.cue2" placeholder="Cue 2" appAutoCapitalize />
+			<app-text-field [control]="formControls.cue3" placeholder="Cue 3" appAutoCapitalize />
+			<app-text-field [control]="formControls.cue4" placeholder="Cue 4" appAutoCapitalize />
+			<app-text-field [control]="formControls.cue5" placeholder="Cue 5" appAutoCapitalize />
 
 			<mat-checkbox formControlName="status">Active Status</mat-checkbox>
 		</div>
