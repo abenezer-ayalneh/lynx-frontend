@@ -2,9 +2,11 @@ import { NgClass } from '@angular/common'
 import { Component, ElementRef, input, signal, viewChild } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 
+import { TrimInputDirective } from '../../directives/trim-input.directive'
+
 @Component({
 	selector: 'app-text-field',
-	imports: [ReactiveFormsModule, NgClass],
+	imports: [ReactiveFormsModule, NgClass, TrimInputDirective],
 	templateUrl: './text-field.component.html',
 	styleUrl: './text-field.component.scss',
 })

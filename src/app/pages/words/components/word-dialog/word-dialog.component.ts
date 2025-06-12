@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common'
 import { Component, Inject, OnInit, signal } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatCheckbox } from '@angular/material/checkbox'
@@ -17,7 +16,7 @@ import { WordsService } from '../../words.service'
 
 @Component({
 	selector: 'app-word-dialog',
-	imports: [MatDialogTitle, MatDialogContent, TextFieldComponent, ButtonComponent, MatCheckbox, ReactiveFormsModule, AutoCapitalizeDirective, JsonPipe],
+	imports: [MatDialogTitle, MatDialogContent, TextFieldComponent, ButtonComponent, MatCheckbox, ReactiveFormsModule, AutoCapitalizeDirective],
 	templateUrl: './word-dialog.component.html',
 	styleUrl: './word-dialog.component.scss',
 })
@@ -40,6 +39,10 @@ export class WordDialogComponent implements OnInit {
 	)
 
 	protected readonly RequestState = RequestState
+
+	protected readonly ButtonType = ButtonType
+
+	protected readonly ButtonColor = ButtonColor
 
 	constructor(
 		private readonly wordsService: WordsService,
@@ -124,8 +127,4 @@ export class WordDialogComponent implements OnInit {
 				})
 		}
 	}
-
-	protected readonly ButtonType = ButtonType
-
-	protected readonly ButtonColor = ButtonColor
 }
