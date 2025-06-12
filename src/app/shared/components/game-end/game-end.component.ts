@@ -1,6 +1,6 @@
 import { Component, input, OnInit, output } from '@angular/core'
-import { MatDialog } from '@angular/material/dialog'
 import { MatTooltip } from '@angular/material/tooltip'
+import { Router } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
@@ -9,7 +9,6 @@ import { PlayerService } from '../../services/player.service'
 import { GameType } from '../../types/game.type'
 import { Score } from '../../types/winner.type'
 import { ButtonComponent } from '../button/button.component'
-import { CloseGameDialogComponent } from '../close-game-dialog/close-game-dialog.component'
 
 @Component({
 	selector: 'app-game-end',
@@ -33,7 +32,7 @@ export class GameEndComponent implements OnInit {
 	protected readonly GameType = GameType
 
 	constructor(
-		private readonly matDialog: MatDialog,
+		private readonly router: Router,
 		private readonly colyseusService: ColyseusService,
 		private readonly playerService: PlayerService,
 	) {
@@ -60,9 +59,7 @@ export class GameEndComponent implements OnInit {
 	 * Exit the currently being played game
 	 */
 	exitGame() {
-		this.matDialog.open(CloseGameDialogComponent, {
-			width: '250px',
-		})
+		this.router.navigate(['/'])
 	}
 
 	/**
@@ -85,6 +82,10 @@ export class GameEndComponent implements OnInit {
 		return Array.from(totalScore.values()).some((score) => !score.vote)
 	}
 
+	getRankedScores(totalScore: Map<string, Score>) {
+		return Array.from(totalScore.values()).sort((a, b) => b.score - a.score)
+	}
+
 	/**
 	 * Calculates and retrieves the total score of a player based on the provided data.
 	 *
@@ -101,9 +102,5 @@ export class GameEndComponent implements OnInit {
 		}
 
 		return totalScores.get(this.colyseusService.room?.sessionId ?? '') ?? null
-	}
-
-	getRankedScores(totalScore: Map<string, Score>) {
-		return Array.from(totalScore.values()).sort((a, b) => b.score - a.score)
 	}
 }

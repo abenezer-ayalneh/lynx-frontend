@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { MatButton } from '@angular/material/button'
-import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog'
-import { Router } from '@angular/router'
+import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog'
 
-import { ColyseusService } from '../../services/colyseus.service'
 
 @Component({
 	selector: 'app-close-game-dialog',
@@ -13,13 +11,9 @@ import { ColyseusService } from '../../services/colyseus.service'
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CloseGameDialogComponent {
-	constructor(
-		private readonly router: Router,
-		private readonly colyseusService: ColyseusService,
-	) {}
+	constructor(private readonly matDialogRef: MatDialogRef<CloseGameDialogComponent>) {}
 
 	async closeGame() {
-		this.colyseusService.leaveRoom()
-		await this.router.navigateByUrl('home')
+		this.matDialogRef.close(true)
 	}
 }

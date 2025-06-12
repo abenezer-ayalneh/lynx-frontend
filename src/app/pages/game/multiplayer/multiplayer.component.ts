@@ -2,14 +2,13 @@ import { NgClass } from '@angular/common'
 import { AfterViewInit, Component, effect, HostListener, OnDestroy, signal } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatTooltip } from '@angular/material/tooltip'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faExclamation, faMicrophone, faMicrophoneSlash, faPaperPlane, faPause, faPlay, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { Room as LiveKitRoom, RoomEvent, Track } from 'livekit-client'
 import { Subscription } from 'rxjs'
 
 import { environment } from '../../../../environments/environment'
-import { CloseGameDialogComponent } from '../../../shared/components/close-game-dialog/close-game-dialog.component'
 import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
 import { GameEndComponent } from '../../../shared/components/game-end/game-end.component'
 import { GamePlayComponent } from '../../../shared/components/game-play/game-play.component'
@@ -71,6 +70,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 		private readonly matDialog: MatDialog,
 		private readonly liveKitService: LiveKitService,
 		private readonly snackbarService: SnackbarService,
+		private readonly router: Router,
 		protected readonly colyseusService: ColyseusService,
 	) {
 		effect(() => {
@@ -143,15 +143,6 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 		event.returnValue = 'Are you sure you want to leave?' // For legacy compatability
 	}
 
-	@HostListener('window:popstate', ['$event'])
-	onPopState(event: PopStateEvent) {
-		//Here you can handle your modal
-		event.preventDefault()
-		event.stopPropagation()
-		event.stopImmediatePropagation()
-		event.returnValue = false // For legacy compatability
-	}
-
 	@HostListener('window:keydown.control.m')
 	async toggleMic() {
 		const micState = this.micState()
@@ -201,9 +192,7 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 	 * Exit the currently being played multiplayer game
 	 */
 	exitGame() {
-		this.matDialog.open(CloseGameDialogComponent, {
-			width: '250px',
-		})
+		this.router.navigate(['/'])
 	}
 
 	/**

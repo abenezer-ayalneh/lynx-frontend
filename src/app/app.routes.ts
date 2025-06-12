@@ -11,6 +11,7 @@ import { LobbyComponent } from './pages/lobby/lobby.component'
 import { RsvpComponent } from './pages/rsvp/rsvp.component'
 import { WordsComponent } from './pages/words/words.component'
 import { authGuard } from './shared/guards/auth.guard'
+import { avoidAccidentalRedirectionGuard } from './shared/guards/avoid-accidental-redirection.guard'
 import { optionalAuthGuardGuard } from './shared/guards/optional-auth-guard.guard'
 
 export const routes: Routes = [
@@ -40,6 +41,7 @@ export const routes: Routes = [
 			{
 				path: 'solo',
 				component: SoloPlayComponent,
+				canDeactivate: [avoidAccidentalRedirectionGuard],
 			},
 			{
 				path: 'multi/create-room',
@@ -51,6 +53,7 @@ export const routes: Routes = [
 		path: 'scheduled-game',
 		component: MainLayoutComponent,
 		canActivate: [optionalAuthGuardGuard],
+		canDeactivate: [avoidAccidentalRedirectionGuard],
 		children: [
 			{
 				path: 'rsvp',

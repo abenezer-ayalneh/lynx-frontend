@@ -127,7 +127,7 @@ export class LobbyComponent implements AfterViewInit {
 					})
 
 					room.onMessage('startGame', ({ roomId }: { roomId: string }) => {
-						this.router.navigateByUrl(`/scheduled-game/multi/play/${roomId}?name=${this.userInformation()?.name}`)
+						this.router.navigateByUrl(`/scheduled-game/multi/play/${roomId}?name=${this.userInformation()?.name}`, { replaceUrl: true })
 					})
 					this.loaded.set(true)
 				})
