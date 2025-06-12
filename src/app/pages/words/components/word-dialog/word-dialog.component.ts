@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, signal } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatCheckbox } from '@angular/material/checkbox'
-import { MAT_DIALOG_DATA, MatDialogContent, MatDialogTitle } from '@angular/material/dialog'
+import { MAT_DIALOG_DATA, MatDialog, MatDialogContent, MatDialogTitle } from '@angular/material/dialog'
 import { finalize } from 'rxjs'
 
 import { ButtonComponent } from '../../../../shared/components/button/button.component'
@@ -13,6 +13,7 @@ import CreateWordDto from '../../dto/create-word.dto'
 import { Word } from '../../types/words.type'
 import { cueContainsKeyValidator } from '../../validators/cue-contains-key.validator'
 import { WordsService } from '../../words.service'
+import { DeleteWordDialogComponent } from '../delete-word-dialog/delete-word-dialog.component'
 
 @Component({
 	selector: 'app-word-dialog',
@@ -46,6 +47,7 @@ export class WordDialogComponent implements OnInit {
 
 	constructor(
 		private readonly wordsService: WordsService,
+		private readonly matDialog: MatDialog,
 		@Inject(MAT_DIALOG_DATA) protected readonly data: { type: 'UPDATE' | 'ADD'; word?: Word },
 	) {}
 
@@ -111,20 +113,26 @@ export class WordDialogComponent implements OnInit {
 	}
 
 	deleteWord() {
-		if (this.data.word) {
-			this.deleteButtonStatus.set(RequestState.LOADING)
-			this.wordsService
-				.deleteWord(this.data.word.id)
-				.pipe(finalize(() => this.saveButtonStatus.set(RequestState.IDLE)))
-				.subscribe({
-					next: (deletedWord) => {
-						this.wordsService.setWords = this.wordsService.words.filter((word) => word.id !== deletedWord.id)
-						this.wordsService.closeModals()
-					},
-					error: () => {
-						console.error('Error deleting word')
-					},
-				})
-		}
+		const dialogRef = this.matDialog.open(DeleteWordDialogComponent)
+
+		dialogRef.afterClosed().subscribe((result: string) => {
+			if (result === 'delete') {
+				this.deleteButtonStatus.set(RequestState.LOADING)
+				if (this.data.word) {
+					this.wordsService
+						.deleteWord(this.data.word.id)
+						.pipe(finalize(() => this.saveButtonStatus.set(RequestState.IDLE)))
+						.subscribe({
+							next: (deletedWord) => {
+								this.wordsService.setWords = this.wordsService.words.filter((word) => word.id !== deletedWord.id)
+								this.wordsService.closeModals()
+							},
+							error: () => {
+								console.error('Error deleting word')
+							},
+						})
+				}
+			}
+		})
 	}
 }
