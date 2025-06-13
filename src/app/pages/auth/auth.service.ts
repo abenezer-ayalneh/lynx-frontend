@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
 
 import { Player } from '../../shared/models/player.model'
+import { PlayerService } from '../../shared/services/player.service'
 import { TokenService } from '../../shared/services/token.service'
 import { LoginRequest, LoginResponse } from './login/types/login.type'
 import { RegisterRequest } from './register/types/register.type'
@@ -15,6 +16,7 @@ export class AuthService {
 		private readonly httpClient: HttpClient,
 		private readonly tokenService: TokenService,
 		private readonly router: Router,
+		private readonly playerService: PlayerService,
 	) {}
 
 	register(registerRequest: RegisterRequest) {
@@ -27,6 +29,7 @@ export class AuthService {
 
 	async logOut() {
 		this.tokenService.clearTokens()
+		this.playerService.clearPlayer()
 		await this.router.navigateByUrl('auth/login')
 	}
 

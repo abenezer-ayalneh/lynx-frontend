@@ -17,14 +17,7 @@ export class PlayerService {
 		this.player.next(player)
 	}
 
-	setPlayerScore(score: number) {
-		const player = this.player.getValue()
-
-		if (player) {
-			this.player.next({
-				...player,
-				score,
-			})
-		}
+	clearPlayer() {
+		this.player.next(null)
 	}
 }
