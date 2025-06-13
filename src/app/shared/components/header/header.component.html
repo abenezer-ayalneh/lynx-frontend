@@ -3,11 +3,11 @@
 		<img [src]="'images/logos/lynx-logo.png'" class="h-[36px] lg:h-[56px]" alt="logo" />
 		<p class="font-medium text-lg lg:text-2xl text-font-primary">LYNX</p>
 	</a>
-	<div class="w-1/3 flex justify-center items-center">
+	<div class="w-fit flex justify-center items-center">
 		@let sessionScore = multiplayerService.sessionScore();
 		@if (sessionScore !== null && sessionScore !== undefined && sessionScore.score >= 0) {
 			<div class="dropdown dropdown-bottom dropdown-center text-white">
-				<div tabindex="0" role="button" class="btn m-1">Score</div>
+				<div tabindex="0" role="button" class="btn btn-sm md:btn-md m-1">Score</div>
 				<ul tabindex="0" class="dropdown-content menu bg-my-glass rounded-box z-[999] w-52 p-2 shadow-sm">
 					<li><a>Session Score</a></li>
 					<li>
@@ -17,7 +17,7 @@
 			</div>
 		}
 	</div>
-	<div class="w-1/3 flex justify-end items-center">
+	<div class="w-fit flex justify-end items-center">
 		@let letPlayer = player();
 		@if (letPlayer) {
 			<div class="dropdown dropdown-end">

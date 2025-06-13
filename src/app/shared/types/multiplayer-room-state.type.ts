@@ -13,8 +13,8 @@ export interface MultiplayerRoomState {
 	cycle: number
 	word: Word
 	waitingCountdownTime: number
-	gameState: 'START_COUNTDOWN' | 'ROUND_END' | 'GAME_STARTED' | 'GAME_END'
-	gameStatus: 'ONGOING' | 'PAUSED'
+	gameState: GameState
+	gameStatus: GameStatus
 	winner: Score
 	score: Map<string, number>
 	totalScore: Map<string, Score>
@@ -22,4 +22,16 @@ export interface MultiplayerRoomState {
 	words: Word
 	gameStarted: boolean
 	ownerId: number
+}
+
+export enum GameState {
+	START_COUNTDOWN = 'START_COUNTDOWN',
+	ROUND_END = 'ROUND_END',
+	GAME_STARTED = 'GAME_STARTED',
+	GAME_END = 'GAME_END',
+}
+
+export enum GameStatus {
+	ONGOING = 'ONGOING',
+	PAUSED = 'PAUSED',
 }

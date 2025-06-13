@@ -52,6 +52,9 @@ importers:
             '@livekit/components-styles':
                 specifier: ^1.1.6
                 version: 1.1.6
+            '@ngrx/signals':
+                specifier: ^19.2.1
+                version: 19.2.1(@angular/core@19.2.13(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
             colyseus.js:
                 specifier: ^0.15.26
                 version: 0.15.28
@@ -1632,6 +1635,15 @@ packages:
     '@napi-rs/nice@1.0.1':
         resolution: { integrity: sha512-zM0mVWSXE0a0h9aKACLwKmD6nHcRiKrPpCfvaKqG1CqDEyjEawId0ocXxVzPMCAm6kkWr2P025msfxXEnt8UGQ== }
         engines: { node: '>= 10' }
+
+    '@ngrx/signals@19.2.1':
+        resolution: { integrity: sha512-Tajd2TVjkxxyFMhnMSWLa5pAWfynjP0VM0B/BCMaLiBrwBBxybxRVENoUDU5tGyiKSax/2tBJC3+sOglmxm27A== }
+        peerDependencies:
+            '@angular/core': ^19.0.0
+            rxjs: ^6.5.3 || ^7.4.0
+        peerDependenciesMeta:
+            rxjs:
+                optional: true
 
     '@ngtools/webpack@19.2.13':
         resolution: { integrity: sha512-9dYfLsqWFTn1YVUiWydSp2bboaSW+byeZRFx8qeR7lsOkDGbm/idG68IXFHybHtZ3ptJ5fEeuw89RL47SQ61oA== }
@@ -7079,6 +7091,13 @@ snapshots:
             '@napi-rs/nice-win32-ia32-msvc': 1.0.1
             '@napi-rs/nice-win32-x64-msvc': 1.0.1
         optional: true
+
+    '@ngrx/signals@19.2.1(@angular/core@19.2.13(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)':
+        dependencies:
+            '@angular/core': 19.2.13(rxjs@7.8.2)(zone.js@0.15.1)
+            tslib: 2.8.1
+        optionalDependencies:
+            rxjs: 7.8.2
 
     '@ngtools/webpack@19.2.13(@angular/compiler-cli@19.2.13(@angular/compiler@19.2.13)(typescript@5.6.3))(typescript@5.6.3)(webpack@5.98.0(esbuild@0.25.4))':
         dependencies:

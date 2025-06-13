@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router'
 
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component'
+import { MultiplayerLayoutComponent } from './layouts/multiplayer-layout/multiplayer-layout.component'
 import { LoginComponent } from './pages/auth/login/login.component'
 import { RegisterComponent } from './pages/auth/register/register.component'
 import { CreateMultiplayerGameComponent } from './pages/game/multiplayer/components/create-multiplayer-game/create-multiplayer-game.component'
@@ -60,12 +61,18 @@ export const routes: Routes = [
 				component: RsvpComponent,
 			},
 			{
-				path: 'lobby',
-				component: LobbyComponent,
-			},
-			{
-				path: 'multi/play/:roomId',
-				component: MultiplayerComponent,
+				path: ':gameId',
+				component: MultiplayerLayoutComponent,
+				children: [
+					{
+						path: 'lobby',
+						component: LobbyComponent,
+					},
+					{
+						path: 'play/:roomId',
+						component: MultiplayerComponent,
+					},
+				],
 			},
 		],
 	},

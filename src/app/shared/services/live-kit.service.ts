@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core'
 export class LiveKitService {
 	constructor(private readonly httpClient: HttpClient) {}
 
-	getToken(colyseusRoomId: string, sessionId: string) {
-		return this.httpClient.get<{ token: string }>('live-kit/token', { params: { colyseusRoomId, sessionId: sessionId } })
+	getToken(gameId: string) {
+		return this.httpClient.get<{ token: string }>('live-kit/token', { params: { gameId } })
 	}
 }

@@ -1,0 +1,10 @@
+@use '@angular/material' as mat;
+
+#tooltip {
+	@include mat.tooltip-overrides(
+		(
+			container-color: orange,
+			container-shape: red,
+		)
+	);
+}

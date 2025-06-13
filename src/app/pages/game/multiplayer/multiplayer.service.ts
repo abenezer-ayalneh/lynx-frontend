@@ -13,6 +13,6 @@ export class MultiplayerService {
 	constructor(private readonly httpClient: HttpClient) {}
 
 	createScheduledGame(createMultiplayerRoomDto: CreateMultiplayerRoomDto) {
-		return this.httpClient.post<{ lobbyId: string }>('scheduled-games', createMultiplayerRoomDto)
+		return this.httpClient.post<{ lobbyId: string; gameId: number | string }>('scheduled-games', createMultiplayerRoomDto)
 	}
 }

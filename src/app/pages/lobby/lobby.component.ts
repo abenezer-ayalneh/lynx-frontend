@@ -98,6 +98,7 @@ export class LobbyComponent implements AfterViewInit {
 	}
 
 	joinLobby() {
+		const gameId = this.activatedRoute.snapshot.paramMap.get('gameId')
 		const roomId = this.activatedRoute.snapshot.queryParams['id']
 
 		// Join a websocket room with the gameId
@@ -127,7 +128,7 @@ export class LobbyComponent implements AfterViewInit {
 					})
 
 					room.onMessage('startGame', ({ roomId }: { roomId: string }) => {
-						this.router.navigateByUrl(`/scheduled-game/multi/play/${roomId}?name=${this.userInformation()?.name}`, { replaceUrl: true })
+						this.router.navigateByUrl(`/scheduled-game/${gameId}/play/${roomId}?name=${this.userInformation()?.name}`, { replaceUrl: true })
 					})
 					this.loaded.set(true)
 				})

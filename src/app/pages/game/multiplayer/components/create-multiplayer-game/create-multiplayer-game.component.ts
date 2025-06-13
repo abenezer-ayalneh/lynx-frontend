@@ -119,7 +119,7 @@ export class CreateMultiplayerGameComponent implements OnInit {
 				.subscribe({
 					next: (response) => {
 						if (gameType === ScheduledGameType.INSTANT) {
-							this.router.navigateByUrl(`/scheduled-game/lobby?id=${response.lobbyId}`)
+							this.router.navigateByUrl(`/scheduled-game/${response.gameId}/lobby?id=${response.lobbyId}`)
 						} else {
 							this.gameCreatedModal.nativeElement.showModal()
 						}
