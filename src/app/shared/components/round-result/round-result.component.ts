@@ -30,7 +30,7 @@ export class RoundResultComponent implements OnInit {
 
 	constructor(protected readonly colyseusService: ColyseusService) {
 		this.allFailRoundAudio.src = 'audios/failed-round.mp3'
-		this.allFailRoundAudio.volume = 0.2
+		this.allFailRoundAudio.volume = 0.03
 		this.solvedRoundAudio.src = 'audios/solved-round.mp3'
 		this.solvedRoundAudio.volume = 0.2
 	}

@@ -42,7 +42,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
 
 	constructor(protected readonly colyseusService: ColyseusService) {
 		this.wrongGuessAudio.src = 'audios/wrong-guess.wav'
-		this.wrongGuessAudio.volume = 0.2
+		this.wrongGuessAudio.volume = 0.02
 	}
 
 	ngOnInit() {
