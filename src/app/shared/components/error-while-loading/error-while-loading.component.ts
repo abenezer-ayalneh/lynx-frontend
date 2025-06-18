@@ -9,7 +9,7 @@ import { ButtonComponent } from '../button/button.component'
 	styleUrl: './error-while-loading.component.scss',
 })
 export class ErrorWhileLoadingComponent {
-	subTitle = input<string>('')
+	subTitle = input<string | null>(null)
 
 	canRetry = input<boolean>(false)
 

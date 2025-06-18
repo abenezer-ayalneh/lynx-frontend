@@ -1,50 +1,53 @@
-<div class="w-full h-[calc(100%-64px)]">
-	@if (store.pageState() === RequestState.READY) {
-		<router-outlet />
-	} @else if (store.pageState() === RequestState.LOADING) {
-		<div class="h-full w-full flex justify-center items-center relative">
-			<app-loading />
-		</div>
-	}
-</div>
-
-<div id="gameControl" class="w-full h-16 flex justify-center items-center gap-4">
-	<button
-		class="w-fit h-10 md:h12 disabled:bg-gray-500 disabled:rounded-md relative"
-		(click)="toggleMic()"
-		[disabled]="store.micState() === MicState.LOADING"
-		#tooltip="matTooltip"
-		[matTooltip]="getMicButtonTooltip">
-		<div
-			class="w-16 h-full px-2 flex justify-center items-center rounded-md hover:rounded-lg"
-			[ngClass]="store.micState() === MicState.ON ? 'bg-white text-[#333537]' : 'bg-[#f2b8b5] text-my-red'">
-			@if (store.micState() === MicState.LOADING) {
-				<span class="loading loading-dots loading-md text-white"></span>
+@if (store.pageState() === RequestState.READY) {
+	<div class="w-full h-[calc(100%-64px)] flex gap-2">
+		<div class="w-[90%] h-full">
+			@if (store.gameState() === GameState.LOBBY) {
+				<app-lobby />
 			} @else {
-				@if (store.micState() === MicState.NOT_ALLOWED || store.micState() === MicState.ERROR) {
-					<div class="w-5 h-5 aspect-square flex justify-center items-center p-2 rounded-full bg-my-orange absolute -top-0.5 -right-1">
-						<fa-icon [icon]="icons.faExclamation" class="text-xs text-my-red m-0" />
-					</div>
-				}
-				<fa-icon
-					[icon]="store.micState() === MicState.ON ? icons.faMicrophone : icons.faMicrophoneSlash"
-					class="text-xl flex justify-center items-center" />
+				<app-multiplayer />
 			}
 		</div>
-	</button>
-	@if (isPlayerGameOwner()) {
-		<button class="w-fit h-10 md:h12" (click)="toggleGameStatus()">
-			<div class="w-16 h-full px-2 flex justify-center items-center rounded-md hover:rounded-lg text-white bg-my-glass backdrop-blur-md">
-				<fa-icon
-					[icon]="store.gameStatus() === GameStatus.ONGOING ? icons.faPause : icons.faPlay"
-					class="text-xl flex justify-center items-center"
-					[matTooltip]="store.gameStatus() === GameStatus.ONGOING ? 'Pause game' : 'Resume game'" />
-			</div>
-		</button>
-	}
-	<button class="w-fit h-10 md:h12" (click)="exitGame()">
-		<div class="w-16 h-full px-2 flex justify-center items-center rounded-md hover:rounded-lg text-white bg-[#dc362e]">
-			<fa-icon [icon]="icons.faTimes" class="text-xl flex justify-center items-center" matTooltip="Exit game" />
+		<div class="w-[10%] h-full flex flex-col justify-start items-center gap-2">
+			@for (player of store.gamePlayers(); track player.id) {
+				<div
+					class="w-full h-[calc(100%*1/8)] bg-my-glass backdrop-blur-md rounded-lg flex justify-center items-center relative"
+					[ngClass]="{ 'bg-my-blueGreen': player.speaking }">
+					@if (player.muted) {
+						<span class="w-6 flex justify-center items-center aspect-square rounded-full bg-[#f2b8b5] text-my-red p-1 m-1 absolute top-0 right-0">
+							<fa-icon [icon]="icons.faMicrophoneSlash" class="text-xs" />
+						</span>
+					}
+					<p class="text-4xl text-center font-light text-white">{{ player.name | pickFirstLetters }}</p>
+					<p class="w-[80%] text-sm font-light text-white truncate absolute bottom-1 left-2">{{ player.name }}</p>
+				</div>
+			}
 		</div>
-	</button>
-</div>
+	</div>
+
+	<app-game-control />
+} @else if (store.pageState() === RequestState.LOADING) {
+	<div class="h-full w-full flex justify-center items-center relative">
+		<app-loading />
+	</div>
+} @else if (store.pageState() === RequestState.ERROR) {
+	<div class="h-full w-full flex justify-center items-center relative">
+		<app-error-while-loading [subTitle]="store.error()" />
+	</div>
+}
+
+<dialog #usernameModal class="modal">
+	<form class="modal-box bg-my-glass backdrop-blur-md text-font-primary" [formGroup]="usernameFormGroup" (ngSubmit)="setUsernameInformation()">
+		<h3 class="font-bold text-2xl">Welcome!</h3>
+		<br />
+		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+			<legend class="fieldset-legend px-2 font-bold">Guest</legend>
+			<p class="py-4">Choose a name to be used in the game:</p>
+			<div class="w-full h-fit flex justify-start items-center gap-3">
+				<app-text-field [control]="usernameFormGroup.controls.username" placeholder="Name" class="grow" />
+				<button class="btn btn-sm md:btn-md" type="submit">Ok</button>
+			</div>
+		</fieldset>
+		<div class="divider">OR</div>
+		<button class="btn btn-md btn-block" type="button" (click)="goToLogin()">Login</button>
+	</form>
+</dialog>

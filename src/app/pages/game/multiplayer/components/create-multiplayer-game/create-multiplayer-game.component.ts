@@ -117,9 +117,9 @@ export class CreateMultiplayerGameComponent implements OnInit {
 				})
 				.pipe(finalize(() => this.isCreatingGame.set(false)))
 				.subscribe({
-					next: (response) => {
+					next: async (response) => {
 						if (gameType === ScheduledGameType.INSTANT) {
-							this.router.navigateByUrl(`/scheduled-game/${response.gameId}/lobby?id=${response.lobbyId}`)
+							await this.router.navigateByUrl(`/scheduled-game/${response.gameId}`)
 						} else {
 							this.gameCreatedModal.nativeElement.showModal()
 						}

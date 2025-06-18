@@ -16,7 +16,7 @@ import { Word } from '../../types/word.type'
 export class RoundResultComponent implements OnInit {
 	winner = input.required<Score | null>()
 
-	word = input<Word>()
+	word = input<Word | null>()
 
 	score = input.required<number>()
 

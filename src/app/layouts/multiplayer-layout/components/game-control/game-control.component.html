@@ -1,0 +1,40 @@
+<div id="gameControl" class="w-full h-16 flex justify-center items-center gap-4">
+	<button
+		class="w-fit h-10 md:h12 disabled:bg-gray-500 disabled:rounded-md relative"
+		(click)="toggleMic()"
+		[disabled]="store.micState() === MicState.LOADING"
+		#tooltip="matTooltip"
+		[matTooltip]="micButtonTooltip()">
+		<div
+			class="w-16 h-full px-2 flex justify-center items-center rounded-md hover:rounded-lg"
+			[ngClass]="store.micState() === MicState.ON ? 'bg-white text-[#333537]' : 'bg-[#f2b8b5] text-my-red'">
+			@if (store.micState() === MicState.LOADING) {
+				<span class="loading loading-dots loading-md text-white"></span>
+			} @else {
+				@if (store.micState() === MicState.NOT_ALLOWED || store.micState() === MicState.ERROR) {
+					<div class="w-5 h-5 aspect-square flex justify-center items-center p-2 rounded-full bg-my-orange absolute -top-0.5 -right-1">
+						<fa-icon [icon]="icons.faExclamation" class="text-xs text-my-red m-0" />
+					</div>
+				}
+				<fa-icon
+					[icon]="store.micState() === MicState.ON ? icons.faMicrophone : icons.faMicrophoneSlash"
+					class="text-xl flex justify-center items-center" />
+			}
+		</div>
+	</button>
+	@if (showGamePlayButton()) {
+		<button class="w-fit h-10 md:h12" (click)="toggleGamePlayStatus()">
+			<div class="w-16 h-full px-2 flex justify-center items-center rounded-md hover:rounded-lg text-white bg-my-glass backdrop-blur-md">
+				<fa-icon
+					[icon]="store.gamePlayStatus() === GamePlayStatus.PLAYING ? icons.faPause : icons.faPlay"
+					class="text-xl flex justify-center items-center"
+					[matTooltip]="store.gamePlayStatus() === GamePlayStatus.PLAYING ? 'Pause game' : 'Resume game'" />
+			</div>
+		</button>
+	}
+	<button class="w-fit h-10 md:h12" (click)="exitGame()">
+		<div class="w-16 h-full px-2 flex justify-center items-center rounded-md hover:rounded-lg text-white bg-[#dc362e]">
+			<fa-icon [icon]="icons.faTimes" class="text-xl flex justify-center items-center" matTooltip="Exit game" />
+		</div>
+	</button>
+</div>

@@ -1,13 +1,13 @@
 @if (pageState() === PageState.READY) {
 	<div class="w-full h-full flex flex-col">
 		<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl overflow-hidden">
-			@if (roomState()?.gameStatus === 'PAUSED') {
+			@if (store.gamePlayStatus() === GamePlayStatus.PAUSED) {
 				<div class="h-full w-full flex flex-col justify-center items-center gap-2 md:gap-6 absolute top-0 left-0 z-10">
 					<fa-icon [icon]="icons.faPause" class="text-my-glass opacity-65 text-[320px] md:text-[400px] absolute self-center" />
 					<p class="font-bold text-font-primary text-4xl md:text-7xl">Game Paused</p>
 				</div>
 			}
-			<div [hidden]="roomState()?.gameStatus === 'PAUSED'" class="w-full h-full overflow-y-scroll rounded-2xl overflow-hidden">
+			<div [hidden]="store.gamePlayStatus() === GamePlayStatus.PAUSED" class="w-full h-full overflow-y-scroll rounded-2xl overflow-hidden">
 				@if (roomState(); as state) {
 					@switch (state.gameState) {
 						@case ('START_COUNTDOWN') {

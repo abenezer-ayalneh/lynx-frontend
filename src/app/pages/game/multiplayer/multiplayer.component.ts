@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, computed, effect, OnDestroy, signal } from '@angular/core'
+import { AfterViewInit, Component, computed, effect, inject, OnDestroy, signal } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faExclamation, faMicrophone, faMicrophoneSlash, faPaperPlane, faPause, faPlay, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
@@ -13,8 +13,9 @@ import { RoundResultComponent } from '../../../shared/components/round-result/ro
 import { ColyseusService } from '../../../shared/services/colyseus.service'
 import { PlayerService } from '../../../shared/services/player.service'
 import { GameType } from '../../../shared/types/game.type'
-import { MultiplayerRoomState } from '../../../shared/types/multiplayer-room-state.type'
+import { GamePlayStatus, MultiplayerRoomState } from '../../../shared/types/multiplayer-room-state.type'
 import { RequestState } from '../../../shared/types/page-state.type'
+import { MultiplayerStore } from '../../../states/stores/multiplayer.store'
 import { MultiplayerService } from './multiplayer.service'
 
 @Component({
@@ -25,6 +26,8 @@ import { MultiplayerService } from './multiplayer.service'
 })
 export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 	subscriptions$ = new Subscription()
+
+	readonly store = inject(MultiplayerStore)
 
 	roomState = signal<MultiplayerRoomState | null>(null)
 
@@ -110,4 +113,6 @@ export class MultiplayerComponent implements AfterViewInit, OnDestroy {
 	startNewGame() {
 		this.colyseusService.room?.send('start-new-game')
 	}
+
+	protected readonly GamePlayStatus = GamePlayStatus
 }

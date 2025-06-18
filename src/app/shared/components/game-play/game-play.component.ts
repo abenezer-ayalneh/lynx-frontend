@@ -26,7 +26,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
 
 	time = input.required<number>()
 
-	word = input<Word>()
+	word = input<Word | null>()
 
 	guessing = signal<boolean>(false)
 

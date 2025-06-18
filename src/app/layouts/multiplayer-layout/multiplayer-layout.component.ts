@@ -1,71 +1,73 @@
 import { NgClass } from '@angular/common'
-import { AfterViewInit, Component, computed, HostListener, inject, OnInit, viewChild, ViewEncapsulation } from '@angular/core'
-import { MatDialog } from '@angular/material/dialog'
-import { MatTooltip } from '@angular/material/tooltip'
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router'
+import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild, ViewEncapsulation } from '@angular/core'
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
+import { ActivatedRoute, Router } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
-import { faExclamation, faMicrophone, faMicrophoneSlash, faPaperPlane, faPause, faPlay, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { Room as LiveKitRoom, RoomEvent, Track } from 'livekit-client'
+import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons'
+import { Participant, Room as LiveKitRoom, RoomEvent } from 'livekit-client'
 import { firstValueFrom } from 'rxjs'
 
 import { environment } from '../../../environments/environment'
+import { AuthService } from '../../pages/auth/auth.service'
+import { MultiplayerComponent } from '../../pages/game/multiplayer/multiplayer.component'
 import { MicState } from '../../pages/game/multiplayer/types/mic-state.type'
+import { LobbyComponent } from '../../pages/lobby/lobby.component'
+import { ErrorWhileLoadingComponent } from '../../shared/components/error-while-loading/error-while-loading.component'
 import { LoadingComponent } from '../../shared/components/loading/loading.component'
-import { RequestPermissionComponent } from '../../shared/components/request-permission/request-permission.component'
+import { TextFieldComponent } from '../../shared/components/text-field/text-field.component'
+import { PickFirstLettersPipe } from '../../shared/pipes/pick-first-letters.pipe'
 import { ColyseusService } from '../../shared/services/colyseus.service'
-import { SnackbarService } from '../../shared/services/snackbar.service'
-import { GameStatus } from '../../shared/types/multiplayer-room-state.type'
+import { PlayerService } from '../../shared/services/player.service'
+import { TokenService } from '../../shared/services/token.service'
+import { GameState, MultiplayerRoomState } from '../../shared/types/multiplayer-room-state.type'
 import { RequestState } from '../../shared/types/page-state.type'
 import { MultiplayerStore } from '../../states/stores/multiplayer.store'
+import { GameControlComponent } from './components/game-control/game-control.component'
 
 @Component({
 	selector: 'app-multiplayer-layout',
-	imports: [RouterOutlet, FaIconComponent, MatTooltip, NgClass, LoadingComponent],
+	imports: [
+		FaIconComponent,
+		LoadingComponent,
+		PickFirstLettersPipe,
+		FormsModule,
+		TextFieldComponent,
+		ReactiveFormsModule,
+		ErrorWhileLoadingComponent,
+		GameControlComponent,
+		LobbyComponent,
+		MultiplayerComponent,
+		NgClass,
+	],
 	templateUrl: './multiplayer-layout.component.html',
 	styleUrl: './multiplayer-layout.component.scss',
 	providers: [MultiplayerStore],
 	encapsulation: ViewEncapsulation.None,
 })
-export class MultiplayerLayoutComponent implements OnInit, AfterViewInit {
-	isPlayerGameOwner = computed(() => true) //TODO: get this value from the game-room state
-
-	tooltip = viewChild.required<MatTooltip>('tooltip')
-
+export class MultiplayerLayoutComponent implements OnInit {
 	readonly store = inject(MultiplayerStore)
 
-	icons = { faPaperPlane, faTimesCircle, faMicrophone, faMicrophoneSlash, faTimes, faExclamation, faPause, faPlay }
+	usernameDialog = viewChild.required<ElementRef<HTMLDialogElement>>('usernameModal')
 
-	protected readonly MicState = MicState
+	usernameFormGroup = new FormGroup({
+		username: new FormControl<string>('', { validators: [Validators.required, Validators.minLength(1)], nonNullable: true }),
+	})
+
+	icons = { faMicrophoneSlash, faMicrophone }
 
 	protected readonly RequestState = RequestState
 
-	protected readonly GameStatus = GameStatus
+	protected readonly GameState = GameState
 
 	constructor(
 		private readonly router: Router,
 		private readonly colyseusService: ColyseusService,
-		private readonly matDialog: MatDialog,
-		private readonly snackbarService: SnackbarService,
 		private readonly activatedRoute: ActivatedRoute,
-	) {}
-
-	get getMicButtonTooltip() {
-		switch (this.store.micState()) {
-			case MicState.ON:
-				return 'Turn off microphone (CTRL + m)'
-			case MicState.MUTED:
-				return 'Turn on microphone (CTRL + m)'
-			default:
-				return 'Enable microphone for people in the game to hear your voice.'
-		}
-	}
-
-	ngOnInit() {
-		this.initiateVoiceChat()
-	}
-
-	ngAfterViewInit() {
-		this.tooltip().show(500)
+		private readonly tokenService: TokenService,
+		private readonly playerService: PlayerService,
+		private readonly authService: AuthService,
+	) {
+		this.initiateEffects()
 	}
 
 	@HostListener('window:beforeunload', ['$event'])
@@ -74,114 +76,148 @@ export class MultiplayerLayoutComponent implements OnInit, AfterViewInit {
 		event.returnValue = 'Are you sure you want to leave?' // For legacy compatability
 	}
 
-	@HostListener('window:click')
-	onClick() {
-		if (this.tooltip()._isTooltipVisible()) {
-			this.tooltip().hide()
+	async ngOnInit() {
+		await this.getUserInformation()
+	}
+
+	setUsernameInformation() {
+		if (this.usernameFormGroup.valid) {
+			this.store.setPlayer(this.usernameFormGroup.controls.username.value)
+			this.usernameDialog().nativeElement.close()
 		}
 	}
 
-	@HostListener('window:keydown.control.m')
-	async toggleMic() {
-		const micState = this.store.micState()
-		const isMicEnabled = this.store.liveKitRoom()?.localParticipant?.isMicrophoneEnabled
-		const micTrackPublication = this.store.liveKitRoom()?.localParticipant?.getTrackPublication(Track.Source.Microphone)
+	async goToLogin() {
+		this.usernameDialog().nativeElement.close()
+		localStorage.setItem('redirectionUrl', this.router.url)
+		await this.router.navigate(['auth', 'login'], {
+			replaceUrl: false,
+			skipLocationChange: true,
+			onSameUrlNavigation: 'ignore',
+		})
+	}
 
-		if (isMicEnabled !== undefined && micTrackPublication) {
-			if (micState === MicState.ON) {
-				micTrackPublication.mute().then(() => this.store.setMicState(MicState.MUTED))
-			} else if (micState === MicState.MUTED) {
-				micTrackPublication.unmute().then(() => this.store.setMicState(MicState.ON))
+	private async getUserInformation() {
+		const accessToken = this.tokenService.getAccessToken()
+		if (accessToken) {
+			const playerName = this.playerService.getPlayer.getValue()?.name
+			if (playerName) {
+				this.store.setPlayer(playerName)
+			} else {
+				try {
+					const player = await firstValueFrom(this.authService.checkToken())
+					this.playerService.setPlayer = player
+					this.store.setPlayer(player.name)
+				} catch (e) {
+					this.store.setError('Player information not found')
+					console.error(e)
+				}
 			}
-		}
-		// Ask for permission
-		else if (this.store.liveKitRoom() && MicState.NOT_ALLOWED) {
-			this.store.setMicState(MicState.LOADING)
-
-			const room = this.store.liveKitRoom()
-			// Enables the microphone and publishes it to a new audio track
-			room?.localParticipant
-				.setMicrophoneEnabled(true)
-				.then(() => {
-					// Set initial mic status
-					if (room.localParticipant.isMicrophoneEnabled) {
-						this.store.setMicState(MicState.ON)
-					} else {
-						this.store.setMicState(MicState.MUTED)
-					}
-				})
-				.catch(() => {
-					this.store.setMicState(MicState.NOT_ALLOWED)
-					this.matDialog.open(RequestPermissionComponent, {
-						height: '400px',
-						width: '600px',
-					})
-				})
-		} else if (micState === MicState.ERROR) {
-			this.snackbarService.showSnackbar('Error: communication server failed! Reload page to retry.')
+		} else {
+			this.usernameDialog().nativeElement.showModal()
 		}
 	}
 
-	/**
-	 * Exit the currently being played multiplayer game
-	 */
-	async exitGame() {
-		await this.router.navigate(['/'])
-	}
-
-	/**
-	 * Exit the currently being played multiplayer game
-	 */
-	toggleGameStatus() {
-		if (this.store.gameStatus() === GameStatus.ONGOING) {
-			this.colyseusService.pauseGame()
-			this.store.pauseGame()
-		} else if (this.store.gameStatus() === GameStatus.PAUSED) {
-			this.colyseusService.resumeGame()
-			this.store.resumeGame()
-		}
-	}
-
-	private initiateVoiceChat() {
+	private initiateGameRoom(playerName: string) {
 		const gameId = this.activatedRoute.snapshot.paramMap.get('gameId')
 
-		if (gameId) {
-			firstValueFrom(this.store.liveKitService.getToken(gameId))
-				.then(async ({ token }) => {
-					try {
-						const room = new LiveKitRoom()
-						await room.connect(environment.liveKitServerUrl, token)
+		// Join a websocket room with the gameId
+		if (gameId && playerName) {
+			this.colyseusService.getClient.auth.token = playerName
+			this.colyseusService.getClient
+				.joinOrCreate<MultiplayerRoomState>('multiplayer', { gameId })
+				.then((room) => {
+					this.colyseusService.setRoom = room
+					this.store.setColyseusRoom(room)
+					sessionStorage.setItem('reconnectionToken', room.reconnectionToken)
 
-						this.store.setLiveKitRoom(room)
-
-						room.on(RoomEvent.TrackSubscribed, (track) => track.attach())
-
-						// Enables the microphone and publishes it to a new audio track
-						// NOTE: it is intentional that I am passing `false` for the `setMicrophoneEnabled` method.
-						// This is because an interaction is needed for the audio stream to be attached and be able to play.
-						// For more info check: https://developer.chrome.com/blog/autoplay/#web_audio
-						room.localParticipant
-							.setMicrophoneEnabled(false)
-							.then(() => {
-								// Set the initial mic status to IDLE
-								this.store.setMicState(MicState.IDLE)
-							})
-							.catch(() => {
-								this.store.setMicState(MicState.NOT_ALLOWED)
-							})
-					} catch (e) {
-						console.error(e)
-						this.store.setMicState(MicState.ERROR)
-					} finally {
-						this.store.setPageState(RequestState.READY)
-					}
+					room.onStateChange((state) => this.store.reflectGameStateChange(state))
+					this.initiateVoiceChat(gameId, room.sessionId)
+					this.store.setPageState(RequestState.READY)
 				})
-				.catch((err) => {
-					this.store.setMicState(MicState.ERROR)
-					console.error({ err })
+				.catch((e) => {
+					this.store.setError('Error joining room')
+					console.error(e)
 				})
 		} else {
-			this.store.setPageState(RequestState.ERROR)
+			this.store.setError('No room id provided')
 		}
+	}
+
+	private initiateVoiceChat(gameId: string, sessionId: string) {
+		firstValueFrom(this.store.liveKitService.getToken(gameId, sessionId))
+			.then(async ({ token }) => {
+				try {
+					const room = new LiveKitRoom()
+					await room.connect(environment.liveKitServerUrl, token)
+
+					this.store.setLiveKitRoom(room)
+
+					// This enables me to show the mute status of the local player when he/she turns the mic on
+					room.on(RoomEvent.LocalTrackPublished, (localTrackPublication, localParticipant) => {
+						this.store.changePlayerMuteState(localParticipant.identity, localTrackPublication.isMuted)
+					})
+
+					// This enables me to show the mute status of the remote players when they subscribe to a track
+					room.on(RoomEvent.TrackSubscribed, (track, remoteTrackPublication, remoteParticipant) => {
+						track.attach()
+						this.store.changePlayerMuteState(remoteParticipant.identity, remoteTrackPublication.isMuted)
+					})
+
+					// Add event listeners to track muting
+					room.on(RoomEvent.TrackMuted, (_, participant) => {
+						this.store.changePlayerMuteState(participant.identity, true)
+					})
+
+					// Add event listeners to track unmuting
+					room.on(RoomEvent.TrackUnmuted, (_, participant: Participant) => {
+						this.store.changePlayerMuteState(participant.identity, false)
+					})
+
+					// When the audio playback status is changed, this will resume the audio track
+					room.on(RoomEvent.AudioPlaybackStatusChanged, (status) => {
+						if (status) {
+							room.startAudio()
+						}
+					})
+
+					room.on(RoomEvent.ActiveSpeakersChanged, (participants) => {
+						this.store.changePlayerSpeakingState(participants.map((participant) => participant.identity))
+					})
+
+					// Enables the microphone and publishes it to a new audio track
+					// NOTE: it is intentional that I am passing `false` for the `setMicrophoneEnabled` method.
+					// This is because an interaction is needed for the audio stream to be attached and be able to play.
+					// For more info check: https://developer.chrome.com/blog/autoplay/#web_audio
+					room.localParticipant
+						.setMicrophoneEnabled(false)
+						.then(() => {
+							// Set the initial mic status to IDLE
+							this.store.setMicState(MicState.IDLE)
+						})
+						.catch(() => {
+							this.store.setMicState(MicState.NOT_ALLOWED)
+						})
+				} catch (e) {
+					console.error(e)
+					this.store.setMicState(MicState.ERROR)
+				} finally {
+					this.store.setPageState(RequestState.READY)
+				}
+			})
+			.catch((err) => {
+				this.store.setMicState(MicState.ERROR)
+				console.error({ err })
+			})
+	}
+
+	private initiateEffects() {
+		effect(() => {
+			const player = this.store.player()
+
+			if (player) {
+				this.initiateGameRoom(player.name)
+			}
+		})
 	}
 }

@@ -1,37 +1,40 @@
-import { Player } from '../models/player.model'
 import { Score } from './winner.type'
 import { Word } from './word.type'
 
 export interface MultiplayerRoomState {
-	players: Player[]
 	gameId: number
-	minPlayersSatisfied: boolean
-	guessing: boolean
+	ownerId: number
+	startTime: string
+	players: MultiplayerRoomPlayer[]
 	round: number
-	totalRound: number
 	time: number
 	cycle: number
-	word: Word
+	word: Word | null
 	waitingCountdownTime: number
 	gameState: GameState
-	gameStatus: GameStatus
-	winner: Score
+	gamePlayStatus: GamePlayStatus
+	winner: Score | null
 	score: Map<string, number>
 	totalScore: Map<string, Score>
 	sessionScore: Map<string, Score>
-	words: Word
-	gameStarted: boolean
-	ownerId: number
+	totalRound: number
+	words: Word[]
 }
 
 export enum GameState {
+	LOBBY = 'LOBBY',
 	START_COUNTDOWN = 'START_COUNTDOWN',
-	ROUND_END = 'ROUND_END',
 	GAME_STARTED = 'GAME_STARTED',
+	ROUND_END = 'ROUND_END',
 	GAME_END = 'GAME_END',
 }
 
-export enum GameStatus {
-	ONGOING = 'ONGOING',
+export enum GamePlayStatus {
+	PLAYING = 'PLAYING',
 	PAUSED = 'PAUSED',
+}
+
+export interface MultiplayerRoomPlayer {
+	id: string
+	name: string
 }
