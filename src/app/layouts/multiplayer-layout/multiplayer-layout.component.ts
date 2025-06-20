@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common'
-import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild, ViewEncapsulation } from '@angular/core'
+import { Component, effect, ElementRef, HostListener, inject, OnDestroy, OnInit, viewChild, ViewEncapsulation } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
@@ -17,6 +17,7 @@ import { LoadingComponent } from '../../shared/components/loading/loading.compon
 import { TextFieldComponent } from '../../shared/components/text-field/text-field.component'
 import { PickFirstLettersPipe } from '../../shared/pipes/pick-first-letters.pipe'
 import { ColyseusService } from '../../shared/services/colyseus.service'
+import { LiveKitService } from '../../shared/services/live-kit.service'
 import { PlayerService } from '../../shared/services/player.service'
 import { TokenService } from '../../shared/services/token.service'
 import { GameState, MultiplayerRoomState } from '../../shared/types/multiplayer-room-state.type'
@@ -44,7 +45,7 @@ import { GameControlComponent } from './components/game-control/game-control.com
 	providers: [MultiplayerStore],
 	encapsulation: ViewEncapsulation.None,
 })
-export class MultiplayerLayoutComponent implements OnInit {
+export class MultiplayerLayoutComponent implements OnInit, OnDestroy {
 	readonly store = inject(MultiplayerStore)
 
 	usernameDialog = viewChild.required<ElementRef<HTMLDialogElement>>('usernameModal')
@@ -66,18 +67,23 @@ export class MultiplayerLayoutComponent implements OnInit {
 		private readonly tokenService: TokenService,
 		private readonly playerService: PlayerService,
 		private readonly authService: AuthService,
+		private readonly liveKitService: LiveKitService,
 	) {
 		this.initiateEffects()
+	}
+
+	async ngOnInit() {
+		await this.getUserInformation()
+	}
+
+	ngOnDestroy() {
+		this.colyseusService.leaveRoom()
 	}
 
 	@HostListener('window:beforeunload', ['$event'])
 	unloadConfirmation(event: BeforeUnloadEvent): void {
 		event.preventDefault()
 		event.returnValue = 'Are you sure you want to leave?' // For legacy compatability
-	}
-
-	async ngOnInit() {
-		await this.getUserInformation()
 	}
 
 	setUsernameInformation() {
@@ -120,12 +126,13 @@ export class MultiplayerLayoutComponent implements OnInit {
 
 	private initiateGameRoom(playerName: string) {
 		const gameId = this.activatedRoute.snapshot.paramMap.get('gameId')
+		const roomId = this.activatedRoute.snapshot.paramMap.get('roomId')
 
 		// Join a websocket room with the gameId
-		if (gameId && playerName) {
+		if (gameId && roomId && playerName) {
 			this.colyseusService.getClient.auth.token = playerName
 			this.colyseusService.getClient
-				.joinOrCreate<MultiplayerRoomState>('multiplayer', { gameId })
+				.joinById<MultiplayerRoomState>(roomId, { gameId })
 				.then((room) => {
 					this.colyseusService.setRoom = room
 					this.store.setColyseusRoom(room)
@@ -145,7 +152,7 @@ export class MultiplayerLayoutComponent implements OnInit {
 	}
 
 	private initiateVoiceChat(gameId: string, sessionId: string) {
-		firstValueFrom(this.store.liveKitService.getToken(gameId, sessionId))
+		firstValueFrom(this.liveKitService.getToken(gameId, sessionId))
 			.then(async ({ token }) => {
 				try {
 					const room = new LiveKitRoom()

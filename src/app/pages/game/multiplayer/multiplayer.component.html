@@ -1,47 +1,36 @@
-@if (pageState() === PageState.READY) {
-	<div class="w-full h-full flex flex-col">
-		<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl overflow-hidden">
-			@if (store.gamePlayStatus() === GamePlayStatus.PAUSED) {
-				<div class="h-full w-full flex flex-col justify-center items-center gap-2 md:gap-6 absolute top-0 left-0 z-10">
-					<fa-icon [icon]="icons.faPause" class="text-my-glass opacity-65 text-[320px] md:text-[400px] absolute self-center" />
-					<p class="font-bold text-font-primary text-4xl md:text-7xl">Game Paused</p>
-				</div>
-			}
-			<div [hidden]="store.gamePlayStatus() === GamePlayStatus.PAUSED" class="w-full h-full overflow-y-scroll rounded-2xl overflow-hidden">
-				@if (roomState(); as state) {
-					@switch (state.gameState) {
-						@case ('START_COUNTDOWN') {
-							<app-game-start [waitingCountdownTime]="state.waitingCountdownTime" />
-						}
-						@case ('ROUND_END') {
-							<app-round-result
-								[score]="getPlayerScore(state.score)"
-								[winner]="state.winner"
-								[word]="state.word"
-								[waitingCountdownTime]="state.waitingCountdownTime"
-								[gameType]="GameType.MULTIPLAYER" />
-						}
-						@case ('GAME_END') {
-							<app-game-end
-								[totalScore]="state.totalScore"
-								[shouldShowRestartGameButton]="isPlayerGameOwner()"
-								(playNewGameClicked)="startNewGame()"
-								[gameType]="GameType.MULTIPLAYER" />
-						}
-						@case ('GAME_STARTED') {
-							<app-game-play [round]="state.round" [totalRound]="state.totalRound" [time]="state.time" [word]="state.word" />
-						}
-					}
-				}
+<div class="w-full h-full flex flex-col">
+	<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl overflow-hidden">
+		@if (store.gamePlayStatus() === GamePlayStatus.PAUSED) {
+			<div class="h-full w-full flex flex-col justify-center items-center gap-2 md:gap-6 absolute top-0 left-0 z-10">
+				<fa-icon [icon]="icons.faPause" class="text-my-glass opacity-65 text-[320px] md:text-[400px] absolute self-center" />
+				<p class="font-bold text-font-primary text-4xl md:text-7xl">Game Paused</p>
+				<p class="font-light text-font-primary text-lg md:text-2xl">by the game host</p>
 			</div>
+		}
+		<div [hidden]="store.gamePlayStatus() === GamePlayStatus.PAUSED" class="w-full h-full overflow-y-scroll rounded-2xl overflow-hidden">
+			@switch (store.gameState()) {
+				@case (GameState.START_COUNTDOWN) {
+					<app-game-start [waitingCountdownTime]="store.waitingCountdownTime()" />
+				}
+				@case (GameState.ROUND_END) {
+					<app-round-result
+						[score]="getPlayerScore(store.score())"
+						[winner]="store.winner()"
+						[word]="store.word()"
+						[waitingCountdownTime]="store.waitingCountdownTime()"
+						[gameType]="GameType.MULTIPLAYER" />
+				}
+				@case (GameState.GAME_END) {
+					<app-game-end
+						[totalScore]="store.totalScore()"
+						[shouldShowRestartGameButton]="isPlayerGameOwner()"
+						(playNewGameClicked)="startNewGame()"
+						[gameType]="GameType.MULTIPLAYER" />
+				}
+				@case (GameState.GAME_STARTED) {
+					<app-game-play [round]="store.round()" [totalRound]="store.totalRound()" [time]="store.time()" [word]="store.word()" />
+				}
+			}
 		</div>
 	</div>
-} @else if (pageState() === PageState.LOADING) {
-	<div class="h-full w-full flex justify-center items-center relative">
-		<app-loading />
-	</div>
-} @else if (pageState() === PageState.ERROR && error) {
-	<div class="h-full w-full flex justify-center items-center relative">
-		<app-error-while-loading [subTitle]="error" (retryOutput)="reconnect()" />
-	</div>
-}
+</div>

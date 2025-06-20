@@ -1,12 +1,9 @@
-import { inject } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
-import { patchState, signalStore, withHooks, withMethods, withProps, withState } from '@ngrx/signals'
+import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals'
 import { Room as ColyseusRoom } from 'colyseus.js'
 import { Room as LiveKitRoom } from 'livekit-client'
 
 import { MicState } from '../../pages/game/multiplayer/types/mic-state.type'
 import { GamePlayer } from '../../shared/models/game-player.model'
-import { LiveKitService } from '../../shared/services/live-kit.service'
 import { GamePlayStatus, GameState, MultiplayerRoomState } from '../../shared/types/multiplayer-room-state.type'
 import { RequestState } from '../../shared/types/page-state.type'
 import { MultiplayerState } from '../interfaces/multiplayer-state.interface'
@@ -40,10 +37,6 @@ const initialState: MultiplayerState = {
 
 export const MultiplayerStore = signalStore(
 	withState(initialState),
-	withProps(() => ({
-		liveKitService: inject(LiveKitService),
-		activatedRoute: inject(ActivatedRoute),
-	})),
 	withMethods((store) => ({
 		setMicState: (micState: MicState) => {
 			patchState(store, (state) => ({ ...state, micState: micState }))

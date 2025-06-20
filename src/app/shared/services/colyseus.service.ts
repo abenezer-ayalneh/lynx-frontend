@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { Client, Room } from 'colyseus.js'
 
 import { environment } from '../../../environments/environment'
+import { PAUSE, RESUME } from '../constants/colyseus-message.constant'
 
 const COLYSEUS_URL = environment.colyseusUrl
 
@@ -9,7 +10,7 @@ const COLYSEUS_URL = environment.colyseusUrl
 	providedIn: 'root',
 })
 export class ColyseusService {
-	#client: Client
+	readonly #client: Client
 
 	#room: Room | null = null
 
@@ -43,10 +44,10 @@ export class ColyseusService {
 	}
 
 	pauseGame() {
-		this.sendMessage<undefined>('pause')
+		this.sendMessage<undefined>(PAUSE)
 	}
 
 	resumeGame() {
-		this.sendMessage<undefined>('resume')
+		this.sendMessage<undefined>(RESUME)
 	}
 }

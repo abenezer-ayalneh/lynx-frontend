@@ -30,11 +30,12 @@ export class CreateMultiplayerGameComponent implements OnInit {
 			"Hey everyone, feeling the itch to play some Lynx together?! I'm inviting you to this game room to play. Let me know if you're in!",
 			{
 				validators: [Validators.required],
+				nonNullable: true,
 			},
 		),
-		gameScheduleType: new FormControl<ScheduledGameType>(ScheduledGameType.INSTANT, { validators: [Validators.required] }),
-		gameDateAndTime: new FormControl<string>({ value: '', disabled: true }, { validators: [Validators.required] }),
-		timezone: new FormControl<string>({ value: '', disabled: true }, { validators: [Validators.required] }),
+		gameScheduleType: new FormControl<ScheduledGameType>(ScheduledGameType.INSTANT, { validators: [Validators.required], nonNullable: true }),
+		gameDateAndTime: new FormControl<string>({ value: '', disabled: true }, { validators: [Validators.required], nonNullable: true }),
+		timezone: new FormControl<string>({ value: '', disabled: true }, { validators: [Validators.required], nonNullable: true }),
 	})
 
 	isCreatingGame = signal<boolean>(false)
@@ -50,6 +51,8 @@ export class CreateMultiplayerGameComponent implements OnInit {
 	protected readonly MAXIMUM_NUMBER_OF_INVITE_EMAILS = MAXIMUM_NUMBER_OF_INVITE_EMAILS
 
 	protected readonly ScheduledGameType = ScheduledGameType
+
+	protected readonly ButtonType = ButtonType
 
 	constructor(
 		private readonly router: Router,
@@ -105,21 +108,21 @@ export class CreateMultiplayerGameComponent implements OnInit {
 
 	createMultiplayerGameFormSubmit() {
 		if (this.createMultiplayerGameFormGroup.valid) {
-			const gameType = this.createMultiplayerGameFormGroup.value.gameScheduleType!
+			const gameType = this.createMultiplayerGameFormGroup.controls.gameScheduleType.value
 			this.isCreatingGame.set(true)
 			this.multiplayerService
 				.createScheduledGame({
-					emails: this.createMultiplayerGameFormGroup.value.emails as string[],
-					invitation_text: this.createMultiplayerGameFormGroup.value.invitationText!,
+					emails: this.createMultiplayerGameFormGroup.controls.emails.value,
+					invitation_text: this.createMultiplayerGameFormGroup.controls.invitationText.value,
 					gameScheduleType: gameType,
-					start_time: this.createMultiplayerGameFormGroup.value.gameDateAndTime ?? undefined,
-					timezone: this.createMultiplayerGameFormGroup.value.timezone ?? undefined,
+					start_time: this.createMultiplayerGameFormGroup.controls.gameDateAndTime.value,
+					timezone: this.createMultiplayerGameFormGroup.controls.timezone.value,
 				})
 				.pipe(finalize(() => this.isCreatingGame.set(false)))
 				.subscribe({
 					next: async (response) => {
 						if (gameType === ScheduledGameType.INSTANT) {
-							await this.router.navigateByUrl(`/scheduled-game/${response.gameId}`)
+							await this.router.navigateByUrl(`/scheduled-game/${response.gameId}/${response.lobbyId}`)
 						} else {
 							this.gameCreatedModal.nativeElement.showModal()
 						}
@@ -135,6 +138,4 @@ export class CreateMultiplayerGameComponent implements OnInit {
 	removeEmailField(index: number) {
 		this.emailsFormArray.removeAt(index)
 	}
-
-	protected readonly ButtonType = ButtonType
 }

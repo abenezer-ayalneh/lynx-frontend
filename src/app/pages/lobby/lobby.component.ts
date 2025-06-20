@@ -1,13 +1,12 @@
 import { Component, computed, effect, inject, signal } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { Room } from 'colyseus.js'
 
 import { ButtonComponent } from '../../shared/components/button/button.component'
+import { START_GAME } from '../../shared/constants/colyseus-message.constant'
 import { PlayerService } from '../../shared/services/player.service'
 import { startCountdown } from '../../shared/utils/timer.util'
 import { MultiplayerStore } from '../../states/stores/multiplayer.store'
-import { LobbyRoomState } from './types/lobby-room-state.type'
 
 @Component({
 	selector: 'app-lobby',
@@ -17,8 +16,6 @@ import { LobbyRoomState } from './types/lobby-room-state.type'
 })
 export class LobbyComponent {
 	readonly store = inject(MultiplayerStore)
-
-	loaded = signal<boolean>(false)
 
 	seconds = signal<number>(NaN)
 
@@ -30,11 +27,7 @@ export class LobbyComponent {
 
 	countdownEnded = signal<boolean>(false)
 
-	userInformation = signal<{ name: string } | null>(null)
-
 	isGameOwner = computed(() => this.store.ownerId() === this.playerService.getPlayer.getValue()?.id)
-
-	room: Room<LobbyRoomState> | null = null
 
 	icons = { faTimesCircle }
 
@@ -67,6 +60,6 @@ export class LobbyComponent {
 	}
 
 	startGame() {
-		this.room?.send('startGame', { playerId: this.playerService.getPlayer.getValue()?.id })
+		this.store.colyseusRoom()?.send(START_GAME, { playerId: this.playerService.getPlayer.getValue()?.id })
 	}
 }

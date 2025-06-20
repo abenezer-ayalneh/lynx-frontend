@@ -59,18 +59,8 @@ export const routes: Routes = [
 				component: RsvpComponent,
 			},
 			{
-				path: ':gameId',
+				path: ':gameId/:roomId',
 				component: MultiplayerLayoutComponent,
-				// children: [
-				// 	{
-				// 		path: 'lobby',
-				// 		component: LobbyComponent,
-				// 	},
-				// 	{
-				// 		path: 'play',
-				// 		component: MultiplayerComponent,
-				// 	},
-				// ],
 			},
 		],
 	},
