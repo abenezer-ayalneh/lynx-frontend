@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common'
 import { Component, computed, inject, OnDestroy } from '@angular/core'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faExclamation, faMicrophone, faMicrophoneSlash, faPaperPlane, faPause, faPlay, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
@@ -19,7 +18,7 @@ import { MultiplayerService } from './multiplayer.service'
 
 @Component({
 	selector: 'app-multiplayer',
-	imports: [GameStartComponent, RoundResultComponent, GameEndComponent, GamePlayComponent, FaIconComponent, JsonPipe],
+	imports: [GameStartComponent, RoundResultComponent, GameEndComponent, GamePlayComponent, FaIconComponent],
 	templateUrl: './multiplayer.component.html',
 	styleUrl: './multiplayer.component.scss',
 })
