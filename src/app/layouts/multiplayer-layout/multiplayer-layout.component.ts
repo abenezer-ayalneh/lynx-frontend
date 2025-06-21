@@ -1,4 +1,4 @@
-import { NgClass } from '@angular/common'
+import { JsonPipe, NgClass } from '@angular/common'
 import { Component, effect, ElementRef, HostListener, inject, OnDestroy, OnInit, viewChild, ViewEncapsulation } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -39,6 +39,7 @@ import { GameControlComponent } from './components/game-control/game-control.com
 		LobbyComponent,
 		MultiplayerComponent,
 		NgClass,
+		JsonPipe,
 	],
 	templateUrl: './multiplayer-layout.component.html',
 	styleUrl: './multiplayer-layout.component.scss',
@@ -165,9 +166,9 @@ export class MultiplayerLayoutComponent implements OnInit, OnDestroy {
 						this.store.changePlayerMuteState(localParticipant.identity, localTrackPublication.isMuted)
 					})
 
-					// This enables me to show the mute status of the remote players when they subscribe to a track
 					room.on(RoomEvent.TrackSubscribed, (track, remoteTrackPublication, remoteParticipant) => {
-						track.attach()
+						// track.attach()
+						remoteTrackPublication.track?.attach()
 						this.store.changePlayerMuteState(remoteParticipant.identity, remoteTrackPublication.isMuted)
 					})
 
@@ -181,15 +182,21 @@ export class MultiplayerLayoutComponent implements OnInit, OnDestroy {
 						this.store.changePlayerMuteState(participant.identity, false)
 					})
 
-					// When the audio playback status is changed, this will resume the audio track
-					room.on(RoomEvent.AudioPlaybackStatusChanged, (status) => {
-						if (status) {
-							room.startAudio()
-						}
+					room.on(RoomEvent.ActiveSpeakersChanged, (participants) => {
+						this.store.changePlayerSpeakingState(
+							participants.map((participant) => ({
+								participantId: participant.identity,
+								speaking: participant.isSpeaking,
+								audioLevel: participant.audioLevel,
+							})),
+						)
 					})
 
-					room.on(RoomEvent.ActiveSpeakersChanged, (participants) => {
-						this.store.changePlayerSpeakingState(participants.map((participant) => participant.identity))
+					// When the audio playback status is changed, this will resume the audio track
+					room.on(RoomEvent.AudioPlaybackStatusChanged, (speaking) => {
+						if (speaking) {
+							room.startAudio()
+						}
 					})
 
 					// Enables the microphone and publishes it to a new audio track

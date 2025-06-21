@@ -8,16 +8,18 @@
 			}
 		</div>
 		<div class="w-[10%] h-full flex flex-col justify-start items-center gap-2">
-			@for (player of store.gamePlayers(); track player.id) {
-				<div
-					class="w-full h-[calc(100%*1/8)] bg-my-glass backdrop-blur-md rounded-lg flex justify-center items-center relative"
-					[ngClass]="{ 'bg-my-blueGreen': player.speaking }">
+			@for (player of store.participants(); track player.id) {
+				<div class="w-full h-[calc(100%*1/8)] bg-my-glass backdrop-blur-md rounded-lg flex justify-center items-center relative">
 					@if (player.muted) {
 						<span class="w-6 flex justify-center items-center aspect-square rounded-full bg-[#f2b8b5] text-my-red p-1 m-1 absolute top-0 right-0">
 							<fa-icon [icon]="icons.faMicrophoneSlash" class="text-xs" />
 						</span>
 					}
-					<p class="text-4xl text-center font-light text-white">{{ player.name | pickFirstLetters }}</p>
+					<span
+						class="w-16 h-16 aspect-square flex justify-center items-center rounded-full backdrop-blur-md p-1 m-1"
+						[ngClass]="{ 'bg-my-blueGreen/60': player.speaking }">
+						<p class="text-4xl text-center font-light text-white">{{ player.name | pickFirstLetters }}</p>
+					</span>
 					<p class="w-[80%] text-sm font-light text-white truncate absolute bottom-1 left-2">{{ player.name }}</p>
 				</div>
 			}

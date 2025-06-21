@@ -3,7 +3,7 @@ import { Room as ColyseusRoom } from 'colyseus.js'
 import { Room as LiveKitRoom } from 'livekit-client'
 
 import { MicState } from '../../pages/game/multiplayer/types/mic-state.type'
-import { GamePlayer } from '../../shared/models/game-player.model'
+import { Participant } from '../../shared/models/game-player.model'
 import { GamePlayStatus, GameState, MultiplayerRoomState } from '../../shared/types/multiplayer-room-state.type'
 import { RequestState } from '../../shared/types/page-state.type'
 import { MultiplayerState } from '../interfaces/multiplayer-state.interface'
@@ -15,7 +15,7 @@ const initialState: MultiplayerState = {
 	colyseusRoom: null,
 	player: null,
 	players: [],
-	gamePlayers: [],
+	participants: [],
 	error: null,
 	gameId: 0,
 	ownerId: 0,
@@ -63,26 +63,26 @@ export const MultiplayerStore = signalStore(
 			patchState(store, (state) => ({ ...state, error: errorMessage, pageState: RequestState.ERROR }))
 		},
 		reflectGameStateChange: (gameState: MultiplayerRoomState) => {
-			patchState(store, (state) => ({ ...state, ...gameState, gamePlayers: GamePlayer.constructPlayers(gameState.players) }))
+			patchState(store, (state) => ({ ...state, ...gameState, participants: Participant.constructPlayers(gameState.players) }))
 		},
 		changePlayerMuteState: (participantId: string, muted: boolean) => {
-			const players = store.gamePlayers()
+			const players = store.participants()
 			const player = players.find((player) => player.participantId === participantId)
 
 			if (player) {
 				player.muted = muted
-				patchState(store, (state) => ({ ...state, gamePlayers: players }))
+				patchState(store, (state) => ({ ...state, participants: players }))
 			}
 		},
-		changePlayerSpeakingState: (participantIds: string[]) => {
-			const players = store.gamePlayers().reduce((aggregate, currentPlayer) => {
-				currentPlayer.speaking = participantIds.includes(currentPlayer.participantId)
+		changePlayerSpeakingState: (participants: Pick<Participant, 'participantId' | 'speaking' | 'audioLevel'>[]) => {
+			const players = store.participants().reduce((aggregate, currentPlayer) => {
+				currentPlayer.speaking = participants.find((participant) => participant.participantId === currentPlayer.participantId)?.speaking ?? false
 
 				aggregate.push(currentPlayer)
 				return aggregate
-			}, [] as GamePlayer[])
+			}, [] as Participant[])
 
-			patchState(store, (state) => ({ ...state, gamePlayers: players }))
+			patchState(store, (state) => ({ ...state, participants: players }))
 		},
 	})),
 	withHooks({
