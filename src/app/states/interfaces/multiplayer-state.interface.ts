@@ -1,5 +1,5 @@
 import { Room as ColyseusRoom } from 'colyseus.js'
-import { Room as LiveKitRoom } from 'livekit-client'
+import { LocalAudioTrack, Room as LiveKitRoom } from 'livekit-client'
 
 import { MicState } from '../../pages/game/multiplayer/types/mic-state.type'
 import { Participant } from '../../shared/models/game-player.model'
@@ -9,9 +9,10 @@ import { RequestState } from '../../shared/types/page-state.type'
 export interface MultiplayerState extends MultiplayerRoomState {
 	pageState: RequestState
 	micState: MicState
-	liveKitRoom: LiveKitRoom | null
-	colyseusRoom: ColyseusRoom | null
+	liveKitRoom: LiveKitRoom | undefined
+	colyseusRoom: ColyseusRoom | undefined
 	player: null | { name: string }
-	participants: Participant[]
+	remoteParticipants: Record<string, Participant>
+	localTrack: LocalAudioTrack | undefined
 	error: string | null
 }
