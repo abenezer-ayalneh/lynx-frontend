@@ -9,6 +9,7 @@ import { firstValueFrom } from 'rxjs'
 import { environment } from '../../../environments/environment'
 import { AuthService } from '../../pages/auth/auth.service'
 import { MultiplayerComponent } from '../../pages/game/multiplayer/multiplayer.component'
+import { MultiplayerService } from '../../pages/game/multiplayer/multiplayer.service'
 import { MicState } from '../../pages/game/multiplayer/types/mic-state.type'
 import { LobbyComponent } from '../../pages/lobby/lobby.component'
 import { ErrorWhileLoadingComponent } from '../../shared/components/error-while-loading/error-while-loading.component'
@@ -66,6 +67,7 @@ export class MultiplayerLayoutComponent implements OnInit, OnDestroy {
 		private readonly playerService: PlayerService,
 		private readonly authService: AuthService,
 		private readonly liveKitService: LiveKitService,
+		private readonly multiplayerService: MultiplayerService,
 	) {
 		this.initiateEffects()
 	}
@@ -138,7 +140,8 @@ export class MultiplayerLayoutComponent implements OnInit, OnDestroy {
 					sessionStorage.setItem('reconnectionToken', room.reconnectionToken)
 
 					room.onStateChange((state) => {
-						const { players } = state
+						const { players, sessionScore } = state
+						this.multiplayerService.sessionScore.set(sessionScore.get(room.sessionId))
 						this.store.reflectGameStateChange(state)
 						this.store.updateRemoteParticipants(players)
 					})
