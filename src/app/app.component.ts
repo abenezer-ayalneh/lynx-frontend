@@ -13,7 +13,6 @@ import { PreloadService } from './shared/services/preload.service'
 export class AppComponent implements OnInit {
 	private imageUrls = [
 		'images/logos/lynx-logo.png',
-		'images/logos/lynx-logo.svg',
 		'images/logos/profile-image-sample.svg',
 		'images/auth-image.png',
 		'images/coming-soon.png',

@@ -1,20 +1,28 @@
 @if (loaded()) {
-	<form class="w-full h-full flex justify-center items-center" [formGroup]="loginFormGroup" (ngSubmit)="loginFormSubmit()">
-		<div class="w-[460px] px-6 py-10 md:px-12 md:py-20 bg-my-glass backdrop-blur-md rounded-[32px] flex flex-col justify-center items-center gap-8">
-			<img [ngSrc]="'images/auth-image.png'" alt="auth" height="200" width="200" />
-			<span class="w-full flex flex-col gap-4">
-				<app-text-field [control]="formControls.email" placeholder="Email" type="email" />
-				<app-text-field [control]="formControls.password" placeholder="Password" type="password" />
-			</span>
-			<app-button text="Login" [buttonType]="ButtonType.SUBMIT" [disabled]="loginFormGroup.invalid" [loading]="loggingIn()" />
+	<main class="w-full h-full flex justify-center items-center px-6 overflow-y-scroll">
+		<form
+			class="w-full portrait:md:w-10/12 landscape:w-2/3 h-fit px-8 portrait:md:px-24 py-10 landscape:py-6 bg-my-glass backdrop-blur-md rounded-[32px] flex flex-col justify-center items-center gap-8"
+			[formGroup]="loginFormGroup"
+			(ngSubmit)="loginFormSubmit()">
+			<div class="w-full flex flex-col landscape:flex-row justify-center items-center gap-4">
+				<div class="w-full landscape:w-2/5 flex flex-col justify-center items-center">
+					<img src="images/logos/lynx-logo.png" alt="lynx logo" class="w-40 md:w-60 lg:w-80 landscape:" />
+					<h3 class="text-xl landscape:text-3xl text-white font-bold">Login</h3>
+				</div>
+				<div class="w-full landscape:w-3/5 flex flex-col justify-center items-center gap-4">
+					<app-text-field [control]="formControls.email" placeholder="Email" type="email" class="w-full" />
+					<app-text-field [control]="formControls.password" placeholder="Password" type="password" class="w-full" />
+					<app-button text="Login" [buttonType]="ButtonType.SUBMIT" [disabled]="loginFormGroup.invalid" [loading]="loggingIn()" />
+				</div>
+			</div>
 			<span class="w-full flex justify-center items-center">
 				<p class="text-font-primary text-[12px] md:text-sm font-light leading-none">Don&apos;t have an account?&nbsp;</p>
 				<a routerLink="/auth/register" class="text-font-authSubtitle text-[12px] md:text-sm font-light leading-none"> Register here </a>
 			</span>
-		</div>
-	</form>
+		</form>
+	</main>
 } @else {
-	<div class="h-full w-full flex justify-center items-center relative">
+	<main class="h-full w-full flex justify-center items-center relative">
 		<app-loading />
-	</div>
+	</main>
 }

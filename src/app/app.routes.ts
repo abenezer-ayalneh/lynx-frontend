@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router'
 
+import { EmptyLayoutComponent } from './layouts/empty-layout/empty-layout.component'
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component'
 import { LoginComponent } from './pages/auth/login/login.component'
 import { RegisterComponent } from './pages/auth/register/register.component'
@@ -16,7 +17,7 @@ import { optionalAuthGuardGuard } from './shared/guards/optional-auth-guard.guar
 export const routes: Routes = [
 	{
 		path: 'auth',
-		component: MainLayoutComponent,
+		component: EmptyLayoutComponent,
 		children: [
 			{
 				path: 'login',

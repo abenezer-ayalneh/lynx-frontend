@@ -1,4 +1,3 @@
-import { NgOptimizedImage } from '@angular/common'
 import { Component, OnInit, signal } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
@@ -14,7 +13,7 @@ import { LoginRequest } from './types/login.type'
 
 @Component({
 	selector: 'app-login',
-	imports: [TextFieldComponent, NgOptimizedImage, ButtonComponent, RouterLink, FormsModule, ReactiveFormsModule, LoadingComponent],
+	imports: [TextFieldComponent, ButtonComponent, RouterLink, FormsModule, ReactiveFormsModule, LoadingComponent],
 	templateUrl: './login.component.html',
 	styleUrl: './login.component.scss',
 })
@@ -29,6 +28,8 @@ export class LoginComponent implements OnInit {
 	loggingIn = signal<boolean>(false)
 
 	redirectionUrl = ''
+
+	protected readonly ButtonType = ButtonType
 
 	constructor(
 		private readonly authService: AuthService,
@@ -72,6 +73,4 @@ export class LoginComponent implements OnInit {
 				})
 		}
 	}
-
-	protected readonly ButtonType = ButtonType
 }

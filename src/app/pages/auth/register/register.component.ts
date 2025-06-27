@@ -1,4 +1,3 @@
-import { NgOptimizedImage } from '@angular/common'
 import { Component } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
@@ -12,7 +11,7 @@ import { RegisterRequest } from './types/register.type'
 
 @Component({
 	selector: 'app-register',
-	imports: [TextFieldComponent, NgOptimizedImage, ButtonComponent, RouterLink, FormsModule, ReactiveFormsModule],
+	imports: [TextFieldComponent, ButtonComponent, RouterLink, FormsModule, ReactiveFormsModule],
 	templateUrl: './register.component.html',
 	styleUrl: './register.component.scss',
 })
@@ -26,6 +25,8 @@ export class RegisterComponent {
 		},
 		{ validators: [MatchValidator.match('password', 'confirmPassword')] },
 	)
+
+	protected readonly ButtonType = ButtonType
 
 	constructor(
 		private readonly authService: AuthService,
@@ -52,6 +53,4 @@ export class RegisterComponent {
 			})
 		}
 	}
-
-	protected readonly ButtonType = ButtonType
 }

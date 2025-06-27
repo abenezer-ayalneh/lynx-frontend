@@ -1,7 +1,7 @@
 @if (buttonType() === ButtonType.LINK) {
 	<a
 		[routerLink]="url()"
-		class="h-9 px-4 text-[#FFFFFF] text-xs md:text-sm font-medium flex justify-center items-center gap-2 rounded-md hover:scale-[1.02] hover:underline transition-all ease-in-out duration-200 disabled:transition-none disabled:opacity-60 disabled:bg-gray-400 backdrop-blur-md cursor-pointer disabled:cursor-not-allowed
+		class="min-w-24 max-w-36 h-8 text-wrap text-[#FFFFFF] text-xs md:text-sm font-medium flex justify-center items-center gap-2 rounded-md hover:scale-[1.02] hover:underline transition-all ease-in-out duration-200 disabled:transition-none disabled:opacity-60 disabled:bg-gray-400 backdrop-blur-md cursor-pointer disabled:cursor-not-allowed
     {{ class() }} {{ color() }}">
 		{{ text() }}
 
@@ -20,7 +20,7 @@
 		[type]="buttonType()"
 		[disabled]="disabled() || loading()"
 		(click)="whenClicked()"
-		class="h-9 px-4 text-[#FFFFFF] text-xs md:text-sm font-medium flex justify-center items-center gap-2 rounded-md hover:enabled:scale-[1.02] transition-all ease-in-out duration-200 disabled:transition-none disabled:opacity-60 disabled:bg-gray-400 backdrop-blur-md cursor-pointer disabled:cursor-not-allowed
+		class="min-w-24 max-w-36 h-8 text-wrap text-[#FFFFFF] text-xs md:text-sm font-medium flex justify-center items-center gap-2 rounded-md hover:enabled:scale-[1.02] transition-all ease-in-out duration-200 disabled:transition-none disabled:opacity-60 disabled:bg-gray-400 backdrop-blur-md cursor-pointer disabled:cursor-not-allowed
     {{ class() }} {{ color() }}">
 		{{ text() }}
 
