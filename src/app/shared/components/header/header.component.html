@@ -1,7 +1,7 @@
 <div class="w-full h-full flex justify-between items-center px-4 py-2 md:px-8 md:py-4">
 	<a routerLink="/" class="w-fit flex justify-start items-center gap-1 lg:gap-4">
 		<img [src]="'images/logos/lynx-logo.png'" class="h-10 lg:h-16" alt="logo" />
-		<p class="font-medium text-lg lg:text-2xl text-font-primary">LYNX</p>
+		<p class="hidden md:block font-medium text-lg lg:text-2xl text-font-primary">LYNX</p>
 	</a>
 	<div class="w-fit flex justify-center items-center">
 		@let sessionScore = multiplayerService.sessionScore();
@@ -22,12 +22,15 @@
 		@if (letPlayer) {
 			<div class="dropdown dropdown-end">
 				<div tabIndex="0" role="button" class="flex justify-end items-center gap-2 pl-2 cursor-pointer">
-					<p class="font-normal text-sm lg:text-lg text-font-primary">
+					<p class="font-normal hidden md:block text-sm lg:text-lg text-font-primary">
 						{{ letPlayer.name }}
 					</p>
 					<img [src]="'images/logos/profile-image-sample.svg'" class="h-[36px] lg:h-[56px]" alt="logo" />
 				</div>
-				<span tabindex="0" class="dropdown-content menu bg-my-glass z-[100] w-full p-2 shadow rounded-b-lg">
+				<span tabindex="0" class="dropdown-content menu bg-my-glass backdrop-blur-md z-[100] w-fit p-2 mt-1 shadow rounded-md">
+					<p class="font-normal md:hidden text-xs lg:text-lg text-font-primary text-nowrap p-2">
+						{{ letPlayer.name }}
+					</p>
 					@if (letPlayer.role === Role.ADMIN) {
 						<p
 							class="font-semibold text-sm lg:text-lg text-font-primary p-2 cursor-pointer hover:bg-my-glass hover:rounded-sm"

@@ -1,38 +1,40 @@
-@if (pageState() === PageState.READY) {
-	<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl overflow-hidden relative">
-		<fa-icon
+<div class="w-full h-full relative">
+	@if (pageState() === PageState.READY) {
+		<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl overflow-hidden">
+      <fa-icon
 			[icon]="icons.faTimesCircle"
 			class="text-2xl md:w-10 md:h-10 text-my-red cursor-pointer absolute top-2 right-0 z-20"
 			matTooltip="Leave game"
 			(click)="exit()" />
-		@if (roomState(); as state) {
-			@switch (state.gameState) {
-				@case ('START_COUNTDOWN') {
-					<app-game-start [waitingCountdownTime]="state.waitingCountdownTime" />
-				}
-				@case ('ROUND_END') {
-					<app-round-result
-						[score]="state.score"
-						[winner]="state.winner"
-						[word]="state.word"
-						[waitingCountdownTime]="state.waitingCountdownTime"
-						[gameType]="GameType.SOLO" />
-				}
-				@case ('GAME_END') {
-					<app-game-end [totalScore]="state.totalScore" (playNewGameClicked)="initSoloPlay()" [gameType]="GameType.SOLO" />
-				}
-				@case ('GAME_STARTED') {
-					<app-game-play [round]="state.round" [totalRound]="state.totalRound" [time]="state.time" [word]="state.word" />
+			@if (roomState(); as state) {
+				@switch (state.gameState) {
+					@case ('START_COUNTDOWN') {
+						<app-game-start [waitingCountdownTime]="state.waitingCountdownTime" />
+					}
+					@case ('ROUND_END') {
+						<app-round-result
+							[score]="state.score"
+							[winner]="state.winner"
+							[word]="state.word"
+							[waitingCountdownTime]="state.waitingCountdownTime"
+							[gameType]="GameType.SOLO" />
+					}
+					@case ('GAME_END') {
+						<app-game-end [totalScore]="state.totalScore" (playNewGameClicked)="initSoloPlay()" [gameType]="GameType.SOLO" />
+					}
+					@case ('GAME_STARTED') {
+						<app-game-play [round]="state.round" [totalRound]="state.totalRound" [time]="state.time" [word]="state.word" />
+					}
 				}
 			}
-		}
-	</div>
-} @else if (pageState() === PageState.LOADING) {
-	<div class="h-full w-full flex justify-center items-center relative">
-		<app-loading />
-	</div>
-} @else if (pageState() === PageState.ERROR) {
-	<div class="h-full w-full flex justify-center items-center relative">
-		<app-error-while-loading [canRetry]="true" (retryOutput)="initSoloPlay()" />
-	</div>
-}
+		</div>
+	} @else if (pageState() === PageState.LOADING) {
+		<div class="h-full w-full flex justify-center items-center relative">
+			<app-loading />
+		</div>
+	} @else if (pageState() === PageState.ERROR) {
+		<div class="h-full w-full flex justify-center items-center relative">
+			<app-error-while-loading [canRetry]="true" (retryOutput)="initSoloPlay()" />
+		</div>
+	}
+</div>
