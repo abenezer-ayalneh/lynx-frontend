@@ -19,11 +19,11 @@ export function cueContainsKeyValidator(): ValidatorFn {
 		}>
 
 		if (
-			!formGroup.controls.cue1.value.includes(formGroup.controls.key.value) ||
-			!formGroup.controls.cue2.value.includes(formGroup.controls.key.value) ||
-			!formGroup.controls.cue3.value.includes(formGroup.controls.key.value) ||
-			!formGroup.controls.cue4.value.includes(formGroup.controls.key.value) ||
-			!formGroup.controls.cue5.value.includes(formGroup.controls.key.value)
+			!formGroup.controls.cue1.value.toLowerCase().includes(formGroup.controls.key.value.toLowerCase()) ||
+			!formGroup.controls.cue2.value.toLowerCase().includes(formGroup.controls.key.value.toLowerCase()) ||
+			!formGroup.controls.cue3.value.toLowerCase().includes(formGroup.controls.key.value.toLowerCase()) ||
+			!formGroup.controls.cue4.value.toLowerCase().includes(formGroup.controls.key.value.toLowerCase()) ||
+			!formGroup.controls.cue5.value.toLowerCase().includes(formGroup.controls.key.value.toLowerCase())
 		) {
 			return { cueContainsKey: true }
 		}
