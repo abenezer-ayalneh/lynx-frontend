@@ -20,6 +20,7 @@
 				[ngClass]="{ 'shake-horizontal': shouldShake() }"
 				[formControl]="guessFormControl"
 				type="text"
+				autocomplete="off"
 				placeholder="Type your guess here..." />
 			@if (guessing()) {
 				<span class="loading loading-bars loading-sm md:loading-md"></span>
