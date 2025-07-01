@@ -88,18 +88,13 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
 		}, 1500)
 	}
 
-	private inputFieldCleanStart() {
-		this.guessFormControl.enable()
-		this.guessFormControl.reset()
-	}
-
 	private subscribeToColyseusMessages(room: Room<MultiplayerRoomState>) {
 		room.onMessage(WRONG_GUESS, () => {
 			this.wrongGuessAudio.play().then(() => {
 				this.guessing.set(false)
 				this.shakeInputField()
 				this.guessField().nativeElement.focus()
-				this.guessField().nativeElement.select()
+				this.guessField().nativeElement.value = ''
 			})
 		})
 	}
