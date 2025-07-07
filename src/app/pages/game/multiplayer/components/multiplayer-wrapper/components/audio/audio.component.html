@@ -1,7 +1,8 @@
 <div
 	[id]="participant().id"
 	class="w-full h-full bg-my-glass backdrop-blur-md rounded-lg flex justify-center items-center relative border-2"
-	[ngClass]="participant().speaking ? 'border-my-blueGreen' : 'border-transparent'">
+	[ngClass]="participant().speaking ? 'border-my-blueGreen' : 'border-transparent'"
+	[matTooltip]="participant().name">
 	<audio #audioElement [id]="participant().id"></audio>
 	@if (participant().muted) {
 		<span class="w-6 flex justify-center items-center aspect-square rounded-full bg-[#f2b8b5] text-my-red p-1 m-1 absolute top-0 right-0">

@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router'
 
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component'
-import { MultiplayerLayoutComponent } from './layouts/multiplayer-layout/multiplayer-layout.component'
 import { LoginComponent } from './pages/auth/login/login.component'
 import { RegisterComponent } from './pages/auth/register/register.component'
 import { CreateMultiplayerGameComponent } from './pages/game/multiplayer/components/create-multiplayer-game/create-multiplayer-game.component'
+import { MultiplayerWrapperComponent } from './pages/game/multiplayer/components/multiplayer-wrapper/multiplayer-wrapper.component'
 import { SoloPlayComponent } from './pages/game/solo-play/solo-play.component'
 import { HomeComponent } from './pages/home/home.component'
 import { RsvpComponent } from './pages/rsvp/rsvp.component'
@@ -37,30 +37,39 @@ export const routes: Routes = [
 				path: '',
 				component: HomeComponent,
 			},
-			{
-				path: 'solo',
-				component: SoloPlayComponent,
-				canDeactivate: [avoidAccidentalRedirectionGuard],
-			},
-			{
-				path: 'multi/create-room',
-				component: CreateMultiplayerGameComponent,
-			},
 		],
 	},
 	{
-		path: 'scheduled-game',
+		path: 'game',
 		component: MainLayoutComponent,
-		canActivate: [optionalAuthGuardGuard],
-		canDeactivate: [avoidAccidentalRedirectionGuard],
 		children: [
 			{
-				path: 'rsvp',
-				component: RsvpComponent,
+				path: 'solo',
+				component: SoloPlayComponent,
+				canActivate: [authGuard],
+				canDeactivate: [avoidAccidentalRedirectionGuard],
 			},
 			{
-				path: ':gameId/:roomId',
-				component: MultiplayerLayoutComponent,
+				path: 'scheduled',
+				children: [
+					{
+						path: 'create',
+						component: CreateMultiplayerGameComponent,
+						canActivate: [authGuard],
+					},
+					{
+						path: 'rsvp',
+						component: RsvpComponent,
+						canActivate: [optionalAuthGuardGuard],
+						canDeactivate: [avoidAccidentalRedirectionGuard],
+					},
+					{
+						path: ':gameId',
+						component: MultiplayerWrapperComponent,
+						canActivate: [optionalAuthGuardGuard],
+						canDeactivate: [avoidAccidentalRedirectionGuard],
+					},
+				],
 			},
 		],
 	},

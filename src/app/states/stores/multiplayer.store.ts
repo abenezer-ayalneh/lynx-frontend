@@ -6,6 +6,7 @@ import { MicState } from '../../pages/game/multiplayer/types/mic-state.type'
 import { Participant } from '../../shared/models/game-player.model'
 import { GamePlayStatus, GameState, MultiplayerRoomPlayer, MultiplayerRoomState } from '../../shared/types/multiplayer-room-state.type'
 import { RequestState } from '../../shared/types/page-state.type'
+import { ScheduledGame } from '../../shared/types/scheduled-game.type'
 import { MultiplayerState } from '../interfaces/multiplayer-state.interface'
 
 const initialState: MultiplayerState = {
@@ -18,6 +19,7 @@ const initialState: MultiplayerState = {
 	remoteParticipants: {},
 	localTrack: undefined,
 	error: null,
+	scheduledGame: null,
 	gameId: 0,
 	ownerId: 0,
 	startTime: '',
@@ -49,6 +51,10 @@ export const MultiplayerStore = signalStore(
 
 		resumeGame: () => {
 			patchState(store, (state) => ({ ...state, gamePlayStatus: GamePlayStatus.PLAYING }))
+		},
+
+		setScheduledGame: (scheduledGame: ScheduledGame | null) => {
+			patchState(store, (state) => ({ ...state, scheduledGame, startTime: scheduledGame?.start_time, ownerId: scheduledGame?.Owner?.id }))
 		},
 
 		setPageState: (pageState: RequestState) => {

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { MultiplayerLayoutComponent } from './multiplayer-layout.component'
+import { MultiplayerWrapperComponent } from './multiplayer-wrapper.component'
 
 describe('MainLayoutComponent', () => {
-	let component: MultiplayerLayoutComponent
-	let fixture: ComponentFixture<MultiplayerLayoutComponent>
+	let component: MultiplayerWrapperComponent
+	let fixture: ComponentFixture<MultiplayerWrapperComponent>
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [MultiplayerLayoutComponent],
+			imports: [MultiplayerWrapperComponent],
 		}).compileComponents()
 
-		fixture = TestBed.createComponent(MultiplayerLayoutComponent)
+		fixture = TestBed.createComponent(MultiplayerWrapperComponent)
 		component = fixture.componentInstance
 		fixture.detectChanges()
 	})

@@ -58,6 +58,11 @@ export class MultiplayerComponent implements OnDestroy {
 	}
 
 	startNewGame() {
-		this.colyseusService.room?.send(START_NEW_GAME)
+		if (this.playerService.getPlayer.getValue()?.id && this.store.scheduledGame()?.id) {
+			this.colyseusService.room?.send(START_NEW_GAME, {
+				scheduledGameId: this.store.scheduledGame()?.id,
+				ownerId: this.playerService.getPlayer.getValue()?.id,
+			})
+		}
 	}
 }

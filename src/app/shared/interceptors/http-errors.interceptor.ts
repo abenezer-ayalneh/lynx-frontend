@@ -1,6 +1,5 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http'
 import { inject } from '@angular/core'
-import { Router } from '@angular/router'
 import { catchError, throwError } from 'rxjs'
 
 import FilterResponseInterface from '../interfaces/error-response.interface'
@@ -10,7 +9,6 @@ import { TokenService } from '../services/token.service'
 export const httpErrorsInterceptor: HttpInterceptorFn = (req, next) => {
 	const snackbarService = inject(SnackbarService)
 	const tokenService = inject(TokenService)
-	const router = inject(Router)
 
 	return next(req).pipe(
 		catchError((caughtError) => {
@@ -20,9 +18,9 @@ export const httpErrorsInterceptor: HttpInterceptorFn = (req, next) => {
 				} else if (caughtError.status === 401) {
 					tokenService.clearTokens()
 					if (caughtError.error.data.message) snackbarService.showSnackbar(caughtError.error.data.message)
-					if (router.routerState.snapshot.url !== '/auth/login') {
-						window.location.assign('/auth/login')
-					}
+					// if (router.routerState.snapshot.url !== '/auth/login') {
+					// 	window.location.assign('/auth/login')
+					// }
 				} else {
 					const backendError = caughtError.error as FilterResponseInterface
 

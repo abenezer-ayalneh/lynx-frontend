@@ -1,6 +1,8 @@
 import { Component, effect, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
+import { MatTooltip } from '@angular/material/tooltip'
 import { Router } from '@angular/router'
+import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faPaperPlane, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { Room } from 'colyseus.js'
 import { Subscription } from 'rxjs'
@@ -24,7 +26,16 @@ import { SoloPlayRoomState } from './types/solo-room-state.type'
 
 @Component({
 	selector: 'app-solo-play',
-	imports: [LoadingComponent, ErrorWhileLoadingComponent, GameStartComponent, RoundResultComponent, GameEndComponent, GamePlayComponent],
+	imports: [
+		LoadingComponent,
+		ErrorWhileLoadingComponent,
+		GameStartComponent,
+		RoundResultComponent,
+		GameEndComponent,
+		GamePlayComponent,
+		FaIconComponent,
+		MatTooltip,
+	],
 	templateUrl: './solo-play.component.html',
 	styleUrl: './solo-play.component.scss',
 })
@@ -145,11 +156,8 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 		this.focusOnGuessInput()
 	}
 
-	/**
-	 * Exit the currently being played solo game
-	 */
-	exitSoloPlay() {
-		this.router.navigate(['/'])
+	async exit() {
+		await this.router.navigateByUrl('home')
 	}
 
 	private subscribeToColyseusMessages(room: Room<SoloPlayRoomState>) {

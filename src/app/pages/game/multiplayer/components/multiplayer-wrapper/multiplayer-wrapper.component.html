@@ -1,0 +1,60 @@
+@if (store.pageState() === RequestState.READY) {
+	@if (underTenMinutes()) {
+		<div class="w-full h-[calc(100%-64px)] flex gap-2">
+			<div class="w-[90%] h-full">
+				@if (store.gameState() === GameState.LOBBY) {
+					<app-lobby />
+				} @else {
+					<app-multiplayer />
+				}
+			</div>
+			<div class="w-[10%] h-full flex flex-col justify-start items-center gap-2">
+				@for (participant of store.remoteParticipants() | keyvalue; track participant.key) {
+					<div class="w-full h-[calc(100%*1/8)]">
+						<app-audio [participant]="participant.value"></app-audio>
+					</div>
+				}
+			</div>
+		</div>
+
+		@let letSessionId = store.colyseusRoom()?.sessionId;
+		@if (scheduledGameId && letSessionId) {
+			<app-game-control [scheduledGameId]="scheduledGameId" [sessionId]="letSessionId" />
+		}
+	} @else {
+		<div
+			class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl px-12 md:px-24 flex flex-col justify-center items-center gap-2 md:gap-6 text-pretty">
+			<p class="w-full text-font-primary text-lg text-center md:text-5xl">Game starts in</p>
+			<app-game-start-countdown [startTime]="store.startTime()" (whenUnderTenMinutes)="underTenMinutes.set(true)" />
+			<br />
+			<p class="w-full text-font-primary text-lg text-center md:text-2xl">
+				When the time reaches below 10 minutes, you will be redirected to the lobby page.
+			</p>
+		</div>
+	}
+} @else if (store.pageState() === RequestState.LOADING) {
+	<div class="h-full w-full flex justify-center items-center relative">
+		<app-loading />
+	</div>
+} @else if (store.pageState() === RequestState.ERROR) {
+	<div class="h-full w-full flex justify-center items-center relative">
+		<app-error-while-loading [subTitle]="store.error()" />
+	</div>
+}
+
+<dialog #usernameModal class="modal">
+	<form class="modal-box bg-my-glass backdrop-blur-md text-font-primary" [formGroup]="usernameFormGroup" (ngSubmit)="setUsernameInformation()">
+		<h3 class="font-bold text-2xl">Welcome!</h3>
+		<br />
+		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+			<legend class="fieldset-legend px-2 font-bold">Guest</legend>
+			<p class="py-4">Choose a name to be used in the game:</p>
+			<div class="w-full h-fit flex justify-start items-center gap-3">
+				<app-text-field [control]="usernameFormGroup.controls.username" placeholder="Name" class="grow" />
+				<button class="btn btn-sm md:btn-md" type="submit">Ok</button>
+			</div>
+		</fieldset>
+		<div class="divider">OR</div>
+		<button class="btn btn-md btn-block" type="button" (click)="goToLogin()">Login</button>
+	</form>
+</dialog>

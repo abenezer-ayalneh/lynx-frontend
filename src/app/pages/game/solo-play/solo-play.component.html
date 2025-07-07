@@ -1,5 +1,10 @@
 @if (pageState() === PageState.READY) {
-	<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl overflow-hidden">
+	<div class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl overflow-hidden relative">
+		<fa-icon
+			[icon]="icons.faTimesCircle"
+			class="text-2xl md:w-10 md:h-10 text-my-red cursor-pointer absolute top-2 right-0 z-20"
+			matTooltip="Leave game"
+			(click)="exit()" />
 		@if (roomState(); as state) {
 			@switch (state.gameState) {
 				@case ('START_COUNTDOWN') {
