@@ -1,10 +1,11 @@
-import { Component, effect, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
+import { Component, effect, ElementRef, HostListener, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { MatTooltip } from '@angular/material/tooltip'
 import { Router } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faPaperPlane, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { Room } from 'colyseus.js'
+import { DeviceDetectorService } from 'ngx-device-detector'
 import { Subscription } from 'rxjs'
 
 import { ErrorWhileLoadingComponent } from '../../../shared/components/error-while-loading/error-while-loading.component'
@@ -64,6 +65,8 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 		private readonly soloPlayService: SoloPlayService,
 		private readonly tokenService: TokenService,
 		private readonly router: Router,
+		private readonly elementRef: ElementRef,
+		private readonly deviceService: DeviceDetectorService,
 		protected readonly colyseusService: ColyseusService,
 	) {
 		this.wrongGuessAudio.src = 'audios/wrong-guess.wav'
@@ -79,6 +82,11 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.initSoloPlay()
+
+		// TODO: uncomment the code below
+		// if (this.deviceService.isMobile()) {
+		// 	this.elementRef.nativeElement.requestFullscreen()
+		// }
 	}
 
 	ngOnDestroy() {

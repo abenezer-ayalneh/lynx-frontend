@@ -64,6 +64,9 @@ importers:
             livekit-client:
                 specifier: ^2.13.3
                 version: 2.13.3(@types/dom-mediacapture-record@1.0.22)
+            ngx-device-detector:
+                specifier: ^9.0.0
+                version: 9.0.0(@angular/common@19.2.13(@angular/core@19.2.13(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@19.2.13(rxjs@7.8.2)(zone.js@0.15.1))
             rxjs:
                 specifier: ~7.8.0
                 version: 7.8.2
@@ -4066,6 +4069,12 @@ packages:
 
     neo-async@2.6.2:
         resolution: { integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw== }
+
+    ngx-device-detector@9.0.0:
+        resolution: { integrity: sha512-zpio/wqH1GnxIpWCdA7cp5fmWf7YLycgzfXzQHmB9vaS7eAcqpBF5mxDS65IhE7TzNTJziDrYJCT+9tVqBcsDg== }
+        peerDependencies:
+            '@angular/common': ^19.0.0
+            '@angular/core': ^19.0.0
 
     node-addon-api@6.1.0:
         resolution: { integrity: sha512-+eawOlIgy680F0kBzPUNFhMZGtJ1YmqM6l4+Crf4IkImjYrO/mqPwRMh352g23uIaQKFItcQ64I7KMaJxHgAVA== }
@@ -9731,6 +9740,12 @@ snapshots:
     negotiator@1.0.0: {}
 
     neo-async@2.6.2: {}
+
+    ngx-device-detector@9.0.0(@angular/common@19.2.13(@angular/core@19.2.13(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@19.2.13(rxjs@7.8.2)(zone.js@0.15.1)):
+        dependencies:
+            '@angular/common': 19.2.13(@angular/core@19.2.13(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
+            '@angular/core': 19.2.13(rxjs@7.8.2)(zone.js@0.15.1)
+            tslib: 2.8.1
 
     node-addon-api@6.1.0:
         optional: true
