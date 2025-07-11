@@ -1,24 +1,24 @@
-<div class="w-full h-min md:h-full flex flex-col md:px-6 relative overflow-hidden">
-	<div class="w-full h-fit md:h-1/6 flex justify-between items-center md:px-6">
+<div class="w-full h-full landscape:md:h-full md:h-full flex flex-col justify-between relative overflow-hidden">
+	<div class="w-full h-[15%] flex justify-between items-center relative">
 		<app-round [round]="round()" [totalRound]="totalRound()" />
 		<app-countdown [time]="time()" />
 	</div>
-	<div class="w-full h-fit md:h-4/6 px-2 py-2 grid grid-cols-6 grid-rows-2 gap-2 content-center">
+	<div class="w-full h-full md:h-[70%] px-2 py-2 landscape:md:py-0 grid grid-cols-6 grid-rows-2 gap-2 landscape:md:gap-0 content-center">
 		@if (word(); as word) {
 			@for (cue of getVisibleWords(word); track cue.id; let index = $index) {
-				<div class="w-full h-auto flex justify-center items-center col-span-2" [ngClass]="{ 'col-start-2': index === 3 }">
+				<div class="col-span-2" [ngClass]="{ 'col-start-2': index === 3 }">
 					<app-word-bubble [cue]="cue" [key]="word.key" />
 				</div>
 			}
 		}
 	</div>
-	<div class="w-full h-fit md:h-1/6 flex justify-center items-center px-4 pb-2 gap-2 md:gap-4">
+	<div class="w-full h-fit md:h-[15%] flex justify-center items-center px-4 pb-2 landscape:md:pb-0 gap-2 md:gap-4">
 		<div
-			class="w-full md:w-[50%] flex justify-start items-center bg-white rounded-[6px] md:rounded-lg overflow-hidden"
+			class="w-full md:w-[50%] landscape:md:h-9 flex justify-start items-center bg-white rounded-[6px] md:rounded-lg overflow-hidden"
 			[ngClass]="{ 'shake-horizontal': shouldShake() }">
 			<input
 				#inputField
-				class="w-full h-fit py-2 px-3 md:py-3 md:px-4 bg-transparent font-normal text-black text-sm md:text-[16px] placeholder:text-font-secondary placeholder:font-light outline-none disabled:text-black"
+				class="w-full h-fit py-2 px-3 landscape:md:py-1 md:py-3 md:px-4 bg-transparent font-normal text-black text-xs landscape:md:text-sm md:text-base placeholder:text-font-secondary placeholder:font-light outline-none disabled:text-black"
 				[formControl]="guessFormControl"
 				type="text"
 				autocomplete="off"
@@ -27,7 +27,7 @@
 				<span class="loading loading-bars loading-sm md:loading-md bg-transparent"></span>
 			}
 		</div>
-		<button class="w-11 p-0 m-0 hover:opacity-90">
+		<button class="w-11 landscape:md:w-9 p-0 m-0 hover:opacity-90">
 			<div class="flex justify-center items-center rounded-full bg-my-orange aspect-square">
 				<fa-icon [icon]="icons.faPaperPlane" class="text-white bg-black mix-blend-screen cursor-pointer text-xl" (click)="submitGuess()" />
 			</div>

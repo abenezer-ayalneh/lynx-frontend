@@ -104,12 +104,6 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	@HostListener('window:beforeunload', ['$event'])
-	unloadNotification(event: BeforeUnloadEvent): void {
-		event.preventDefault()
-		event.returnValue = 'Are you sure you want to leave?' // For legacy compatability
-	}
-
 	initSoloPlay() {
 		this.subscriptions.add(
 			this.soloPlayService.createGame({ type: GameType.SOLO }).subscribe({

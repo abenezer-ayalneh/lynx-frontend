@@ -1,9 +1,10 @@
 <div class="h-full w-full bg-background-primary flex flex-col relative">
-	<div class="w-full h-12 md:h-14 landscape:md:h-14 lg:h-20 landscape:lg:h-20">
+	<div class="w-full h-12 md:h-14 landscape:md:h-11 lg:h-20 landscape:lg:h-20">
 		<app-header />
 	</div>
 
-	<div class="w-full h-[calc(100%-48px)] md:h-[calc(100%-56px)] lg:h-[calc(100%-80px)] px-2 py-2 md:px-4 md:py-4 overflow-hidden">
+	<!-- If the grow start to cause issue use this instead: h-[calc(100%-48px)] landscape:md:h-[calc(100%-44px)] md:h-[calc(100%-56px)] lg:h-[calc(100%-80px)]-->
+	<div class="w-full grow px-2 py-2 md:px-4 md:py-4 overflow-hidden">
 		<router-outlet />
 	</div>
 </div>
