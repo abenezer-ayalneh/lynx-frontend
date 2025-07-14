@@ -1,6 +1,11 @@
 <div class="h-full w-full flex flex-col justify-center items-center gap-2 md:gap-6">
-	<p class="font-bold text-font-primary text-4xl md:text-7xl">Game Starts in...</p>
-	<p class="font-bold text-font-primary text-4xl md:text-7xl">
-		{{ waitingCountdownTime() }}
-	</p>
+	<p class="font-[Orbitron] font-normal text-font-primary text-4xl md:text-5xl lg:text-7xl">Game Starts in</p>
+	<span class="countdown text-6xl lg:text-8xl">
+		<span [style]="{ '--value': waitingCountdownTime() }" aria-live="polite" class="font-[Orbitron] font-light text-white">{{
+			waitingCountdownTime()
+		}}</span>
+	</span>
+	<!--  <p class="font-light font-[Orbitron] text-font-primary text-7xl md:text-7xl">-->
+	<!--    {{ waitingCountdownTime() }}-->
+	<!--  </p>-->
 </div>

@@ -1,7 +1,5 @@
 import { Component, input, OnInit, output } from '@angular/core'
-import { MatTooltip } from '@angular/material/tooltip'
 import { Router } from '@angular/router'
-import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 import { ColyseusService } from '../../services/colyseus.service'
@@ -9,10 +7,11 @@ import { PlayerService } from '../../services/player.service'
 import { GameType } from '../../types/game.type'
 import { Score } from '../../types/winner.type'
 import { ButtonComponent } from '../button/button.component'
+import { ButtonType } from '../button/enums/button.enum'
 
 @Component({
 	selector: 'app-game-end',
-	imports: [ButtonComponent, FaIconComponent, MatTooltip],
+	imports: [ButtonComponent],
 	templateUrl: './game-end.component.html',
 	styleUrl: './game-end.component.scss',
 })
@@ -30,6 +29,8 @@ export class GameEndComponent implements OnInit {
 	endOfGameAudio = new Audio()
 
 	protected readonly GameType = GameType
+
+	protected readonly ButtonType = ButtonType
 
 	constructor(
 		private readonly router: Router,
@@ -53,13 +54,6 @@ export class GameEndComponent implements OnInit {
 	 */
 	playNewGame() {
 		this.playNewGameClicked.emit()
-	}
-
-	/**
-	 * Exit the currently being played game
-	 */
-	exitGame() {
-		this.router.navigate(['/'])
 	}
 
 	/**

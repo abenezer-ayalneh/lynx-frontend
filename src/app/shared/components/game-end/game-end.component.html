@@ -1,14 +1,9 @@
 <div class="w-full h-full py-20 top-0 left-0 z-10 flex flex-col justify-start items-center gap-2 md:gap-6 relative overflow-y-scroll">
-	<fa-icon
-		[icon]="icons.faTimesCircle"
-		class="text-my-glass text-2xl md:w-10 md:h-10 text-my-red cursor-pointer flex justify-center items-center absolute right-2 top-2 md:right-4 md:top-4"
-		matTooltip="Leave game"
-		(click)="exitGame()" />
 	<p class="font-semibold text-font-primary text-4xl md:text-7xl uppercase">Game Ended</p>
 	@if (gameType() === GameType.SOLO || shouldShowRestartGameButton()) {
 		<div class="flex flex-col justify-center items-center gap-4 md:gap-8 mt-4 md:mt-8">
 			<p class="font-normal text-font-primary text-xl md:text-3xl text-center">Want to play again?</p>
-			<app-button text="Play New Game" (whenClickedOutput)="playNewGame()" />
+			<app-button text="Play New Game" [buttonType]="ButtonType.BUTTON" (whenClickedOutput)="playNewGame()" />
 		</div>
 	}
 
