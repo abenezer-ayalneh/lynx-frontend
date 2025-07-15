@@ -1,7 +1,7 @@
 @if (buttonType() === ButtonType.LINK) {
 	<a
 		[routerLink]="url()"
-		class="min-w-24 max-w-36 h-8 text-wrap text-[#FFFFFF] text-xs md:text-sm font-medium flex justify-center items-center gap-2 rounded-md hover:scale-[1.02] hover:underline transition-all ease-in-out duration-200 disabled:transition-none disabled:opacity-60 disabled:bg-gray-400 backdrop-blur-md cursor-pointer disabled:cursor-not-allowed
+		class="w-fit min-w-24 h-8 md:h-9 lg:h-10 xl:h-12 px-4 md:px-5 lg:px-6 xl:px-7 text-wrap text-[#FFFFFF] text-sm md:text-base lg:text-lg xl:text-xl font-medium flex justify-center items-center gap-2 rounded-md hover:enabled:scale-[1.02] transition-all ease-in-out duration-200 disabled:transition-none disabled:opacity-60 disabled:bg-gray-400 backdrop-blur-md cursor-pointer disabled:cursor-not-allowed
     {{ class() }} {{ color() }}">
 		{{ text() }}
 
@@ -20,7 +20,7 @@
 		[type]="buttonType()"
 		[disabled]="disabled() || loading()"
 		(click)="whenClicked()"
-		class="min-w-24 max-w-36 h-8 text-wrap text-[#FFFFFF] text-xs md:text-sm font-medium flex justify-center items-center gap-2 rounded-md hover:enabled:scale-[1.02] transition-all ease-in-out duration-200 disabled:transition-none disabled:opacity-60 disabled:bg-gray-400 backdrop-blur-md cursor-pointer disabled:cursor-not-allowed
+		class="w-fit min-w-24 h-8 md:h-9 lg:h-10 xl:h-12 px-4 md:px-5 lg:px-6 xl:px-7 text-wrap text-[#FFFFFF] text-sm md:text-base lg:text-lg xl:text-xl font-medium flex justify-center items-center gap-2 rounded-md hover:enabled:scale-[1.02] transition-all ease-in-out duration-200 disabled:transition-none disabled:opacity-60 disabled:bg-gray-400 backdrop-blur-md cursor-pointer disabled:cursor-not-allowed
     {{ class() }} {{ color() }}">
 		{{ text() }}
 

@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common'
 import { Component, input, OnInit, output } from '@angular/core'
 import { Router } from '@angular/router'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
@@ -11,7 +12,7 @@ import { ButtonType } from '../button/enums/button.enum'
 
 @Component({
 	selector: 'app-game-end',
-	imports: [ButtonComponent],
+	imports: [ButtonComponent, JsonPipe],
 	templateUrl: './game-end.component.html',
 	styleUrl: './game-end.component.scss',
 })
