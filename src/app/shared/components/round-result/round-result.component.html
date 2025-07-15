@@ -37,12 +37,7 @@
 
 		<p class="text-font-primary text-lg sm:max-md:text-lg md:text-2xl lg:text-4xl text-center">Next round starts in&nbsp;</p>
 		<span class="countdown text-2xl lg:text-4xl">
-			<span
-				[style]="{ '--value': waitingCountdownTime(), 'font-family': 'Orbitron' }"
-				aria-live="polite"
-				class="font-light font-[Orbitron] text-my-orange"
-				>{{ waitingCountdownTime() }}</span
-			>
+			<span [style]="{ '--value': waitingCountdownTime() }" aria-live="polite" class="font-light text-my-orange">{{ waitingCountdownTime() }}</span>
 		</span>
 	</div>
 </div>
