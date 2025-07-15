@@ -1,18 +1,18 @@
 @if (store.pageState() === RequestState.READY) {
 	@if (underTenMinutes()) {
-		<div class="w-full h-[calc(100%-64px)] flex gap-2">
-			<div class="w-[90%] h-full">
+		<div class="w-full h-[calc(100%-40px)] landscape:md:max-lg:h-[calc(100%-40px)] flex flex-col landscape:sm:flex-row md:flex-row gap-2">
+			<div
+				class="w-full landscape:md:max-lg:w-4/5 landscape:sm:w-[calc(100%-112px)] md:w-[calc(100%-112px)] lg:w-[calc(100%-128px)] xl:w-[calc(100%-160px)] h-full">
 				@if (store.gameState() === GameState.LOBBY) {
 					<app-lobby />
 				} @else {
 					<app-multiplayer />
 				}
 			</div>
-			<div class="w-[10%] h-full flex flex-col justify-start items-center gap-2">
+			<div
+				class="w-full landscape:md:max-lg:w-1/5 landscape:sm:w-28 md:w-28 lg:w-32 xl:w-40 h-full grid grid-cols-4 landscape:md:max-lg:grid-cols-2 landscape:sm:max-md:grid-cols-2 md:grid-cols-1 grid-rows-2 landscape:md:max-lg:grid-rows-4 landscape:sm:max-md:grid-rows-4 md:grid-rows-8 gap-2">
 				@for (participant of store.remoteParticipants() | keyvalue; track participant.key) {
-					<div class="w-full h-[calc(100%*1/8)]">
-						<app-audio [participant]="participant.value"></app-audio>
-					</div>
+					<app-audio-participant [participant]="participant.value"></app-audio-participant>
 				}
 			</div>
 		</div>

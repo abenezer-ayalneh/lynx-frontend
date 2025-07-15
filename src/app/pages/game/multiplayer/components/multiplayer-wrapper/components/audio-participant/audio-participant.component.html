@@ -1,0 +1,18 @@
+<div
+	[id]="participant().id"
+	class="w-full h-full bg-my-glass backdrop-blur-md rounded-lg flex justify-center items-center relative border-2"
+	[ngClass]="participant().speaking ? 'border-my-blueGreen' : 'border-transparent'"
+	[matTooltip]="participant().name">
+	<audio #audioElement [id]="participant().id"></audio>
+	@if (participant().muted) {
+		<span
+			class="w-6 landscape:md:max-lg:w-5 h-6 landscape:md:max-lg:h-5 flex justify-center items-center aspect-square rounded-full bg-[#f2b8b5] text-my-red p-1 landscape:md:max-lg:p-0.5 m-1 landscape:md:max-lg:m-0.5 absolute top-0 right-0">
+			<fa-icon [icon]="faMicrophoneSlash" class="text-xs" />
+		</span>
+	}
+	<p class="text-2xl landscape:md:max-lg:text-2xl md:text-3xl lg:text-4xl text-center font-light text-white">{{ participant().name | pickFirstLetters }}</p>
+	<p
+		class="w-[80%] text-sm landscape:md:max-lg:text-xs font-light text-white truncate absolute bottom-1 landscape:md:max-lg:bottom-0.5 left-2 landscape:md:max-lg:left-1">
+		{{ participant().name }}
+	</p>
+</div>

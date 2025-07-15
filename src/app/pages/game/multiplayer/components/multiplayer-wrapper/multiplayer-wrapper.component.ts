@@ -19,7 +19,7 @@ import { AuthService } from '../../../../auth/auth.service'
 import { LobbyComponent } from '../../../../lobby/lobby.component'
 import { MultiplayerComponent } from '../../multiplayer.component'
 import { MultiplayerService } from '../../multiplayer.service'
-import { AudioComponent } from './components/audio/audio.component'
+import { AudioParticipantComponent } from './components/audio-participant/audio-participant.component'
 import { GameControlComponent } from './components/game-control/game-control.component'
 
 @Component({
@@ -33,9 +33,9 @@ import { GameControlComponent } from './components/game-control/game-control.com
 		GameControlComponent,
 		LobbyComponent,
 		MultiplayerComponent,
-		AudioComponent,
 		KeyValuePipe,
 		GameStartCountdownComponent,
+		AudioParticipantComponent,
 	],
 	templateUrl: './multiplayer-wrapper.component.html',
 	styleUrl: './multiplayer-wrapper.component.scss',

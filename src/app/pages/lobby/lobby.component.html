@@ -1,35 +1,32 @@
-<div
-	class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-2 md:gap-6">
-	<p class="w-full h-fit text-font-primary text-3xl md:text-4xl lg:text-6xl font-bold text-center">Lobby</p>
-	<div class="w-full h-full flex flex-col items-center gap-6 md:gap-8">
-		<div class="w-full h-fit flex flex-col justify-start items-start">
-			@if (countdownEnded()) {
-				@if (this.isGameOwner()) {
-					<app-button text="Start Game" class="h-12 md:h-20 w-full mt-4" (whenClickedOutput)="startGame()" />
-				} @else {
-					<p class="w-full text-font-primary text-xl text-center md:text-2xl animate-bounce">Waiting for the game host to start the game</p>
-				}
+<div class="w-full h-full flex flex-col justify-start items-center gap-2 bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-2 px-6 md:py-2 md:px-12">
+	<p class="font-[Poppins] font-semibold text-font-primary text-4xl landscape:md:max-lg:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">Lobby</p>
+	<div class="w-full h-fit flex flex-col justify-start items-start">
+		@if (countdownEnded()) {
+			@if (this.isGameOwner()) {
+				<app-button text="Start Game" class="w-full" (whenClickedOutput)="startGame()" />
 			} @else {
-				<div class="w-full h-fit flex flex-col justify-center items-center">
-					<p class="w-full text-font-primary text-lg text-center md:text-2xl">Game start in</p>
-					<app-game-start-countdown [startTime]="store.startTime()" (whenCountdownEnds)="countdownEnded.set(true)" />
-				</div>
+				<p class="w-full text-font-primary text-xl md:text-2xl text-center animate-bounce">Waiting for the game host to start the game</p>
 			}
-		</div>
-
-		<div class="w-full h-full place-content-start overflow-y-scroll">
-			<div class="w-full h-full flex flex-col justify-start items-start gap-4 py-4 overflow-y-scroll">
-				<p class="w-full text-font-primary text-lg md:text-2xl xl:text-4xl font-normal text-center">How To Play</p>
-				<p class="w-full text-font-primary text-sm md:text-lg xl:text-2xl font-light text-center text-pretty">
-					Players try to guess the word common to the "cue" words appearing on the screen. It starts with just 2 cue words (20 seconds), a tough
-					challenge. If unsolved, a 3rd cue appears (15 more seconds), then a 4th (10 seconds) and finally a 5th (5 seconds). The quicker the
-					solution, the more points earned.
-				</p>
-				<p class="w-full text-font-primary text-sm md:text-lg xl:text-2xl font-light text-center text-pretty">
-					Answers appear after a correct solution. There are 10 rounds to a game, after which players' points are shown for that game. Your cumulative
-					score for the session is in the box at the top. You can play as many games as you want. Have fun!
-				</p>
+		} @else {
+			<div class="w-full h-fit flex flex-col justify-center items-center">
+				<p class="w-full text-font-primary text-lg text-center md:text-2xl">Game start in</p>
+				<app-game-start-countdown [startTime]="store.startTime()" (whenCountdownEnds)="countdownEnded.set(true)" />
 			</div>
+		}
+	</div>
+
+	<div class="w-full h-full place-content-start overflow-y-scroll">
+		<div class="w-full h-full flex flex-col justify-start items-start gap-4 py-4 overflow-y-scroll">
+			<p class="w-full text-font-primary text-lg md:text-2xl xl:text-4xl font-normal text-center">How To Play</p>
+			<p class="w-full text-font-primary text-sm md:text-lg xl:text-2xl font-light text-center text-pretty">
+				Players try to guess the word common to the "cue" words appearing on the screen. It starts with just 2 cue words (20 seconds), a tough
+				challenge. If unsolved, a 3rd cue appears (15 more seconds), then a 4th (10 seconds) and finally a 5th (5 seconds). The quicker the solution,
+				the more points earned.
+			</p>
+			<p class="w-full text-font-primary text-sm md:text-lg xl:text-2xl font-light text-center text-pretty">
+				Answers appear after a correct solution. There are 10 rounds to a game, after which players' points are shown for that game. Your cumulative
+				score for the session is in the box at the top. You can play as many games as you want. Have fun!
+			</p>
 		</div>
 	</div>
 </div>

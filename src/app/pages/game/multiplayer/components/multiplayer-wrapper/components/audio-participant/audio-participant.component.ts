@@ -8,12 +8,12 @@ import { Participant } from '../../../../../../../shared/models/game-player.mode
 import { PickFirstLettersPipe } from '../../../../../../../shared/pipes/pick-first-letters.pipe'
 
 @Component({
-	selector: 'app-audio',
+	selector: 'app-audio-participant',
 	imports: [FaIconComponent, PickFirstLettersPipe, NgClass, MatTooltip],
-	templateUrl: './audio.component.html',
-	styleUrl: './audio.component.scss',
+	templateUrl: './audio-participant.component.html',
+	styleUrl: './audio-participant.component.scss',
 })
-export class AudioComponent implements OnDestroy {
+export class AudioParticipantComponent implements OnDestroy {
 	participant = input.required<Participant>()
 
 	audioElement = viewChild.required<ElementRef<HTMLAudioElement>>('audioElement')

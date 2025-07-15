@@ -99,7 +99,7 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 			this.store.setMicState(MicState.LOADING)
 
 			const room = this.store.liveKitRoom()
-			// Enables the microphone and publishes it to a new audio track
+			// Enables the microphone and publishes it to a new audio-participant track
 			room?.localParticipant
 				.setMicrophoneEnabled(true)
 				.then(() => {
@@ -197,8 +197,8 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 				)
 			})
 
-			// When the audio playback status is changed, this event will fire.
-			// And I use it to resume the audio playback.
+			// When the audio-participant playback status is changed, this event will fire.
+			// And I use it to resume the audio-participant playback.
 			room.on(RoomEvent.AudioPlaybackStatusChanged, (status) => {
 				if (status) {
 					room.startAudio()
