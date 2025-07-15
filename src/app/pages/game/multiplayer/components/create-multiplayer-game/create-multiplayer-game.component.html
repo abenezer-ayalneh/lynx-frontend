@@ -1,8 +1,8 @@
-<form class="w-full h-full py-6 md:py-8 md:px-12" [formGroup]="createMultiplayerGameFormGroup" (ngSubmit)="createMultiplayerGameFormSubmit()">
+<form class="w-full h-full" [formGroup]="createMultiplayerGameFormGroup" (ngSubmit)="createMultiplayerGameFormSubmit()">
 	<div
 		class="w-full h-full bg-my-glass backdrop-blur-md overflow-y-scroll rounded-2xl py-4 px-6 md:py-8 md:px-12 flex flex-col justify-start items-center gap-6">
 		<div class="w-full flex justify-between items-center">
-			<p class="text-font-primary text-lg md:text-2xl font-normal">Create Game Room</p>
+			<p class="text-font-primary text-xl md:text-2xl font-normal">Create Game Room</p>
 			<fa-icon
 				[icon]="icons.faTimesCircle"
 				class="text-2xl md:w-10 md:h-10 text-my-red cursor-pointer flex justify-center items-center"
@@ -73,7 +73,7 @@
 
 				<app-button
 					text="Create Room"
-					class="h-12 md:h-20 w-full mt-4"
+					class="w-full"
 					[buttonType]="ButtonType.SUBMIT"
 					[disabled]="createMultiplayerGameFormGroup.invalid"
 					[loading]="isCreatingGame()" />

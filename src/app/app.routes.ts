@@ -8,7 +8,6 @@ import { CreateMultiplayerGameComponent } from './pages/game/multiplayer/compone
 import { MultiplayerWrapperComponent } from './pages/game/multiplayer/components/multiplayer-wrapper/multiplayer-wrapper.component'
 import { SoloPlayComponent } from './pages/game/solo-play/solo-play.component'
 import { HomeComponent } from './pages/home/home.component'
-import { RsvpComponent } from './pages/rsvp/rsvp.component'
 import { WordsComponent } from './pages/words/words.component'
 import { authGuard } from './shared/guards/auth.guard'
 import { avoidAccidentalRedirectionGuard } from './shared/guards/avoid-accidental-redirection.guard'
@@ -57,12 +56,6 @@ export const routes: Routes = [
 						path: 'create',
 						component: CreateMultiplayerGameComponent,
 						canActivate: [authGuard],
-					},
-					{
-						path: 'rsvp',
-						component: RsvpComponent,
-						canActivate: [optionalAuthGuardGuard],
-						canDeactivate: [avoidAccidentalRedirectionGuard],
 					},
 					{
 						path: ':gameId',
