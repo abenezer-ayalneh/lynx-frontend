@@ -32,4 +32,4 @@ jobs:
               run: pnpm run build
 
             - name: Move to hosting directory
-              run: cp -r dist/lynx-frontend-angular/browser/* /var/www/html/
+              run: cp -r dist/lynx-frontend/browser/* /var/www/html/
