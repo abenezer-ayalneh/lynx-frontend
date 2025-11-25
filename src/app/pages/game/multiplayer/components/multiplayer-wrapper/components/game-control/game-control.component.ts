@@ -5,7 +5,7 @@ import { MatTooltip } from '@angular/material/tooltip'
 import { Router } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faExclamation, faMicrophone, faMicrophoneSlash, faPaperPlane, faPause, faPlay, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { Room as LiveKitRoom, RoomEvent, Track } from 'livekit-client'
+import { Participant, RemoteParticipant, RemoteTrack, RemoteTrackPublication, Room as LiveKitRoom, RoomEvent, Track, TrackPublication } from 'livekit-client'
 import { firstValueFrom } from 'rxjs'
 
 import { environment } from '../../../../../../../../environments/environment'
@@ -48,6 +48,11 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 	tooltip = viewChild.required<MatTooltip>('tooltip')
 
 	icons = { faPaperPlane, faTimesCircle, faMicrophone, faMicrophoneSlash, faTimes, faExclamation, faPause, faPlay }
+
+	private liveKitEventHandlers: {
+		event: RoomEvent
+		handler: (...args: unknown[]) => void
+	}[] = []
 
 	protected readonly MicState = MicState
 
@@ -148,14 +153,18 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		// Specify the actions when events take place in the room
 		// On every new Track received...
-		room.on(RoomEvent.TrackSubscribed, (remoteTrack, remotePublication, remoteParticipant) => {
+		const trackSubscribedHandler = (remoteTrack: RemoteTrack, remotePublication: RemoteTrackPublication, remoteParticipant: RemoteParticipant) => {
 			this.store.addRemoteTrack(remoteParticipant.identity, remotePublication, remoteTrack.isMuted)
-		})
+		}
+		room.on(RoomEvent.TrackSubscribed, trackSubscribedHandler)
+		this.liveKitEventHandlers.push({ event: RoomEvent.TrackSubscribed, handler: trackSubscribedHandler as (...args: unknown[]) => void })
 
 		// On every new Track destroyed...
-		room.on(RoomEvent.TrackUnsubscribed, (_remoteTrack, _remotePublication, remoteParticipant) => {
+		const trackUnsubscribedHandler = (_remoteTrack: RemoteTrack, _remotePublication: RemoteTrackPublication, remoteParticipant: RemoteParticipant) => {
 			this.store.deleteRemoteTrack(remoteParticipant.identity)
-		})
+		}
+		room.on(RoomEvent.TrackUnsubscribed, trackUnsubscribedHandler)
+		this.liveKitEventHandlers.push({ event: RoomEvent.TrackUnsubscribed, handler: trackUnsubscribedHandler as (...args: unknown[]) => void })
 
 		try {
 			// Generate token for to be used to join the live-kit room.
@@ -177,17 +186,21 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 			this.store.changePlayerMuteState(room.localParticipant.identity, room.localParticipant.trackPublications.values().next().value?.isMuted ?? true)
 
 			// This will fire when any track is muted.
-			room.on(RoomEvent.TrackMuted, (trackPublication, participant) => {
+			const trackMutedHandler = (trackPublication: TrackPublication, participant: Participant) => {
 				this.store.changePlayerMuteState(participant.identity, trackPublication.isMuted)
-			})
+			}
+			room.on(RoomEvent.TrackMuted, trackMutedHandler)
+			this.liveKitEventHandlers.push({ event: RoomEvent.TrackMuted, handler: trackMutedHandler as (...args: unknown[]) => void })
 
 			// This will fire when any track is unmuted.
-			room.on(RoomEvent.TrackUnmuted, (trackPublication, participant) => {
+			const trackUnmutedHandler = (trackPublication: TrackPublication, participant: Participant) => {
 				this.store.changePlayerMuteState(participant.identity, trackPublication.isMuted)
-			})
+			}
+			room.on(RoomEvent.TrackUnmuted, trackUnmutedHandler)
+			this.liveKitEventHandlers.push({ event: RoomEvent.TrackUnmuted, handler: trackUnmutedHandler as (...args: unknown[]) => void })
 
 			// This event will fire with a list of participants who are actively speaking.
-			room.on(RoomEvent.ActiveSpeakersChanged, (participants) => {
+			const activeSpeakersChangedHandler = (participants: Participant[]) => {
 				this.store.changePlayerSpeakingState(
 					participants.map((participant) => ({
 						id: participant.identity,
@@ -195,14 +208,21 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 						audioLevel: participant.audioLevel,
 					})),
 				)
-			})
+			}
+			room.on(RoomEvent.ActiveSpeakersChanged, activeSpeakersChangedHandler)
+			this.liveKitEventHandlers.push({ event: RoomEvent.ActiveSpeakersChanged, handler: activeSpeakersChangedHandler as (...args: unknown[]) => void })
 
 			// When the audio-participant playback status is changed, this event will fire.
 			// And I use it to resume the audio-participant playback.
-			room.on(RoomEvent.AudioPlaybackStatusChanged, (status) => {
+			const audioPlaybackStatusChangedHandler = (status: boolean) => {
 				if (status) {
 					room.startAudio()
 				}
+			}
+			room.on(RoomEvent.AudioPlaybackStatusChanged, audioPlaybackStatusChangedHandler)
+			this.liveKitEventHandlers.push({
+				event: RoomEvent.AudioPlaybackStatusChanged,
+				handler: audioPlaybackStatusChangedHandler as (...args: unknown[]) => void,
 			})
 		} catch (e) {
 			console.error(e)
@@ -214,8 +234,17 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	private async leaveLiveKitRoom() {
-		// Leave the room by calling the 'disconnect' method over the Room object.
-		await this.store.liveKitRoom()?.disconnect()
+		const room = this.store.liveKitRoom()
+		if (room) {
+			// Remove all event listeners before disconnecting
+			for (const { event, handler } of this.liveKitEventHandlers) {
+				room.off(event, handler)
+			}
+			this.liveKitEventHandlers = []
+
+			// Leave the room by calling the 'disconnect' method over the Room object.
+			await room.disconnect()
+		}
 
 		// Reset all variables
 		this.store.setLiveKitRoom(undefined)

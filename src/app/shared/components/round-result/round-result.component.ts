@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common'
-import { Component, input, OnInit } from '@angular/core'
+import { Component, input, OnDestroy, OnInit } from '@angular/core'
 
 import { HighlightKeyPipe } from '../../pipes/highlight-key.pipe'
 import { ColyseusService } from '../../services/colyseus.service'
@@ -13,7 +13,7 @@ import { Word } from '../../types/word.type'
 	templateUrl: './round-result.component.html',
 	styleUrl: './round-result.component.scss',
 })
-export class RoundResultComponent implements OnInit {
+export class RoundResultComponent implements OnInit, OnDestroy {
 	winner = input.required<Score | null>()
 
 	word = input<Word | null>()
@@ -51,6 +51,23 @@ export class RoundResultComponent implements OnInit {
 			this.solvedRoundAudio.play()
 		} else {
 			this.allFailRoundAudio.play()
+		}
+	}
+
+	ngOnDestroy() {
+		this.cleanupAudio()
+	}
+
+	private cleanupAudio() {
+		if (this.allFailRoundAudio) {
+			this.allFailRoundAudio.pause()
+			this.allFailRoundAudio.src = ''
+			this.allFailRoundAudio.load()
+		}
+		if (this.solvedRoundAudio) {
+			this.solvedRoundAudio.pause()
+			this.solvedRoundAudio.src = ''
+			this.solvedRoundAudio.load()
 		}
 	}
 

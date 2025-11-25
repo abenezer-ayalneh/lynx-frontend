@@ -3,6 +3,7 @@ import { Component, effect, ElementRef, HostListener, inject, OnDestroy, OnInit,
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons'
+import { Room } from 'colyseus.js'
 import { firstValueFrom } from 'rxjs'
 
 import { ErrorWhileLoadingComponent } from '../../../../../shared/components/error-while-loading/error-while-loading.component'
@@ -57,6 +58,10 @@ export class MultiplayerWrapperComponent implements OnInit, OnDestroy {
 
 	icons = { faMicrophoneSlash, faMicrophone }
 
+	private stateChangeHandler: ((state: MultiplayerRoomState) => void) | null = null
+
+	private room: Room<MultiplayerRoomState> | null = null
+
 	protected readonly RequestState = RequestState
 
 	protected readonly GameState = GameState
@@ -78,7 +83,28 @@ export class MultiplayerWrapperComponent implements OnInit, OnDestroy {
 	}
 
 	async ngOnDestroy() {
-		this.colyseusService.leaveRoom()
+		this.cleanupRoom()
+	}
+
+	private cleanupRoom() {
+		// Use the component's own room reference instead of the service's current room
+		// This ensures we only clean up the room this component created
+		if (this.room) {
+			// Remove state change handler if it exists
+			if (this.stateChangeHandler) {
+				// Colyseus doesn't provide direct removal, but leaving the room cleans up all handlers
+				this.stateChangeHandler = null
+			}
+			// Only leave if this is still the current room in the service
+			// If another component has set a different room, we should still clean up our own room
+			if (this.colyseusService.room === this.room) {
+				this.colyseusService.leaveRoom()
+			} else {
+				// If the service has a different room, just leave our room directly
+				this.room.leave()
+			}
+			this.room = null
+		}
 	}
 
 	@HostListener('window:beforeunload', ['$event'])
@@ -138,16 +164,19 @@ export class MultiplayerWrapperComponent implements OnInit, OnDestroy {
 					this.colyseusService.getClient
 						.joinById<MultiplayerRoomState>(game.room_id, { gameId })
 						.then(async (room) => {
+							// Store the room reference in this component
+							this.room = room
 							this.colyseusService.setRoom = room
 							this.store.setColyseusRoom(room)
 							sessionStorage.setItem('reconnectionToken', room.reconnectionToken)
 
-							room.onStateChange((state) => {
+							this.stateChangeHandler = (state) => {
 								const { players, sessionScore } = state
 								this.multiplayerService.sessionScore.set(sessionScore.get(room.sessionId))
 								this.store.reflectGameStateChange(state)
 								this.store.updateRemoteParticipants(players)
-							})
+							}
+							room.onStateChange(this.stateChangeHandler)
 
 							this.store.setPageState(RequestState.READY)
 						})
