@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common'
-import { AfterViewInit, Component, ElementRef, HostListener, input, OnInit, signal, viewChild } from '@angular/core'
+import { AfterViewInit, Component, ElementRef, HostListener, input, OnDestroy, OnInit, signal, viewChild } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faMicrophone, faMicrophoneSlash, faPaperPlane, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
@@ -19,7 +19,7 @@ import { WordBubbleComponent } from '../word-bubble/word-bubble.component'
 	templateUrl: './game-play.component.html',
 	styleUrl: './game-play.component.scss',
 })
-export class GamePlayComponent implements OnInit, AfterViewInit {
+export class GamePlayComponent implements OnInit, AfterViewInit, OnDestroy {
 	round = input.required<number>()
 
 	totalRound = input.required<number>()
@@ -39,6 +39,8 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
 	guessFormControl = new FormControl<string>('')
 
 	wrongGuessAudio = new Audio()
+
+	private shakeTimeout: ReturnType<typeof setTimeout> | null = null
 
 	constructor(protected readonly colyseusService: ColyseusService) {
 		this.wrongGuessAudio.src = 'audios/wrong-guess.wav'
@@ -80,11 +82,32 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
 		}
 	}
 
+	ngOnDestroy() {
+		if (this.shakeTimeout) {
+			clearTimeout(this.shakeTimeout)
+			this.shakeTimeout = null
+		}
+		this.cleanupAudio()
+	}
+
+	private cleanupAudio() {
+		if (this.wrongGuessAudio) {
+			this.wrongGuessAudio.pause()
+			this.wrongGuessAudio.src = ''
+			this.wrongGuessAudio.load()
+		}
+	}
+
 	shakeInputField() {
 		this.shouldShake.set(true)
 
-		setTimeout(() => {
+		if (this.shakeTimeout) {
+			clearTimeout(this.shakeTimeout)
+		}
+
+		this.shakeTimeout = setTimeout(() => {
 			this.shouldShake.set(false)
+			this.shakeTimeout = null
 		}, 1500)
 	}
 

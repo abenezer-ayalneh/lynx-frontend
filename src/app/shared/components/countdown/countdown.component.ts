@@ -1,11 +1,9 @@
-import { Component, input } from '@angular/core'
 import { DecimalPipe } from '@angular/common'
+import { Component, input } from '@angular/core'
 
 @Component({
 	selector: 'app-countdown',
-  imports: [
-    DecimalPipe,
-  ],
+	imports: [DecimalPipe],
 	templateUrl: './countdown.component.html',
 	styleUrl: './countdown.component.scss',
 })

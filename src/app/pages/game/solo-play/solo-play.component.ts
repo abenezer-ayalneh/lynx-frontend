@@ -57,6 +57,10 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 
 	wrongGuessAudio = new Audio()
 
+	private stateChangeHandler: ((state: SoloPlayRoomState) => void) | null = null
+
+	private room: Room<SoloPlayRoomState> | null = null
+
 	protected readonly PageState = RequestState
 
 	protected readonly GameType = GameType
@@ -91,7 +95,37 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.subscriptions.unsubscribe()
-		this.colyseusService.leaveRoom()
+		this.cleanupRoom()
+		this.cleanupAudio()
+	}
+
+	private cleanupRoom() {
+		// Use the component's own room reference instead of the service's current room
+		// This ensures we only clean up the room this component created
+		if (this.room) {
+			// Remove state change handler if it exists
+			if (this.stateChangeHandler) {
+				// Colyseus doesn't provide direct removal, but leaving the room cleans up all handlers
+				this.stateChangeHandler = null
+			}
+			// Only leave if this is still the current room in the service
+			// If another component has set a different room, we should still clean up our own room
+			if (this.colyseusService.room === this.room) {
+				this.colyseusService.leaveRoom()
+			} else {
+				// If the service has a different room, just leave our room directly
+				this.room.leave()
+			}
+			this.room = null
+		}
+	}
+
+	private cleanupAudio() {
+		if (this.wrongGuessAudio) {
+			this.wrongGuessAudio.pause()
+			this.wrongGuessAudio.src = ''
+			this.wrongGuessAudio.load()
+		}
 	}
 
 	@HostListener('window:keydown.enter', ['$event'])
@@ -125,9 +159,12 @@ export class SoloPlayComponent implements OnInit, OnDestroy {
 				gameType: game.type,
 			})
 			.then((soloPlayRoomStateRoom: Room<SoloPlayRoomState>) => {
+				// Store the room reference in this component
+				this.room = soloPlayRoomStateRoom
 				this.colyseusService.setRoom = soloPlayRoomStateRoom
 				this.subscribeToColyseusMessages(soloPlayRoomStateRoom)
-				soloPlayRoomStateRoom.onStateChange((state) => this.roomState.set(state))
+				this.stateChangeHandler = (state) => this.roomState.set(state)
+				soloPlayRoomStateRoom.onStateChange(this.stateChangeHandler)
 				this.pageState.set(RequestState.READY)
 			})
 			.catch(() => this.pageState.set(RequestState.ERROR))

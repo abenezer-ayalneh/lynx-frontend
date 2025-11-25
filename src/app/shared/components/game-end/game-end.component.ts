@@ -1,4 +1,4 @@
-import { Component, input, OnInit, output } from '@angular/core'
+import { Component, input, OnDestroy, OnInit, output } from '@angular/core'
 import { Router } from '@angular/router'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
@@ -15,7 +15,7 @@ import { ButtonType } from '../button/enums/button.enum'
 	templateUrl: './game-end.component.html',
 	styleUrl: './game-end.component.scss',
 })
-export class GameEndComponent implements OnInit {
+export class GameEndComponent implements OnInit, OnDestroy {
 	totalScore = input.required<Map<string, Score>>()
 
 	gameType = input.required<GameType>()
@@ -47,6 +47,18 @@ export class GameEndComponent implements OnInit {
 
 	ngOnInit() {
 		this.endOfGameAudio.play()
+	}
+
+	ngOnDestroy() {
+		this.cleanupAudio()
+	}
+
+	private cleanupAudio() {
+		if (this.endOfGameAudio) {
+			this.endOfGameAudio.pause()
+			this.endOfGameAudio.src = ''
+			this.endOfGameAudio.load()
+		}
 	}
 
 	/**

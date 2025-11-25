@@ -27,6 +27,10 @@ export class ColyseusService {
 	}
 
 	set setRoom(room: Room | null) {
+		// Clean up the previous room before setting a new one
+		if (this.#room && this.#room !== room) {
+			this.#room.leave()
+		}
 		this.#room = room
 	}
 
@@ -40,7 +44,10 @@ export class ColyseusService {
 	}
 
 	leaveRoom() {
-		this.room?.leave()
+		if (this.#room) {
+			this.#room.leave()
+			this.#room = null
+		}
 	}
 
 	pauseGame() {
