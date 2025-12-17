@@ -32,6 +32,7 @@
     "@livekit/components-react": "^2.9.9",
     "@livekit/components-styles": "^1.1.6",
     "@ngrx/signals": "^19.2.1",
+    "better-auth": "^1.4.7",
     "colyseus.js": "^0.15.26",
     "date-fns": "^4.1.0",
     "livekit-client": "^2.13.3",

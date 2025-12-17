@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
+import { createAuthClient } from 'better-auth/client'
 
+import { environment } from '../../../environments/environment'
 import { Player } from '../../shared/models/player.model'
 import { PlayerService } from '../../shared/services/player.service'
 import { TokenService } from '../../shared/services/token.service'
@@ -12,15 +14,21 @@ import { RegisterRequest } from './register/types/register.type'
 	providedIn: 'root',
 })
 export class AuthService {
+	private authClient
+
 	constructor(
 		private readonly httpClient: HttpClient,
 		private readonly tokenService: TokenService,
 		private readonly router: Router,
 		private readonly playerService: PlayerService,
-	) {}
+	) {
+		this.authClient = createAuthClient({
+			baseURL: `${environment.apiUrl}/authentication`,
+		})
+	}
 
-	register(registerRequest: RegisterRequest) {
-		return this.httpClient.post<void>('authentication/sign-up', registerRequest)
+	register(registerRequest: RegisterRequest, callbackURL?: string) {
+		return this.authClient.signUp.email({ ...registerRequest, callbackURL })
 	}
 
 	login(loginRequest: LoginRequest) {

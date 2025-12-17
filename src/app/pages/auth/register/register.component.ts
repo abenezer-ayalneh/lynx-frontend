@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router'
 import { ButtonComponent } from '../../../shared/components/button/button.component'
 import { ButtonType } from '../../../shared/components/button/enums/button.enum'
 import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
+import { SnackbarService } from '../../../shared/services/snackbar.service'
 import { MatchValidator } from '../../../shared/validators/match-validator'
 import { AuthService } from '../auth.service'
 import { RegisterRequest } from './types/register.type'
@@ -31,6 +32,7 @@ export class RegisterComponent {
 	constructor(
 		private readonly authService: AuthService,
 		private readonly router: Router,
+		private readonly snackbarService: SnackbarService,
 	) {}
 
 	get formControls() {
@@ -46,11 +48,21 @@ export class RegisterComponent {
 				confirmPassword: this.registerFormGroup.value.confirmPassword!,
 			}
 
-			this.authService.register(registerRequest).subscribe({
-				next: async () => {
-					await this.router.navigateByUrl('auth/login')
-				},
-			})
+			this.authService
+				.register(registerRequest, 'home')
+				.then(async ({ error, data }) => {
+					console.log({ error, data })
+
+					// TODO: either redirect to home or to an email verification page
+					if (error) {
+						this.snackbarService.showSnackbar(error.message ?? 'Something went wrong. Please try again later.')
+					} else if (data) {
+						await this.router.navigateByUrl('auth/login')
+					}
+				})
+				.catch((error) => {
+					console.error({ error })
+				})
 		}
 	}
 }
