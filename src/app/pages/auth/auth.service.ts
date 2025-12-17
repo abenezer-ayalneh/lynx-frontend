@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment'
 import { Player } from '../../shared/models/player.model'
 import { PlayerService } from '../../shared/services/player.service'
 import { TokenService } from '../../shared/services/token.service'
-import { LoginRequest, LoginResponse } from './login/types/login.type'
+import { LoginRequest } from './login/types/login.type'
 import { RegisterRequest } from './register/types/register.type'
 
 @Injectable({
@@ -32,7 +32,7 @@ export class AuthService {
 	}
 
 	login(loginRequest: LoginRequest) {
-		return this.httpClient.post<LoginResponse>('authentication/sign-in', loginRequest)
+		return this.authClient.signIn.email(loginRequest)
 	}
 
 	async logOut() {

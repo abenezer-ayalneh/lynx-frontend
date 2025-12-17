@@ -1,7 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
-import { finalize, tap } from 'rxjs'
 
 import { ButtonComponent } from '../../../shared/components/button/button.component'
 import { ButtonType } from '../../../shared/components/button/enums/button.enum'
@@ -59,18 +58,10 @@ export class LoginComponent implements OnInit {
 				password: this.loginFormGroup.value.password!,
 			}
 
-			this.authService
-				.login(loginRequest)
-				.pipe(
-					finalize(() => this.loggingIn.set(false)),
-					tap((loginResponse) => this.tokenService.storeTokens(loginResponse)),
-				)
-				.subscribe({
-					next: async () => {
-						localStorage.removeItem('redirectionUrl')
-						await this.router.navigateByUrl(this.redirectionUrl)
-					},
-				})
+			this.authService.login(loginRequest).then(async () => {
+				localStorage.removeItem('redirectionUrl')
+				await this.router.navigateByUrl(this.redirectionUrl)
+			})
 		}
 	}
 }
