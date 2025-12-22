@@ -138,9 +138,15 @@ export class MultiplayerWrapperComponent implements OnInit, OnDestroy {
 				this.store.setPlayer(playerName)
 			} else {
 				try {
-					const userSession = await firstValueFrom(this.authService.getSession())
-					this.playerService.setPlayer = userSession.user
-					this.store.setPlayer(userSession.user.name)
+					const { data: userSession, error } = await this.authService.getSession()
+					if (userSession) {
+						this.playerService.setPlayer = userSession.user
+						this.store.setPlayer(userSession.user.name)
+					}
+
+					if (error) {
+						throw error
+					}
 				} catch (e) {
 					this.store.setError('Player information not found')
 					console.error(e)

@@ -81,9 +81,13 @@ export class LoginComponent implements OnInit {
 	}
 
 	async loginWithGoogle() {
-		await this.authService.authClient.signIn.social({
-			provider: 'google',
-			callbackURL: `${environment.appUrl}/home`,
-		})
+		this.authService.authClient.signIn
+			.social({
+				provider: 'google',
+				callbackURL: `${environment.appUrl}/home`,
+			})
+			.then(async (response) => {
+				console.log({ response })
+			})
 	}
 }
