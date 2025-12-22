@@ -2,7 +2,6 @@ import { inject } from '@angular/core'
 import { CanActivateFn, RedirectCommand, Router } from '@angular/router'
 
 import { AuthService } from '../../pages/auth/auth.service'
-import { Role } from '../models/player.model'
 import { PlayerService } from '../services/player.service'
 
 export const authGuard: CanActivateFn = async () => {
@@ -12,7 +11,7 @@ export const authGuard: CanActivateFn = async () => {
 	const { data } = await authService.authClient.getSession()
 
 	if (data) {
-		playerService.setPlayer = { ...data.user, id: data.user.id, role: Role.PLAYER, score: 0 }
+		playerService.setPlayer = data.user
 		return true
 	}
 
