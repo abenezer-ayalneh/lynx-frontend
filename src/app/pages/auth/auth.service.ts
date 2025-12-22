@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
 import { createAuthClient } from 'better-auth/client'
+import { adminClient, inferAdditionalFields } from 'better-auth/client/plugins'
 
 import { environment } from '../../../environments/environment'
 import { UserSession } from '../../shared/interfaces/session.interface'
@@ -35,6 +36,23 @@ export class AuthService {
 					token: () => this.tokenService.getAccessToken() || '', // get the token from localStorage
 				},
 			},
+			plugins: [
+				adminClient(),
+				inferAdditionalFields({
+					user: {
+						score: {
+							type: 'number',
+							required: true,
+							defaultValue: 0,
+						},
+						role: {
+							type: 'string',
+							required: true,
+							defaultValue: 'user',
+						},
+					},
+				}),
+			],
 		})
 	}
 
