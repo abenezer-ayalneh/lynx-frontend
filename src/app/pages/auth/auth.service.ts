@@ -4,7 +4,6 @@ import { Router } from '@angular/router'
 import { createAuthClient } from 'better-auth/client'
 import { adminClient, inferAdditionalFields } from 'better-auth/client/plugins'
 
-import { environment } from '../../../environments/environment'
 import { UserSession } from '../../shared/interfaces/session.interface'
 import { TokenService } from '../../shared/services/token.service'
 import { LoginRequest } from './login/types/login.type'
@@ -22,13 +21,15 @@ export class AuthService {
 		private readonly tokenService: TokenService,
 	) {
 		this.authClient = createAuthClient({
-			baseURL: `${environment.apiUrl}/authentication`,
+			baseURL: 'http://localhost:4000',
 			fetchOptions: {
 				onSuccess: (ctx) => {
-					const authToken = ctx.response.headers.get('set-auth-token') ?? (ctx.data.token as string) // get the token from the response headers or response data
-					// Store the token securely
-					if (authToken) {
-						this.tokenService.storeToken(authToken)
+					if (ctx.data) {
+						const authToken = ctx.response.headers.get('set-auth-token') ?? (ctx.data?.token as string) // get the token from the response headers or response data
+						// Store the token securely
+						if (authToken) {
+							this.tokenService.storeToken(authToken)
+						}
 					}
 				},
 				auth: {

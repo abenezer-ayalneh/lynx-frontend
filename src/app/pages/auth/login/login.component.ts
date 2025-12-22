@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
 
+import { environment } from '../../../../environments/environment'
 import { ButtonComponent } from '../../../shared/components/button/button.component'
 import { ButtonType } from '../../../shared/components/button/enums/button.enum'
 import { LoadingComponent } from '../../../shared/components/loading/loading.component'
@@ -77,5 +78,12 @@ export class LoginComponent implements OnInit {
 					this.loggingIn.set(false)
 				})
 		}
+	}
+
+	async loginWithGoogle() {
+		await this.authService.authClient.signIn.social({
+			provider: 'google',
+			callbackURL: `${environment.appUrl}/home`,
+		})
 	}
 }
