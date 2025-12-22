@@ -4,7 +4,6 @@ import { Router } from '@angular/router'
 import { createAuthClient } from 'better-auth/client'
 import { adminClient, inferAdditionalFields } from 'better-auth/client/plugins'
 
-import { UserSession } from '../../shared/interfaces/session.interface'
 import { TokenService } from '../../shared/services/token.service'
 import { LoginRequest } from './login/types/login.type'
 import { RegisterRequest } from './register/types/register.type'
@@ -70,7 +69,8 @@ export class AuthService {
 		await this.router.navigateByUrl('auth/login')
 	}
 
-	getSession() {
-		return this.httpClient.get<UserSession>('authentication/get-session')
+	async getSession() {
+		return this.authClient.getSession()
+		// return this.httpClient.get<UserSession>('auth/get-session')
 	}
 }

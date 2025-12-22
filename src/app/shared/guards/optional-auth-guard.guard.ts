@@ -1,6 +1,5 @@
 import { inject } from '@angular/core'
 import { CanActivateFn } from '@angular/router'
-import { lastValueFrom } from 'rxjs'
 
 import { AuthService } from '../../pages/auth/auth.service'
 import { PlayerService } from '../services/player.service'
@@ -15,8 +14,11 @@ export const optionalAuthGuardGuard: CanActivateFn = async () => {
 	if (accessToken) {
 		if (!playerService.getPlayer.getValue()) {
 			try {
-				const userSession = await lastValueFrom(authService.getSession())
-				playerService.setPlayer = userSession.user
+				const { data: userSession } = await authService.getSession()
+
+				if (userSession) {
+					playerService.setPlayer = userSession.user
+				}
 			} catch (e) {
 				console.error(e)
 			}
