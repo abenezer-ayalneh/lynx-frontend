@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 
-import { LoginResponse } from '../../pages/auth/login/types/login.type'
 
 @Injectable({
 	providedIn: 'root',
@@ -13,13 +12,11 @@ export class TokenService {
 		return localStorage.getItem('accessToken')
 	}
 
-	storeTokens(loginResponse: LoginResponse) {
-		localStorage.setItem('accessToken', loginResponse.accessToken)
-		localStorage.setItem('refreshToken', loginResponse.refreshToken)
+	storeToken(accessToken: string) {
+		localStorage.setItem('accessToken', accessToken)
 	}
 
 	clearTokens() {
 		localStorage.removeItem('accessToken')
-		localStorage.removeItem('refreshToken')
 	}
 }

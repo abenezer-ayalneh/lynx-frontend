@@ -1,15 +1,15 @@
 export interface CreateRoomDto {
 	name: string
 
-	room_id: string
+	roomId: string
 
-	invite_text: string
+	inviteText: string
 
 	emails: string[]
 
 	status?: boolean
 
-	max_players?: number
+	maxPlayers?: number
 
 	rounds?: number
 }

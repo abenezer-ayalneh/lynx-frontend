@@ -3,7 +3,7 @@ import { Word } from './word.type'
 
 export interface MultiplayerRoomState {
 	gameId: number
-	ownerId: number
+	ownerId: string
 	startTime: string
 	players: MultiplayerRoomPlayer[]
 	round: number

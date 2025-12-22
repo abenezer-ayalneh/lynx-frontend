@@ -21,7 +21,7 @@ const initialState: MultiplayerState = {
 	error: null,
 	scheduledGame: null,
 	gameId: 0,
-	ownerId: 0,
+	ownerId: '',
 	startTime: '',
 	round: 0,
 	time: 0,
@@ -54,7 +54,7 @@ export const MultiplayerStore = signalStore(
 		},
 
 		setScheduledGame: (scheduledGame: ScheduledGame | null) => {
-			patchState(store, (state) => ({ ...state, scheduledGame, startTime: scheduledGame?.start_time, ownerId: scheduledGame?.Owner?.id }))
+			patchState(store, (state) => ({ ...state, scheduledGame, startTime: scheduledGame?.startTime, ownerId: scheduledGame?.owner?.id }))
 		},
 
 		setPageState: (pageState: RequestState) => {

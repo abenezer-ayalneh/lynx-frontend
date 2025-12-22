@@ -6,6 +6,7 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
 import { ButtonType } from '../../../shared/components/button/enums/button.enum'
 import { LoadingComponent } from '../../../shared/components/loading/loading.component'
 import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
+import { SnackbarService } from '../../../shared/services/snackbar.service'
 import { TokenService } from '../../../shared/services/token.service'
 import { AuthService } from '../auth.service'
 import { LoginRequest } from './types/login.type'
@@ -34,6 +35,7 @@ export class LoginComponent implements OnInit {
 		private readonly authService: AuthService,
 		private readonly router: Router,
 		private readonly tokenService: TokenService,
+		private readonly snackbarService: SnackbarService,
 	) {}
 
 	get formControls() {
@@ -58,10 +60,22 @@ export class LoginComponent implements OnInit {
 				password: this.loginFormGroup.value.password!,
 			}
 
-			this.authService.login(loginRequest).then(async () => {
-				localStorage.removeItem('redirectionUrl')
-				await this.router.navigateByUrl(this.redirectionUrl)
-			})
+			this.authService
+				.login(loginRequest)
+				.then(async ({ data, error }) => {
+					if (error) {
+						this.snackbarService.showSnackbar(error.message ?? 'Failed to login')
+					} else if (data) {
+						localStorage.removeItem('redirectionUrl')
+						await this.router.navigateByUrl(this.redirectionUrl)
+					}
+				})
+				.catch((error) => {
+					console.error({ error })
+				})
+				.finally(() => {
+					this.loggingIn.set(false)
+				})
 		}
 	}
 }

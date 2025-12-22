@@ -59,11 +59,11 @@ export class WordDialogComponent implements OnInit {
 		if (this.data.type === 'UPDATE' && this.data.word) {
 			this.wordDialogFormGroup.patchValue({
 				key: this.data.word.key,
-				cue1: this.data.word.cue_word_1,
-				cue2: this.data.word.cue_word_2,
-				cue3: this.data.word.cue_word_3,
-				cue4: this.data.word.cue_word_4,
-				cue5: this.data.word.cue_word_5,
+				cue1: this.data.word.cueWord1,
+				cue2: this.data.word.cueWord2,
+				cue3: this.data.word.cueWord3,
+				cue4: this.data.word.cueWord4,
+				cue5: this.data.word.cueWord5,
 				status: this.data.word.status,
 			})
 		}
@@ -73,11 +73,11 @@ export class WordDialogComponent implements OnInit {
 		this.saveButtonStatus.set(RequestState.LOADING)
 		const word: CreateWordDto = {
 			key: this.formControls.key.value,
-			cue_word_1: this.formControls.cue1.value,
-			cue_word_2: this.formControls.cue2.value,
-			cue_word_3: this.formControls.cue3.value,
-			cue_word_4: this.formControls.cue4.value,
-			cue_word_5: this.formControls.cue5.value,
+			cueWord1: this.formControls.cue1.value,
+			cueWord2: this.formControls.cue2.value,
+			cueWord3: this.formControls.cue3.value,
+			cueWord4: this.formControls.cue4.value,
+			cueWord5: this.formControls.cue5.value,
 			status: this.formControls.status.value,
 		}
 

@@ -15,7 +15,8 @@ export const optionalAuthGuardGuard: CanActivateFn = async () => {
 	if (accessToken) {
 		if (!playerService.getPlayer.getValue()) {
 			try {
-				playerService.setPlayer = await lastValueFrom(authService.checkToken())
+				const userSession = await lastValueFrom(authService.getSession())
+				playerService.setPlayer = userSession.user
 			} catch (e) {
 				console.error(e)
 			}

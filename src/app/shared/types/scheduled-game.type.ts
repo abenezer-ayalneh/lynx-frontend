@@ -2,20 +2,20 @@ import { Player } from '../models/player.model'
 
 export interface ScheduledGameCore {
 	id: number
-	invitation_text: string
-	invited_emails: string[]
-	room_id: string
+	invitationText: string
+	invitedEmails: string[]
+	roomId: string
 	type: ScheduledGameType
-	start_time: string
-	max_players: number
+	startTime: string
+	maxPlayers: number
 	rounds: number
 	status: ScheduledGameStatus
-	created_by: number
-	created_at: string
-	updated_at: string
-	deleted_at: string
+	createdBy: number
+	createdAt: string
+	updatedAt: string
+	deletedAt: string
 
-	Owner: Player
+	owner: Player
 }
 
 export type ScheduledGame = Partial<ScheduledGameCore>

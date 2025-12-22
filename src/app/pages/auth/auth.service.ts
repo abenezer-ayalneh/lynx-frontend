@@ -4,8 +4,7 @@ import { Router } from '@angular/router'
 import { createAuthClient } from 'better-auth/client'
 
 import { environment } from '../../../environments/environment'
-import { Player } from '../../shared/models/player.model'
-import { PlayerService } from '../../shared/services/player.service'
+import { UserSession } from '../../shared/interfaces/session.interface'
 import { TokenService } from '../../shared/services/token.service'
 import { LoginRequest } from './login/types/login.type'
 import { RegisterRequest } from './register/types/register.type'
@@ -14,16 +13,28 @@ import { RegisterRequest } from './register/types/register.type'
 	providedIn: 'root',
 })
 export class AuthService {
-	private authClient
+	authClient
 
 	constructor(
 		private readonly httpClient: HttpClient,
-		private readonly tokenService: TokenService,
 		private readonly router: Router,
-		private readonly playerService: PlayerService,
+		private readonly tokenService: TokenService,
 	) {
 		this.authClient = createAuthClient({
 			baseURL: `${environment.apiUrl}/authentication`,
+			fetchOptions: {
+				onSuccess: (ctx) => {
+					const authToken = ctx.response.headers.get('set-auth-token') ?? (ctx.data.token as string) // get the token from the response headers or response data
+					// Store the token securely
+					if (authToken) {
+						this.tokenService.storeToken(authToken)
+					}
+				},
+				auth: {
+					type: 'Bearer',
+					token: () => this.tokenService.getAccessToken() || '', // get the token from localStorage
+				},
+			},
 		})
 	}
 
@@ -36,12 +47,11 @@ export class AuthService {
 	}
 
 	async logOut() {
-		this.tokenService.clearTokens()
-		this.playerService.clearPlayer()
+		await this.authClient.signOut()
 		await this.router.navigateByUrl('auth/login')
 	}
 
-	checkToken() {
-		return this.httpClient.get<Player>('authentication/check-token')
+	getSession() {
+		return this.httpClient.get<UserSession>('authentication/get-session')
 	}
 }

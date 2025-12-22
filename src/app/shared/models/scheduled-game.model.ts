@@ -1,18 +1,18 @@
 export interface ScheduledGame {
 	id: number
-	invitation_text: string
-	invited_emails: string[]
-	accepted_emails: string[]
-	start_time: string
-	max_players: number
+	invitationText: string
+	invitedEmails: string[]
+	acceptedEmails: string[]
+	startTime: string
+	maxPlayers: number
 	rounds: number
-	room_id: number // This will be updated every time a game that has not be concluded creates a different colyseus room
+	roomId: number // This will be updated every time a game that has not be concluded creates a different colyseus room
 	status: ScheduledGameStatus
-	created_by: number
+	createdBy: number
 	reminder: ScheduledGameReminder
-	created_at: string
-	updated_at: string
-	deleted_at: string
+	createdAt: string
+	updatedAt: string
+	deletedAt: string
 }
 
 enum ScheduledGameStatus {
