@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core'
+import { Component, computed, inject, OnDestroy,signal } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
@@ -7,6 +7,7 @@ import { GameStartCountdownComponent } from '../../shared/components/game-start-
 import { START_GAME } from '../../shared/constants/colyseus-message.constant'
 import { PlayerService } from '../../shared/services/player.service'
 import { MultiplayerStore } from '../../states/stores/multiplayer.store'
+import { MultiplayerService } from '../game/multiplayer/multiplayer.service'
 
 @Component({
 	selector: 'app-lobby',
@@ -14,7 +15,7 @@ import { MultiplayerStore } from '../../states/stores/multiplayer.store'
 	templateUrl: './lobby.component.html',
 	styleUrl: './lobby.component.scss',
 })
-export class LobbyComponent {
+export class LobbyComponent implements OnDestroy {
 	readonly store = inject(MultiplayerStore)
 
 	countdownEnded = signal<boolean>(false)
@@ -25,9 +26,14 @@ export class LobbyComponent {
 
 	error: string | null = null
 
-	protected readonly isNaN = isNaN
+	constructor(
+		private readonly playerService: PlayerService,
+		private readonly multiplayerService: MultiplayerService,
+	) {}
 
-	constructor(private readonly playerService: PlayerService) {}
+	ngOnDestroy(): void {
+		this.multiplayerService.sessionScore.set(undefined)
+	}
 
 	startGame() {
 		if (this.playerService.getPlayer.getValue()?.id && this.store.scheduledGame()?.id) {

@@ -138,9 +138,9 @@ export class MultiplayerWrapperComponent implements OnInit, OnDestroy {
 				this.store.setPlayer(playerName)
 			} else {
 				try {
-					const player = await firstValueFrom(this.authService.checkToken())
-					this.playerService.setPlayer = player
-					this.store.setPlayer(player.name)
+					const userSession = await firstValueFrom(this.authService.getSession())
+					this.playerService.setPlayer = userSession.user
+					this.store.setPlayer(userSession.user.name)
 				} catch (e) {
 					this.store.setError('Player information not found')
 					console.error(e)
@@ -159,10 +159,10 @@ export class MultiplayerWrapperComponent implements OnInit, OnDestroy {
 		if (gameId && playerName) {
 			firstValueFrom(this.multiplayerService.getScheduledGameById(gameId)).then((game) => {
 				this.store.setScheduledGame(game)
-				if (game.room_id) {
+				if (game.roomId) {
 					this.colyseusService.getClient.auth.token = playerName
 					this.colyseusService.getClient
-						.joinById<MultiplayerRoomState>(game.room_id, { gameId })
+						.joinById<MultiplayerRoomState>(game.roomId, { gameId })
 						.then(async (room) => {
 							// Store the room reference in this component
 							this.room = room

@@ -59,11 +59,11 @@ export class WordDialogComponent implements OnInit {
 		if (this.data.type === 'UPDATE' && this.data.word) {
 			this.wordDialogFormGroup.patchValue({
 				key: this.data.word.key,
-				cue1: this.data.word.cue_word_1,
-				cue2: this.data.word.cue_word_2,
-				cue3: this.data.word.cue_word_3,
-				cue4: this.data.word.cue_word_4,
-				cue5: this.data.word.cue_word_5,
+				cue1: this.data.word.cueWord1,
+				cue2: this.data.word.cueWord2,
+				cue3: this.data.word.cueWord3,
+				cue4: this.data.word.cueWord4,
+				cue5: this.data.word.cueWord5,
 				status: this.data.word.status,
 			})
 		}

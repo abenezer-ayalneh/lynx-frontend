@@ -113,9 +113,9 @@ export class CreateMultiplayerGameComponent implements OnInit {
 			this.multiplayerService
 				.createScheduledGame({
 					emails: this.createMultiplayerGameFormGroup.controls.emails.value,
-					invitation_text: this.createMultiplayerGameFormGroup.controls.invitationText.value,
+					invitationText: this.createMultiplayerGameFormGroup.controls.invitationText.value,
 					gameScheduleType: gameType,
-					start_time: this.createMultiplayerGameFormGroup.controls.gameDateAndTime.value,
+					startTime: this.createMultiplayerGameFormGroup.controls.gameDateAndTime.value,
 					timezone: this.createMultiplayerGameFormGroup.controls.timezone.value,
 				})
 				.pipe(finalize(() => this.isCreatingGame.set(false)))
