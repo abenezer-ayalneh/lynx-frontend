@@ -17,17 +17,17 @@ export const httpErrorsInterceptor: HttpInterceptorFn = (req, next) => {
 					snackbarService.showSnackbar('Error: Check your connection!')
 				} else if (caughtError.status === 401) {
 					tokenService.clearTokens()
-					if (caughtError.error.data.message) snackbarService.showSnackbar(caughtError.error.data.message)
+					if (caughtError.error.message) snackbarService.showSnackbar(caughtError.error.message)
 					// if (router.routerState.snapshot.url !== '/auth/login') {
 					// 	window.location.assign('/auth/login')
 					// }
 				} else {
 					const backendError = caughtError.error as FilterResponseInterface
 
-					if (typeof backendError.data === 'object' && typeof (backendError.data as Record<string, string>)['message'] === 'string') {
-						snackbarService.showSnackbar((backendError.data as Record<string, string>)['message'])
-					} else if (backendError.error) {
-						snackbarService.showSnackbar(backendError.error)
+					if (typeof backendError.details === 'object' && typeof (backendError.details as Record<string, string>)['message'] === 'string') {
+						snackbarService.showSnackbar((backendError.details as Record<string, string>)['message'])
+					} else if (backendError.message) {
+						snackbarService.showSnackbar(backendError.message)
 					} else {
 						snackbarService.showSnackbar('Unexpected error occurred. Please try again.')
 					}
