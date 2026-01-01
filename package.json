@@ -51,7 +51,6 @@
     "@types/jasmine": "~5.1.0",
     "angular-eslint": "19.3.0",
     "autoprefixer": "^10.4.20",
-    "commitizen": "^4.3.1",
     "commitlint": "^19.6.1",
     "cz-conventional-changelog": "^3.3.0",
     "daisyui": "^4.12.23",
@@ -72,10 +71,5 @@
     "tailwindcss": "^3.4.17",
     "typescript": "~5.6.2",
     "typescript-eslint": "8.18.0"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   }
 }
