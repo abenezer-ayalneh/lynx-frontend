@@ -72,12 +72,12 @@ export class WordDialogComponent implements OnInit {
 	wordDialogFormSubmit() {
 		this.saveButtonStatus.set(RequestState.LOADING)
 		const word: CreateWordDto = {
-			key: this.formControls.key.value,
-			cue_word_1: this.formControls.cue1.value,
-			cue_word_2: this.formControls.cue2.value,
-			cue_word_3: this.formControls.cue3.value,
-			cue_word_4: this.formControls.cue4.value,
-			cue_word_5: this.formControls.cue5.value,
+			key: this.formControls.key.value.toUpperCase(),
+			cue_word_1: this.formControls.cue1.value.toUpperCase(),
+			cue_word_2: this.formControls.cue2.value.toUpperCase(),
+			cue_word_3: this.formControls.cue3.value.toUpperCase(),
+			cue_word_4: this.formControls.cue4.value.toUpperCase(),
+			cue_word_5: this.formControls.cue5.value.toUpperCase(),
 			status: this.formControls.status.value,
 		}
 
