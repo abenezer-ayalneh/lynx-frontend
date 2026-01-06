@@ -48,13 +48,14 @@ export class WordsComponent implements OnInit, AfterViewInit {
 			(entries) => {
 				entries.forEach((entry) => {
 					if (this.pageState() === RequestState.READY && this.wordsService.words.length >= WORDS_PER_INFINITY_LOAD && entry.isIntersecting) {
+						const currentSearchQuery = this.searchControl.value || undefined
 						if (this.sortState() !== 'none') {
 							// When sorting is active, use offset-based pagination
 							const currentOffset = this.offset()
-							this.fetchWords({ offset: currentOffset, sort: this.getSortParameter() })
+							this.fetchWords({ offset: currentOffset, sort: this.getSortParameter(), searchQuery: currentSearchQuery })
 						} else {
 							// When sorting is inactive, use cursor-based pagination
-							this.fetchWords({ lastWordId: this.wordsService.words[this.wordsService.words.length - 1]?.id })
+							this.fetchWords({ lastWordId: this.wordsService.words[this.wordsService.words.length - 1]?.id, searchQuery: currentSearchQuery })
 						}
 					}
 				})
@@ -86,12 +87,13 @@ export class WordsComponent implements OnInit, AfterViewInit {
 		}
 		// Reset offset when sort changes
 		this.offset.set(0)
-		// Fetch words with new sort state
+		// Fetch words with new sort state, preserving current search query
 		const sortParam = this.getSortParameter()
+		const currentSearchQuery = this.searchControl.value || undefined
 		if (sortParam) {
-			this.fetchWords({ sort: sortParam, offset: 0, clearData: true })
+			this.fetchWords({ sort: sortParam, offset: 0, searchQuery: currentSearchQuery, clearData: true })
 		} else {
-			this.fetchWords({ clearData: true })
+			this.fetchWords({ searchQuery: currentSearchQuery, clearData: true })
 		}
 	}
 
@@ -136,13 +138,16 @@ export class WordsComponent implements OnInit, AfterViewInit {
 	private subscribeToSearch() {
 		this.searchControl.valueChanges.pipe(debounce(() => interval(DEBOUNCE_DELAY))).subscribe({
 			next: (searchQuery) => {
-				// Reset sort and offset when search changes
-				this.sortState.set('none')
+				// Reset offset when search changes, but preserve sort state
 				this.offset.set(0)
-				if (searchQuery) {
-					this.fetchWords({ searchQuery, clearData: true })
+				const sortParam = this.getSortParameter()
+				const searchQueryValue = searchQuery || undefined
+				if (sortParam) {
+					// If sorting is active, use offset-based pagination
+					this.fetchWords({ searchQuery: searchQueryValue, sort: sortParam, offset: 0, clearData: true })
 				} else {
-					this.fetchWords({ clearData: true })
+					// If sorting is inactive, use cursor-based pagination
+					this.fetchWords({ searchQuery: searchQueryValue, clearData: true })
 				}
 			},
 		})
