@@ -4,4 +4,6 @@ export default interface FindAllWordsDto {
 	searchQuery?: string
 
 	sort?: string
+
+	offset?: number
 }

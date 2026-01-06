@@ -18,7 +18,16 @@
 		<table class="table text-white">
 			<thead class="bg-my-burgundy sticky top-0 z-[1]">
 				<tr class="text-lg">
-					<th>Key</th>
+					<th (click)="toggleSort()" class="cursor-pointer hover:opacity-80 select-none">
+						<div class="flex items-center gap-2">
+							<span>Key</span>
+							@if (sortState() === 'asc') {
+								<mat-icon class="text-sm">arrow_upward</mat-icon>
+							} @else if (sortState() === 'desc') {
+								<mat-icon class="text-sm">arrow_downward</mat-icon>
+							}
+						</div>
+					</th>
 					<th>Cue 1</th>
 					<th>Cue 2</th>
 					<th>Cue 3</th>

@@ -24,6 +24,10 @@ import { WordsService } from './words.service'
 export class WordsComponent implements OnInit, AfterViewInit {
 	pageState = signal<RequestState>(RequestState.LOADING)
 
+	sortState = signal<'none' | 'asc' | 'desc'>('none')
+
+	offset = signal<number>(0)
+
 	intersectionRoot = viewChild.required<ElementRef<HTMLDivElement>>('intersectionRoot')
 
 	intersectionTarget = viewChild.required<ElementRef<HTMLDivElement>>('intersectionTarget')
@@ -44,7 +48,14 @@ export class WordsComponent implements OnInit, AfterViewInit {
 			(entries) => {
 				entries.forEach((entry) => {
 					if (this.pageState() === RequestState.READY && this.wordsService.words.length >= WORDS_PER_INFINITY_LOAD && entry.isIntersecting) {
-						this.fetchWords({ lastWordId: this.wordsService.words[this.wordsService.words.length - 1]?.id })
+						if (this.sortState() !== 'none') {
+							// When sorting is active, use offset-based pagination
+							const currentOffset = this.offset()
+							this.fetchWords({ offset: currentOffset, sort: this.getSortParameter() })
+						} else {
+							// When sorting is inactive, use cursor-based pagination
+							this.fetchWords({ lastWordId: this.wordsService.words[this.wordsService.words.length - 1]?.id })
+						}
 					}
 				})
 			},
@@ -64,12 +75,59 @@ export class WordsComponent implements OnInit, AfterViewInit {
 		this.wordsService.openEditWordDialog(word)
 	}
 
-	private fetchWords({ lastWordId, searchQuery, sort, clearData = false }: FindAllWordsDto & { clearData?: boolean }) {
+	toggleSort() {
+		const currentState = this.sortState()
+		if (currentState === 'none') {
+			this.sortState.set('asc')
+		} else if (currentState === 'asc') {
+			this.sortState.set('desc')
+		} else {
+			this.sortState.set('none')
+		}
+		// Reset offset when sort changes
+		this.offset.set(0)
+		// Fetch words with new sort state
+		const sortParam = this.getSortParameter()
+		if (sortParam) {
+			this.fetchWords({ sort: sortParam, offset: 0, clearData: true })
+		} else {
+			this.fetchWords({ clearData: true })
+		}
+	}
+
+	private getSortParameter(): string | undefined {
+		const state = this.sortState()
+		if (state === 'none') {
+			return undefined
+		}
+		return `key:${state}`
+	}
+
+	private fetchWords({ lastWordId, searchQuery, sort, offset, clearData = false }: FindAllWordsDto & { clearData?: boolean }) {
 		this.pageState.set(RequestState.LOADING)
-		this.wordsService.fetchWords({ lastWordId, searchQuery, sort }).subscribe({
+
+		// Build request object based on whether sorting is active
+		const request: FindAllWordsDto = {}
+		if (sort) {
+			request.sort = sort
+			request.offset = offset ?? 0
+		} else {
+			if (lastWordId !== undefined) {
+				request.lastWordId = lastWordId
+			}
+		}
+		if (searchQuery !== undefined) {
+			request.searchQuery = searchQuery
+		}
+
+		this.wordsService.fetchWords(request).subscribe({
 			next: (words) => {
 				this.pageState.set(words.length > 0 ? RequestState.READY : RequestState.EMPTY)
 				this.wordsService.setWords = clearData ? words : [...this.wordsService.words, ...words]
+				// Increment offset after successful fetch when sorting is active and not clearing data
+				if (sort && !clearData && words.length > 0) {
+					this.offset.set((offset ?? 0) + words.length)
+				}
 			},
 			error: () => this.pageState.set(RequestState.ERROR),
 		})
@@ -78,6 +136,9 @@ export class WordsComponent implements OnInit, AfterViewInit {
 	private subscribeToSearch() {
 		this.searchControl.valueChanges.pipe(debounce(() => interval(DEBOUNCE_DELAY))).subscribe({
 			next: (searchQuery) => {
+				// Reset sort and offset when search changes
+				this.sortState.set('none')
+				this.offset.set(0)
 				if (searchQuery) {
 					this.fetchWords({ searchQuery, clearData: true })
 				} else {
