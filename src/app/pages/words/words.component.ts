@@ -126,8 +126,8 @@ export class WordsComponent implements OnInit, AfterViewInit {
 			next: (words) => {
 				this.pageState.set(words.length > 0 ? RequestState.READY : RequestState.EMPTY)
 				this.wordsService.setWords = clearData ? words : [...this.wordsService.words, ...words]
-				// Increment offset after successful fetch when sorting is active and not clearing data
-				if (sort && !clearData && words.length > 0) {
+				// Update offset after successful fetch when sorting is active
+				if (sort) {
 					this.offset.set((offset ?? 0) + words.length)
 				}
 			},
