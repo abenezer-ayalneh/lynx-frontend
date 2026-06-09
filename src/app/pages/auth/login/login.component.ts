@@ -1,12 +1,13 @@
 import { Component, OnInit, signal } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
-import { finalize, tap } from 'rxjs'
 
+import { environment } from '../../../../environments/environment'
 import { ButtonComponent } from '../../../shared/components/button/button.component'
 import { ButtonType } from '../../../shared/components/button/enums/button.enum'
 import { LoadingComponent } from '../../../shared/components/loading/loading.component'
 import { TextFieldComponent } from '../../../shared/components/text-field/text-field.component'
+import { SnackbarService } from '../../../shared/services/snackbar.service'
 import { TokenService } from '../../../shared/services/token.service'
 import { AuthService } from '../auth.service'
 import { LoginRequest } from './types/login.type'
@@ -35,6 +36,7 @@ export class LoginComponent implements OnInit {
 		private readonly authService: AuthService,
 		private readonly router: Router,
 		private readonly tokenService: TokenService,
+		private readonly snackbarService: SnackbarService,
 	) {}
 
 	get formControls() {
@@ -61,16 +63,31 @@ export class LoginComponent implements OnInit {
 
 			this.authService
 				.login(loginRequest)
-				.pipe(
-					finalize(() => this.loggingIn.set(false)),
-					tap((loginResponse) => this.tokenService.storeTokens(loginResponse)),
-				)
-				.subscribe({
-					next: async () => {
+				.then(async ({ data, error }) => {
+					if (error) {
+						this.snackbarService.showSnackbar(error.message ?? 'Failed to login')
+					} else if (data) {
 						localStorage.removeItem('redirectionUrl')
 						await this.router.navigateByUrl(this.redirectionUrl)
-					},
+					}
+				})
+				.catch((error) => {
+					console.error({ error })
+				})
+				.finally(() => {
+					this.loggingIn.set(false)
 				})
 		}
+	}
+
+	async loginWithGoogle() {
+		this.authService.authClient.signIn
+			.social({
+				provider: 'google',
+				callbackURL: `${environment.appUrl}/home`,
+			})
+			.then(async (response) => {
+				console.log({ response })
+			})
 	}
 }

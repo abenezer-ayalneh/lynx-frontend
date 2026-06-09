@@ -4,7 +4,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideRouter } from '@angular/router'
 
 import { routes } from './app.routes'
-import { accessTokenInterceptor } from './shared/interceptors/access-token.interceptor'
+import { attachCredentialInterceptor } from './shared/interceptors/attach-credential.interceptor'
 import { baseUrlInterceptor } from './shared/interceptors/base-url.interceptor'
 import { httpErrorsInterceptor } from './shared/interceptors/http-errors.interceptor'
 
@@ -12,8 +12,7 @@ export const appConfig: ApplicationConfig = {
 	providers: [
 		provideZoneChangeDetection({ eventCoalescing: true }),
 		provideRouter(routes),
-		// provideAppInitializer(playerProvider),
-		provideHttpClient(withInterceptors([baseUrlInterceptor, accessTokenInterceptor, httpErrorsInterceptor])),
+		provideHttpClient(withInterceptors([baseUrlInterceptor, attachCredentialInterceptor, httpErrorsInterceptor])),
 		provideAnimationsAsync(),
 	],
 }

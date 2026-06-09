@@ -1,12 +1,12 @@
 export interface Player {
-	id: number
+	id: string
 	name: string
 	email: string
 	score: number
-	role: Role
+	role: string
 }
 
 export enum Role {
-	ADMIN = 'ADMIN',
-	PLAYER = 'PLAYER',
+	ADMIN = 'admin',
+	USER = 'user',
 }

@@ -1,4 +1,4 @@
-# 🎮 Lynx Word Game
+# 🦁 Lynx Word Game 🎮
 
 <div align="center">
 

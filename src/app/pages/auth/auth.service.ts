@@ -1,39 +1,76 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
+import { createAuthClient } from 'better-auth/client'
+import { adminClient, inferAdditionalFields } from 'better-auth/client/plugins'
 
-import { Player } from '../../shared/models/player.model'
-import { PlayerService } from '../../shared/services/player.service'
+import { environment } from '../../../environments/environment'
 import { TokenService } from '../../shared/services/token.service'
-import { LoginRequest, LoginResponse } from './login/types/login.type'
+import { LoginRequest } from './login/types/login.type'
 import { RegisterRequest } from './register/types/register.type'
 
 @Injectable({
 	providedIn: 'root',
 })
 export class AuthService {
+	authClient
+
 	constructor(
 		private readonly httpClient: HttpClient,
-		private readonly tokenService: TokenService,
 		private readonly router: Router,
-		private readonly playerService: PlayerService,
-	) {}
+		private readonly tokenService: TokenService,
+	) {
+		this.authClient = createAuthClient({
+			baseURL: environment.apiUrl.replace(/\/api\/?$/, ''),
+			fetchOptions: {
+				onSuccess: (ctx) => {
+					if (ctx.data) {
+						const authToken = ctx.response.headers.get('set-auth-token') ?? (ctx.data?.token as string) // get the token from the response headers or response data
+						// Store the token securely
+						if (authToken) {
+							this.tokenService.storeToken(authToken)
+						}
+					}
+				},
+				auth: {
+					type: 'Bearer',
+					token: () => this.tokenService.getAccessToken() || '', // get the token from localStorage
+				},
+			},
+			plugins: [
+				adminClient(),
+				inferAdditionalFields({
+					user: {
+						score: {
+							type: 'number',
+							required: true,
+							defaultValue: 0,
+						},
+						role: {
+							type: 'string',
+							required: true,
+							defaultValue: 'user',
+						},
+					},
+				}),
+			],
+		})
+	}
 
-	register(registerRequest: RegisterRequest) {
-		return this.httpClient.post<void>('authentication/sign-up', registerRequest)
+	register(registerRequest: RegisterRequest, callbackURL?: string) {
+		return this.authClient.signUp.email({ ...registerRequest, callbackURL })
 	}
 
 	login(loginRequest: LoginRequest) {
-		return this.httpClient.post<LoginResponse>('authentication/sign-in', loginRequest)
+		return this.authClient.signIn.email(loginRequest)
 	}
 
 	async logOut() {
-		this.tokenService.clearTokens()
-		this.playerService.clearPlayer()
+		await this.authClient.signOut()
 		await this.router.navigateByUrl('auth/login')
 	}
 
-	checkToken() {
-		return this.httpClient.get<Player>('authentication/check-token')
+	async getSession() {
+		return this.authClient.getSession()
 	}
 }

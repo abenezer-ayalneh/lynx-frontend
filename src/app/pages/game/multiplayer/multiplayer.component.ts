@@ -1,7 +1,6 @@
 import { Component, computed, inject, OnDestroy } from '@angular/core'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faExclamation, faMicrophone, faMicrophoneSlash, faPaperPlane, faPause, faPlay, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { Subscription } from 'rxjs'
 
 import { GameEndComponent } from '../../../shared/components/game-end/game-end.component'
 import { GamePlayComponent } from '../../../shared/components/game-play/game-play.component'
@@ -23,8 +22,6 @@ import { MultiplayerService } from './multiplayer.service'
 	styleUrl: './multiplayer.component.scss',
 })
 export class MultiplayerComponent implements OnDestroy {
-	subscriptions$ = new Subscription()
-
 	readonly store = inject(MultiplayerStore)
 
 	isPlayerGameOwner = computed(() => this.store.ownerId() === this.playerService.getPlayer.getValue()?.id)
@@ -47,9 +44,8 @@ export class MultiplayerComponent implements OnDestroy {
 		protected readonly colyseusService: ColyseusService,
 	) {}
 
-	ngOnDestroy() {
+	ngOnDestroy(): void {
 		this.colyseusService.leaveRoom()
-		this.subscriptions$.unsubscribe()
 		this.multiplayerService.sessionScore.set(undefined)
 	}
 
