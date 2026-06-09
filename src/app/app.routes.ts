@@ -1,16 +1,5 @@
 import { Routes } from '@angular/router'
 
-import { EmptyLayoutComponent } from './layouts/empty-layout/empty-layout.component'
-import { MainLayoutComponent } from './layouts/main-layout/main-layout.component'
-import { ForgotPasswordComponent } from './pages/auth/forgot-password/forgot-password.component'
-import { LoginComponent } from './pages/auth/login/login.component'
-import { RegisterComponent } from './pages/auth/register/register.component'
-import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component'
-import { CreateMultiplayerGameComponent } from './pages/game/multiplayer/components/create-multiplayer-game/create-multiplayer-game.component'
-import { MultiplayerWrapperComponent } from './pages/game/multiplayer/components/multiplayer-wrapper/multiplayer-wrapper.component'
-import { SoloPlayComponent } from './pages/game/solo-play/solo-play.component'
-import { HomeComponent } from './pages/home/home.component'
-import { WordsComponent } from './pages/words/words.component'
 import { authGuard } from './shared/guards/auth.guard'
 import { avoidAccidentalRedirectionGuard } from './shared/guards/avoid-accidental-redirection.guard'
 import { optionalAuthGuardGuard } from './shared/guards/optional-auth-guard.guard'
@@ -18,44 +7,44 @@ import { optionalAuthGuardGuard } from './shared/guards/optional-auth-guard.guar
 export const routes: Routes = [
 	{
 		path: 'auth',
-		component: EmptyLayoutComponent,
+		loadComponent: () => import('./layouts/empty-layout/empty-layout.component').then((m) => m.EmptyLayoutComponent),
 		children: [
 			{
 				path: 'login',
-				component: LoginComponent,
+				loadComponent: () => import('./pages/auth/login/login.component').then((m) => m.LoginComponent),
 			},
 			{
 				path: 'register',
-				component: RegisterComponent,
+				loadComponent: () => import('./pages/auth/register/register.component').then((m) => m.RegisterComponent),
 			},
 			{
 				path: 'forgot-password',
-				component: ForgotPasswordComponent,
+				loadComponent: () => import('./pages/auth/forgot-password/forgot-password.component').then((m) => m.ForgotPasswordComponent),
 			},
 			{
 				path: 'reset-password',
-				component: ResetPasswordComponent,
+				loadComponent: () => import('./pages/auth/reset-password/reset-password.component').then((m) => m.ResetPasswordComponent),
 			},
 		],
 	},
 	{
 		path: 'home',
-		component: MainLayoutComponent,
+		loadComponent: () => import('./layouts/main-layout/main-layout.component').then((m) => m.MainLayoutComponent),
 		canActivate: [authGuard],
 		children: [
 			{
 				path: '',
-				component: HomeComponent,
+				loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
 			},
 		],
 	},
 	{
 		path: 'game',
-		component: MainLayoutComponent,
+		loadComponent: () => import('./layouts/main-layout/main-layout.component').then((m) => m.MainLayoutComponent),
 		children: [
 			{
 				path: 'solo',
-				component: SoloPlayComponent,
+				loadComponent: () => import('./pages/game/solo-play/solo-play.component').then((m) => m.SoloPlayComponent),
 				canActivate: [authGuard],
 				canDeactivate: [avoidAccidentalRedirectionGuard],
 			},
@@ -64,12 +53,18 @@ export const routes: Routes = [
 				children: [
 					{
 						path: 'create',
-						component: CreateMultiplayerGameComponent,
+						loadComponent: () =>
+							import('./pages/game/multiplayer/components/create-multiplayer-game/create-multiplayer-game.component').then(
+								(m) => m.CreateMultiplayerGameComponent,
+							),
 						canActivate: [authGuard],
 					},
 					{
 						path: ':gameId',
-						component: MultiplayerWrapperComponent,
+						loadComponent: () =>
+							import('./pages/game/multiplayer/components/multiplayer-wrapper/multiplayer-wrapper.component').then(
+								(m) => m.MultiplayerWrapperComponent,
+							),
 						canActivate: [optionalAuthGuardGuard],
 						canDeactivate: [avoidAccidentalRedirectionGuard],
 					},
@@ -79,12 +74,12 @@ export const routes: Routes = [
 	},
 	{
 		path: 'words',
-		component: MainLayoutComponent,
+		loadComponent: () => import('./layouts/main-layout/main-layout.component').then((m) => m.MainLayoutComponent),
 		canActivate: [authGuard],
 		children: [
 			{
 				path: '',
-				component: WordsComponent,
+				loadComponent: () => import('./pages/words/words.component').then((m) => m.WordsComponent),
 			},
 		],
 	},
