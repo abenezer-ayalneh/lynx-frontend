@@ -73,4 +73,18 @@ export class AuthService {
 	async getSession() {
 		return this.authClient.getSession()
 	}
+
+	forgotPassword(email: string) {
+		return this.authClient.requestPasswordReset({
+			email,
+			redirectTo: `${environment.appUrl}/auth/reset-password`,
+		})
+	}
+
+	resetPassword(token: string, newPassword: string) {
+		return this.authClient.resetPassword({
+			newPassword,
+			token,
+		})
+	}
 }

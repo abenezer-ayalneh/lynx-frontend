@@ -2,8 +2,10 @@ import { Routes } from '@angular/router'
 
 import { EmptyLayoutComponent } from './layouts/empty-layout/empty-layout.component'
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component'
+import { ForgotPasswordComponent } from './pages/auth/forgot-password/forgot-password.component'
 import { LoginComponent } from './pages/auth/login/login.component'
 import { RegisterComponent } from './pages/auth/register/register.component'
+import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component'
 import { CreateMultiplayerGameComponent } from './pages/game/multiplayer/components/create-multiplayer-game/create-multiplayer-game.component'
 import { MultiplayerWrapperComponent } from './pages/game/multiplayer/components/multiplayer-wrapper/multiplayer-wrapper.component'
 import { SoloPlayComponent } from './pages/game/solo-play/solo-play.component'
@@ -25,6 +27,14 @@ export const routes: Routes = [
 			{
 				path: 'register',
 				component: RegisterComponent,
+			},
+			{
+				path: 'forgot-password',
+				component: ForgotPasswordComponent,
+			},
+			{
+				path: 'reset-password',
+				component: ResetPasswordComponent,
 			},
 		],
 	},

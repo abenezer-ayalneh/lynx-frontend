@@ -12,6 +12,9 @@
 				<div class="w-full landscape:w-3/5 flex flex-col justify-center items-center gap-4">
 					<app-text-field [control]="formControls.email" placeholder="Email" type="email" class="w-full" />
 					<app-text-field [control]="formControls.password" placeholder="Password" type="password" class="w-full" />
+					<div class="w-full flex justify-end">
+						<a routerLink="/auth/forgot-password" class="text-font-authSubtitle text-[12px] md:text-sm font-light leading-none">Forgot password?</a>
+					</div>
 					<app-button text="Login" [buttonType]="ButtonType.SUBMIT" [disabled]="loginFormGroup.invalid" [loading]="loggingIn()" />
 					<div class="w-full flex flex-col justify-center items-center gap-4">
 						<div class="w-full relative text-center">
