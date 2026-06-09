@@ -2,13 +2,13 @@
 	<button
 		class="w-fit h-10 landscape:md:max-lg:h-8 disabled:bg-gray-500 disabled:rounded-md relative"
 		(click)="toggleMic()"
-		[disabled]="store.micState() === MicState.LOADING"
+		[disabled]="store.micState() === MicState.LOADING || store.micState() === MicState.RECONNECTING"
 		#tooltip="matTooltip"
 		[matTooltip]="micButtonTooltip()">
 		<div
 			class="w-16 h-full px-2 flex justify-center items-center rounded-md hover:rounded-lg"
 			[ngClass]="store.micState() === MicState.ON ? 'bg-white text-[#333537]' : 'bg-[#f2b8b5] text-my-red'">
-			@if (store.micState() === MicState.LOADING) {
+			@if (store.micState() === MicState.LOADING || store.micState() === MicState.RECONNECTING) {
 				<span class="loading loading-dots loading-md text-white"></span>
 			} @else {
 				@if (store.micState() === MicState.NOT_ALLOWED || store.micState() === MicState.ERROR) {

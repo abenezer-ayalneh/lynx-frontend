@@ -5,7 +5,17 @@ import { MatTooltip } from '@angular/material/tooltip'
 import { Router } from '@angular/router'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
 import { faExclamation, faMicrophone, faMicrophoneSlash, faPaperPlane, faPause, faPlay, faTimes, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { Participant, RemoteParticipant, RemoteTrack, RemoteTrackPublication, Room as LiveKitRoom, RoomEvent, Track, TrackPublication } from 'livekit-client'
+import {
+	ConnectionState,
+	Participant,
+	RemoteParticipant,
+	RemoteTrack,
+	RemoteTrackPublication,
+	Room as LiveKitRoom,
+	RoomEvent,
+	Track,
+	TrackPublication,
+} from 'livekit-client'
 import { firstValueFrom } from 'rxjs'
 
 import { environment } from '../../../../../../../../environments/environment'
@@ -40,6 +50,8 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 				return 'Turn off microphone (CTRL + m)'
 			case MicState.MUTED:
 				return 'Turn on microphone (CTRL + m)'
+			case MicState.RECONNECTING:
+				return 'Reconnecting to voice chat...'
 			default:
 				return 'Enable microphone for people in the game to hear your voice.'
 		}
@@ -98,17 +110,13 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 			} else if (micState === MicState.MUTED) {
 				micTrackPublication.unmute().then(() => this.store.setMicState(MicState.ON))
 			}
-		}
-		// Ask for permission
-		else if (this.store.liveKitRoom() && MicState.NOT_ALLOWED) {
+		} else if (this.store.liveKitRoom() && micState === MicState.NOT_ALLOWED) {
 			this.store.setMicState(MicState.LOADING)
 
 			const room = this.store.liveKitRoom()
-			// Enables the microphone and publishes it to a new audio-participant track
 			room?.localParticipant
 				.setMicrophoneEnabled(true)
 				.then(() => {
-					// Set initial mic status
 					if (room.localParticipant.isMicrophoneEnabled) {
 						this.store.setMicState(MicState.ON)
 					} else {
@@ -127,16 +135,10 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 	}
 
-	/**
-	 * Exit the currently being played multiplayer game
-	 */
 	async exitGame() {
 		await this.router.navigate(['/'])
 	}
 
-	/**
-	 * Exit the currently being played multiplayer game
-	 */
 	toggleGamePlayStatus() {
 		if (this.store.gamePlayStatus() === GamePlayStatus.PLAYING) {
 			this.colyseusService.pauseGame()
@@ -148,58 +150,62 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	private async initiateVoiceChat(gameId: string, sessionId: string) {
-		const room = new LiveKitRoom()
+		const room = new LiveKitRoom({
+			adaptiveStream: true,
+			dynacast: true,
+		})
 		this.store.setLiveKitRoom(room)
 
-		// Specify the actions when events take place in the room
-		// On every new Track received...
 		const trackSubscribedHandler = (remoteTrack: RemoteTrack, remotePublication: RemoteTrackPublication, remoteParticipant: RemoteParticipant) => {
 			this.store.addRemoteTrack(remoteParticipant.identity, remotePublication, remoteTrack.isMuted)
 		}
 		room.on(RoomEvent.TrackSubscribed, trackSubscribedHandler)
 		this.liveKitEventHandlers.push({ event: RoomEvent.TrackSubscribed, handler: trackSubscribedHandler as (...args: unknown[]) => void })
 
-		// On every new Track destroyed...
 		const trackUnsubscribedHandler = (_remoteTrack: RemoteTrack, _remotePublication: RemoteTrackPublication, remoteParticipant: RemoteParticipant) => {
 			this.store.deleteRemoteTrack(remoteParticipant.identity)
 		}
 		room.on(RoomEvent.TrackUnsubscribed, trackUnsubscribedHandler)
 		this.liveKitEventHandlers.push({ event: RoomEvent.TrackUnsubscribed, handler: trackUnsubscribedHandler as (...args: unknown[]) => void })
 
+		const connectionStateChangedHandler = (state: ConnectionState) => {
+			if (state === ConnectionState.Reconnecting) {
+				this.store.setMicState(MicState.RECONNECTING)
+			} else if (state === ConnectionState.Connected) {
+				const isMuted = room.localParticipant.getTrackPublication(Track.Source.Microphone)?.isMuted ?? true
+				this.store.setMicState(isMuted ? MicState.MUTED : MicState.ON)
+			} else if (state === ConnectionState.Disconnected) {
+				this.store.setMicState(MicState.ERROR)
+			}
+		}
+		room.on(RoomEvent.ConnectionStateChanged, connectionStateChangedHandler)
+		this.liveKitEventHandlers.push({ event: RoomEvent.ConnectionStateChanged, handler: connectionStateChangedHandler as (...args: unknown[]) => void })
+
 		try {
-			// Generate token for to be used to join the live-kit room.
 			const { token } = await firstValueFrom(this.liveKitService.getToken(gameId, sessionId))
 
-			// Connect to the live-kit room.
 			await room.connect(environment.liveKitServerUrl, token)
 
-			// Initiate the voice communication by asking permission for the mic.
 			await room.localParticipant.setMicrophoneEnabled(true)
 
-			// Set the local participant's track to state.
 			this.store.setLocalTrack(room.localParticipant.audioTrackPublications.values().next().value?.audioTrack)
 
-			// Set the local participant UI's mic state based on its state in the track.
 			this.store.setMicState((room.localParticipant.trackPublications.values().next().value?.isMuted ?? true) ? MicState.MUTED : MicState.ON)
 
-			// Set the local participant's muted state in the store.
 			this.store.changePlayerMuteState(room.localParticipant.identity, room.localParticipant.trackPublications.values().next().value?.isMuted ?? true)
 
-			// This will fire when any track is muted.
 			const trackMutedHandler = (trackPublication: TrackPublication, participant: Participant) => {
 				this.store.changePlayerMuteState(participant.identity, trackPublication.isMuted)
 			}
 			room.on(RoomEvent.TrackMuted, trackMutedHandler)
 			this.liveKitEventHandlers.push({ event: RoomEvent.TrackMuted, handler: trackMutedHandler as (...args: unknown[]) => void })
 
-			// This will fire when any track is unmuted.
 			const trackUnmutedHandler = (trackPublication: TrackPublication, participant: Participant) => {
 				this.store.changePlayerMuteState(participant.identity, trackPublication.isMuted)
 			}
 			room.on(RoomEvent.TrackUnmuted, trackUnmutedHandler)
 			this.liveKitEventHandlers.push({ event: RoomEvent.TrackUnmuted, handler: trackUnmutedHandler as (...args: unknown[]) => void })
 
-			// This event will fire with a list of participants who are actively speaking.
 			const activeSpeakersChangedHandler = (participants: Participant[]) => {
 				this.store.changePlayerSpeakingState(
 					participants.map((participant) => ({
@@ -212,10 +218,8 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 			room.on(RoomEvent.ActiveSpeakersChanged, activeSpeakersChangedHandler)
 			this.liveKitEventHandlers.push({ event: RoomEvent.ActiveSpeakersChanged, handler: activeSpeakersChangedHandler as (...args: unknown[]) => void })
 
-			// When the audio-participant playback status is changed, this event will fire.
-			// And I use it to resume the audio-participant playback.
-			const audioPlaybackStatusChangedHandler = (status: boolean) => {
-				if (status) {
+			const audioPlaybackStatusChangedHandler = () => {
+				if (!room.canPlaybackAudio) {
 					room.startAudio()
 				}
 			}
@@ -236,17 +240,14 @@ export class GameControlComponent implements OnInit, AfterViewInit, OnDestroy {
 	private async leaveLiveKitRoom() {
 		const room = this.store.liveKitRoom()
 		if (room) {
-			// Remove all event listeners before disconnecting
 			for (const { event, handler } of this.liveKitEventHandlers) {
 				room.off(event, handler)
 			}
 			this.liveKitEventHandlers = []
 
-			// Leave the room by calling the 'disconnect' method over the Room object.
 			await room.disconnect()
 		}
 
-		// Reset all variables
 		this.store.setLiveKitRoom(undefined)
 		this.store.setLocalTrack(undefined)
 		this.store.clearRemoteTracks()

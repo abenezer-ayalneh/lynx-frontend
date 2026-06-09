@@ -4,5 +4,6 @@ export enum MicState {
 	IDLE = 'IDLE',
 	NOT_ALLOWED = 'NOT_ALLOWED',
 	LOADING = 'LOADING',
+	RECONNECTING = 'RECONNECTING',
 	ERROR = 'ERROR',
 }
