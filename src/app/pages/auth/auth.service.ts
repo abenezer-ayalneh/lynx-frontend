@@ -58,7 +58,12 @@ export class AuthService {
 	}
 
 	register(registerRequest: RegisterRequest, callbackURL?: string) {
-		return this.authClient.signUp.email({ ...registerRequest, callbackURL })
+		const signUpRequest = {
+			name: registerRequest.name,
+			email: registerRequest.email,
+			password: registerRequest.password,
+		}
+		return this.authClient.signUp.email(callbackURL ? { ...signUpRequest, callbackURL } : signUpRequest)
 	}
 
 	login(loginRequest: LoginRequest) {

@@ -49,7 +49,7 @@ export class RegisterComponent {
 			}
 
 			this.authService
-				.register(registerRequest, 'home')
+				.register(registerRequest)
 				.then(async ({ error, data }) => {
 					console.log({ error, data })
 
